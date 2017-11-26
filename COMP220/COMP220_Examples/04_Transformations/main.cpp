@@ -1,106 +1,14 @@
 //main.cpp - defines the entry point of the application
 
 #include "main.h"
+#include "vertex.h"
 
 #define PI = 3.14159
 
-GLuint LoadShaders(const char * vertex_file_path, const char * fragment_file_path) {
-
-	// Create the shaders
-
-	//int address in 
-	GLuint VertexShaderID = glCreateShader(GL_VERTEX_SHADER);
-	GLuint FragmentShaderID = glCreateShader(GL_FRAGMENT_SHADER);
-
-	// Read the Vertex Shader code from the file
-	std::string VertexShaderCode;
-	std::ifstream VertexShaderStream(vertex_file_path, std::ios::in);
-	if (VertexShaderStream.is_open()) {
-		std::string Line = "";
-		while (getline(VertexShaderStream, Line))
-			VertexShaderCode += "\n" + Line;
-		VertexShaderStream.close();
-	}
-	else {
-		printf("Impossible to open %s. Are you in the right directory ? Don't forget to read the FAQ !\n", vertex_file_path);
-		getchar();
-		return 0;
-	}
-
-	// Read the Fragment Shader code from the file
-	std::string FragmentShaderCode;
-	std::ifstream FragmentShaderStream(fragment_file_path, std::ios::in);
-	if (FragmentShaderStream.is_open()) {
-		std::string Line = "";
-		while (getline(FragmentShaderStream, Line))
-			FragmentShaderCode += "\n" + Line;
-		FragmentShaderStream.close();
-	}
-
-	GLint Result = GL_FALSE;
-	int InfoLogLength;
-
-
-	// Compile Vertex Shader
-	printf("Compiling shader : %s\n", vertex_file_path);
-	char const * VertexSourcePointer = VertexShaderCode.c_str();
-	glShaderSource(VertexShaderID, 1, &VertexSourcePointer, NULL);
-	glCompileShader(VertexShaderID);
-
-	// Check Vertex Shader
-	glGetShaderiv(VertexShaderID, GL_COMPILE_STATUS, &Result);
-	glGetShaderiv(VertexShaderID, GL_INFO_LOG_LENGTH, &InfoLogLength);
-	if (InfoLogLength > 0) {
-		std::vector<char> VertexShaderErrorMessage(InfoLogLength + 1);
-		glGetShaderInfoLog(VertexShaderID, InfoLogLength, NULL, &VertexShaderErrorMessage[0]);
-		printf("%s\n", &VertexShaderErrorMessage[0]);
-	}
-
-
-
-	// Compile Fragment Shader
-	printf("Compiling shader : %s\n", fragment_file_path);
-	char const * FragmentSourcePointer = FragmentShaderCode.c_str();
-	glShaderSource(FragmentShaderID, 1, &FragmentSourcePointer, NULL);
-	glCompileShader(FragmentShaderID);
-
-	// Check Fragment Shader
-	glGetShaderiv(FragmentShaderID, GL_COMPILE_STATUS, &Result);
-	glGetShaderiv(FragmentShaderID, GL_INFO_LOG_LENGTH, &InfoLogLength);
-	if (InfoLogLength > 0) {
-		std::vector<char> FragmentShaderErrorMessage(InfoLogLength + 1);
-		glGetShaderInfoLog(FragmentShaderID, InfoLogLength, NULL, &FragmentShaderErrorMessage[0]);
-		printf("%s\n", &FragmentShaderErrorMessage[0]);
-	}
-
-
-
-	// Link the program
-	printf("Linking program\n");
-	GLuint ProgramID = glCreateProgram();
-	glAttachShader(ProgramID, VertexShaderID);
-	glAttachShader(ProgramID, FragmentShaderID);
-	glLinkProgram(ProgramID);
-
-	// Check the program
-	glGetProgramiv(ProgramID, GL_LINK_STATUS, &Result);
-	glGetProgramiv(ProgramID, GL_INFO_LOG_LENGTH, &InfoLogLength);
-	if (InfoLogLength > 0) {
-		std::vector<char> ProgramErrorMessage(InfoLogLength + 1);
-		glGetProgramInfoLog(ProgramID, InfoLogLength, NULL, &ProgramErrorMessage[0]);
-		printf("%s\n", &ProgramErrorMessage[0]);
-	}
-
-
-	glDetachShader(ProgramID, VertexShaderID);
-	glDetachShader(ProgramID, FragmentShaderID);
-
-	glDeleteShader(VertexShaderID);
-	glDeleteShader(FragmentShaderID);
-
-	return ProgramID;
+vec3 SphereCoordinates(float radius, float angle)
+{
+	return vec3(0.0f) + radius * vec3(cos(angle), tan(angle), sin(angle));
 }
-
 
 
 int main(int argc, char* args[])
@@ -114,6 +22,8 @@ int main(int argc, char* args[])
 		SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, SDL_GetError(), "SDL_Init failed", NULL);
 		return 1;
 	}
+
+	IMG_Init(IMG_INIT_JPG | IMG_INIT_PNG);
 
 	//Create a window, note we have to free the pointer returned using the DestroyWindow Function
 	//https://wiki.libsdl.org/SDL_CreateWindow
@@ -151,16 +61,213 @@ int main(int argc, char* args[])
 		SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, (char*)glewGetErrorString(glewError), "GLEW Init Failed", NULL);
 	}
 
+	
+
 
 	GLuint VertexArrayID;
 	glGenVertexArrays(1, &VertexArrayID);
 	glBindVertexArray(VertexArrayID);
 
+	
+
 	// An array of 3 vectors which represents 3 vertices
 	static const GLfloat g_vertex_buffer_data[] = {
-		-0.5f, -0.5f, 0.0f,
-		0.5f, -0.5f, 0.0f,
-		0.0f,  0.5f, 0.0f,
+		// 2 parrallel triangles
+//		-1.0f, -1.0f, 0.0f,
+//		1.0f, -1.0f, 0.0f,
+//		0.0f,  1.0f, 0.0f,
+//		-1.0f, -1.0f, -1.0f,
+//		1.0f, -1.0f, -1.0f,
+//		0.0f,  1.0f, -1.0f,
+
+// Room
+		// Floor
+		2.0f,	-1.0f,	-10.0f,
+		-2.0f,	-1.0f,	-10.0f,
+		-2.0f,	-1.0f,	-4.0f,
+
+		2.0f,	-1.0f,	-4.0f,
+		2.0f,	-1.0f,	-10.0f,
+		-2.0f,	-1.0f,	-4.0f,
+
+		// ceiling
+		-2.0f,	2.0f,	-4.0f,
+		-2.0f,	2.0f,	-10.0f,
+		2.0f,	2.0f,	-10.0f,
+
+		-2.0f,	2.0f,	-4.0f,
+		2.0f,	2.0f,	-10.0f,
+		2.0f,	2.0f,	-4.0f,
+
+		// Left wall
+		-2.0f,	-1.0f,	-4.0f,
+		-2.0f,	-1.0f,	-10.0f,
+		-2.0f,	2.0f,	-4.0f,
+
+		-2.0f,	-1.0f,	-10.0f,
+		-2.0f,	2.0f,	-10.0f,
+		-2.0f,	2.0f,	-4.0f,
+
+		// Right wall
+		2.0f,	2.0f,	-4.0f,
+		2.0f,	-1.0f,	-10.0f,
+		2.0f,	-1.0f,	-4.0f,
+
+		2.0f,	2.0f,	-4.0f,
+		2.0f,	2.0f,	-10.0f,
+		2.0f,	-1.0f,	-10.0f,
+
+		// Back wall
+		2.0f,	-1.0f,	-10.0f,
+		-2.0f,	2.0f,	-10.0f,
+		-2.0f,	-1.0f,	-10.0f,
+
+		2.0f,	-1.0f,	-10.0f,
+		2.0f,	2.0f,	-10.0f,
+		-2.0f,	2.0f,	-10.0f,
+
+// Corridor
+		// Floor
+		1.0f,	-1.0f,	-4.0f,
+		-1.0f,	-1.0f,	-4.0f,
+		-1.0f,	-1.0f,	0.0f,
+
+		1.0f,	-1.0f,	0.0f,
+		1.0f,	-1.0f,	-4.0f,
+		-1.0f,	-1.0f,	0.0f,
+
+		// ceiling
+		-1.0f,	1.0f,	0.0f,
+		-1.0f,	1.0f,	-4.0f,
+		1.0f,	1.0f,	-4.0f,
+
+		-1.0f,	1.0f,	0.0f,
+		1.0f,	1.0f,	-4.0f,
+		1.0f,	1.0f,	0.0f,
+
+		// Left wall
+		-1.0f,	-1.0f,	0.0f,
+		-1.0f,	-1.0f,	-4.0f,
+		-1.0f,	1.0f,	0.0f,
+
+		-1.0f,	-1.0f,	-4.0f,
+		-1.0f,	1.0f,	-4.0f,
+		-1.0f,	1.0f,	0.0f,
+
+		// Right wall
+		1.0f,	1.0f,	0.0f,
+		1.0f,	-1.0f,	-4.0f,
+		1.0f,	-1.0f,	0.0f,
+
+		1.0f,	1.0f,	0.0f,
+		1.0f,	1.0f,	-4.0f,
+		1.0f,	-1.0f,	-4.0f,
+
+		};
+
+/*
+	static const GLfloat g_vertex_buffer_data[] = {
+		0.0f,	0.0f,	0.0f,
+	};
+
+	for (int i = 0; i < 360; i + 10)
+	{
+		g_vertex_buffer_data[i] = SphereCoordinates(10.0f, (float)i).x, SphereCoordinates(10.0f, (float)i).y, SphereCoordinates(10.0f, (float)i).z,
+	}
+*/
+	// Number of vertices
+	int NumberOfVertices = 54;
+/*
+	// This will identify our vertex buffer
+	GLuint vertexbuffer;
+	// Generate 1 buffer, put the resulting identifier in vertexbuffer
+	glGenBuffers(1, &vertexbuffer);
+	// The following commands will talk about our 'vertexbuffer' buffer
+	glBindBuffer(GL_ARRAY_BUFFER, vertexbuffer);
+	// Give our vertices to OpenGL.
+	glBufferData(GL_ARRAY_BUFFER, sizeof(g_vertex_buffer_data), g_vertex_buffer_data, GL_STATIC_DRAW);
+*/
+	Vertex mapVertices[] = {// Floor
+		{0.0f, 1.0f, 0.0f,	0.0f, 1.0f, 0.0f,	0.0f,	0.0f },
+		{0.0f, 1.0f, 0.0f,	0.0f, 1.0f, 0.0f,	1.0f,	0.0f },
+		{0.0f, 1.0f, 0.5f,	0.0f, 1.0f, 0.5f,	1.0f,	1.0f },
+
+		{0.0f, 1.0f, 0.5f,	0.0f, 1.0f, 0.5f,	0.0f,	0.0f },
+		{0.0f, 1.0f, 0.0f,	0.0f, 1.0f, 0.0f,	0.0f,	0.0f },
+		{0.0f, 1.0f, 0.5f,	0.0f, 1.0f, 0.5f,	0.0f,	0.0f },
+
+		// Ceiling
+		{0.0f, 0.0f, 1.0f,	0.0f, 0.0f, 1.0f,	0.0f,	0.0f },
+		{0.0f, 1.0f, 1.0f,	0.0f, 1.0f, 1.0f,	0.0f,	0.0f },
+		{0.0f, 1.0f, 1.0f,	0.0f, 1.0f, 1.0f,	0.0f,	0.0f },
+
+		{0.0f, 0.0f, 1.0f,	0.0f, 0.0f, 1.0f,	0.0f,	0.0f },
+		{0.0f, 1.0f, 1.0f,	0.0f, 1.0f, 1.0f,	0.0f,	0.0f },
+		{0.0f, 0.0f, 1.0f,	0.0f, 0.0f, 1.0f, 	0.0f,	0.0f },
+
+		// Left wall
+		{1.0f, 0.0f, 0.0f,	1.0f, 0.0f, 0.0f, 	0.0f,	0.0f },
+		{1.0f, 1.0f, 0.0f,	1.0f, 1.0f, 0.0f, 	0.0f,	0.0f },
+		{1.0f, 0.0f, 0.0f,	1.0f, 0.0f, 0.0f, 	0.0f,	0.0f },
+
+		{1.0f, 1.0f, 0.0f,	1.0f, 1.0f, 0.0f, 	0.0f,	0.0f },
+		{1.0f, 1.0f, 0.0f,	1.0f, 1.0f, 0.0f, 	0.0f,	0.0f },
+		{1.0f, 0.0f, 0.0f,	1.0f, 0.0f, 0.0f,	0.0f,	0.0f },
+
+		// Right wall
+		{1.0f, 0.0f, 0.0f,	1.0f, 0.0f, 0.0f, 	0.0f,	0.0f },
+		{1.0f, 1.0f, 0.0f,	1.0f, 1.0f, 0.0f, 	0.0f,	0.0f },
+		{1.0f, 0.0f, 0.0f,	1.0f, 0.0f, 0.0f, 	0.0f,	0.0f },
+
+		{1.0f, 0.0f, 0.0f,	1.0f, 0.0f, 0.0f, 	0.0f,	0.0f },
+		{1.0f, 1.0f, 0.0f,	1.0f, 1.0f, 0.0f, 	0.0f,	0.0f },
+		{1.0f, 1.0f, 0.0f,	1.0f, 1.0f, 0.0f, 	0.0f,	0.0f },
+
+		// Back wall
+		{0.0f, 0.0f, 1.0f,	0.0f, 0.0f, 1.0f, 	0.0f,	0.0f },
+		{0.0f, 1.0f, 1.0f,	0.0f, 1.0f, 1.0f, 	0.0f,	0.0f },
+		{0.0f, 0.0f, 1.0f,	0.0f, 0.0f, 1.0f, 	0.0f,	0.0f },
+
+		{0.0f, 0.0f, 1.0f,	0.0f, 0.0f, 1.0f, 	0.0f,	0.0f },
+		{0.0f, 1.0f, 1.0f,	0.0f, 1.0f, 1.0f, 	0.0f,	0.0f },
+		{0.0f, 1.0f, 1.0f,	0.0f, 1.0f, 1.0f, 	0.0f,	0.0f },
+
+		// Corridor
+		// Floor
+		{0.0f, 1.0f, 0.5f,	0.0f, 1.0f, 0.5f, 	0.0f,	0.0f },
+		{0.0f, 1.0f, 0.5f,	0.0f, 1.0f, 0.5f, 	0.0f,	0.0f },
+		{0.0f, 1.0f, 0.0f,	0.0f, 1.0f, 0.0f, 	0.0f,	0.0f },
+
+		{0.0f, 1.0f, 0.0f,	0.0f, 1.0f, 0.0f, 	0.0f,	0.0f },
+		{0.0f, 1.0f, 0.5f,	0.0f, 1.0f, 0.5f, 	0.0f,	0.0f },
+		{0.0f, 1.0f, 0.0f,	0.0f, 1.0f, 0.0f, 	0.0f,	0.0f },
+
+		// Ceiling
+		{0.0f, 0.0f, 1.0f,	0.0f, 0.0f, 1.0f, 	0.0f,	0.0f },
+		{0.0f, 1.0f, 1.0f,	0.0f, 1.0f, 1.0f, 	0.0f,	0.0f },
+		{0.0f, 1.0f, 1.0f,	0.0f, 1.0f, 1.0f, 	0.0f,	0.0f },
+
+		{0.0f, 0.0f, 1.0f,	0.0f, 0.0f, 1.0f, 	0.0f,	0.0f },
+		{0.0f, 1.0f, 1.0f,	0.0f, 1.0f, 1.0f, 	0.0f,	0.0f },
+		{0.0f, 0.0f, 1.0f,	0.0f, 0.0f, 1.0f, 	0.0f,	0.0f },
+
+		// Right wall
+		{1.0f, 0.0f, 0.0f,	1.0f, 0.0f, 0.0f, 	0.0f,	0.0f },
+		{1.0f, 1.0f, 0.0f,	1.0f, 1.0f, 0.0f, 	0.0f,	0.0f },
+		{1.0f, 0.0f, 0.0f,	1.0f, 0.0f, 0.0f, 	0.0f,	0.0f },
+
+		{1.0f, 1.0f, 0.0f,	1.0f, 1.0f, 0.0f, 	0.0f,	0.0f },
+		{1.0f, 1.0f, 0.0f,	1.0f, 1.0f, 0.0f, 	0.0f,	0.0f },
+		{1.0f, 0.0f, 0.0f,	1.0f, 0.0f, 0.0f, 	0.0f,	0.0f },
+
+		// Left wall
+		{1.0f, 0.0f, 0.0f,	1.0f, 0.0f, 0.0f, 	0.0f,	0.0f },
+		{1.0f, 1.0f, 0.0f,	1.0f, 1.0f, 0.0f, 	0.0f,	0.0f },
+		{1.0f, 0.0f, 0.0f,	1.0f, 0.0f, 0.0f, 	0.0f,	0.0f },
+
+		{1.0f, 0.0f, 0.0f,	1.0f, 0.0f, 0.0f, 	0.0f,	0.0f },
+		{1.0f, 1.0f, 0.0f,	1.0f, 1.0f, 0.0f, 	0.0f,	0.0f },
+		{1.0f, 1.0f, 0.0f,	1.0f, 1.0f, 0.0f, 	0.0f,	0.0f },
 	};
 
 	// This will identify our vertex buffer
@@ -170,13 +277,111 @@ int main(int argc, char* args[])
 	// The following commands will talk about our 'vertexbuffer' buffer
 	glBindBuffer(GL_ARRAY_BUFFER, vertexbuffer);
 	// Give our vertices to OpenGL.
-	glBufferData(GL_ARRAY_BUFFER, sizeof(g_vertex_buffer_data), g_vertex_buffer_data, GL_STATIC_DRAW);
+	glBufferData(GL_ARRAY_BUFFER, NumberOfVertices * sizeof(Vertex), mapVertices, GL_STATIC_DRAW);
+	
+	unsigned int triangleIndices[] =
+	{
+		0,1,2,
+		2,0,3
+	};
+	
+	GLuint elementBuffer;
+	glGenBuffers(1, &elementBuffer);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, elementBuffer);
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, 6 * sizeof(unsigned int), triangleIndices, GL_STATIC_DRAW);
+
 
 	// Colours
 	static const GLfloat g_vertex_buffer_colour[] = {
-		1.0f, 0.0f, 0.0f,
-		0.50f, 1.0f, 0.0f,
+		// Rainbow effect
+/*		1.0f, 0.0f, 0.0f,
+		0.0f, 1.0f, 0.0f,
 		0.0f,  0.0f, 1.0f,
+*/
+// Room
+		// Floor
+		0.0f, 1.0f, 0.0f,
+		0.0f, 1.0f, 0.0f,
+		0.0f, 1.0f, 0.5f,
+
+		0.0f, 1.0f, 0.5f,
+		0.0f, 1.0f, 0.0f,
+		0.0f, 1.0f, 0.5f,
+
+		// Ceiling
+		0.0f, 0.0f, 1.0f,
+		0.0f, 1.0f, 1.0f,
+		0.0f, 1.0f, 1.0f,
+
+		0.0f, 0.0f, 1.0f,
+		0.0f, 1.0f, 1.0f,
+		0.0f, 0.0f, 1.0f,
+
+		// Left wall
+		1.0f, 0.0f, 0.0f,
+		1.0f, 1.0f, 0.0f,
+		1.0f, 0.0f, 0.0f,
+
+		1.0f, 1.0f, 0.0f,
+		1.0f, 1.0f, 0.0f,
+		1.0f, 0.0f, 0.0f,
+
+		// Right wall
+		1.0f, 0.0f, 0.0f,
+		1.0f, 1.0f, 0.0f,
+		1.0f, 0.0f, 0.0f,
+
+		1.0f, 0.0f, 0.0f,
+		1.0f, 1.0f, 0.0f,
+		1.0f, 1.0f, 0.0f,
+
+		// Back wall
+		0.0f, 0.0f, 1.0f,
+		0.0f, 1.0f, 1.0f,
+		0.0f, 0.0f, 1.0f,
+
+		0.0f, 0.0f, 1.0f,
+		0.0f, 1.0f, 1.0f,
+		0.0f, 1.0f, 1.0f,
+
+// Corridor
+		// Floor
+		0.0f, 1.0f, 0.5f,
+		0.0f, 1.0f, 0.5f,
+		0.0f, 1.0f, 0.0f,
+
+		0.0f, 1.0f, 0.0f,
+		0.0f, 1.0f, 0.5f,
+		0.0f, 1.0f, 0.0f,
+
+		// Ceiling
+		0.0f, 0.0f, 1.0f,
+		0.0f, 1.0f, 1.0f,
+		0.0f, 1.0f, 1.0f,
+
+		0.0f, 0.0f, 1.0f,
+		0.0f, 1.0f, 1.0f,
+		0.0f, 0.0f, 1.0f,
+
+		// Right wall
+		1.0f, 0.0f, 0.0f,
+		1.0f, 1.0f, 0.0f,
+		1.0f, 0.0f, 0.0f,
+
+		1.0f, 1.0f, 0.0f,
+		1.0f, 1.0f, 0.0f,
+		1.0f, 0.0f, 0.0f,
+
+		// Left wall
+		1.0f, 0.0f, 0.0f,
+		1.0f, 1.0f, 0.0f,
+		1.0f, 0.0f, 0.0f,
+
+		1.0f, 0.0f, 0.0f,
+		1.0f, 1.0f, 0.0f,
+		1.0f, 1.0f, 0.0f,
+
+		
 	};
 
 	// This will identify our colour buffer
@@ -187,29 +392,52 @@ int main(int argc, char* args[])
 	glBindBuffer(GL_ARRAY_BUFFER, colourbuffer);
 	// Give our colours to OpenGL.
 	glBufferData(GL_ARRAY_BUFFER, sizeof(g_vertex_buffer_colour), g_vertex_buffer_colour, GL_STATIC_DRAW);
+	//
+	//glBufferData(GL_ARRAY_BUFFER, 3 * sizeof(Vertex), V, GL_STATIC_DRAW);
+	//
+	//Colour:
+	//glVertexAttribPointer(
+	//	1,								glEnableVertexAttributeArray(1)
+	//	4,								Colour has 4 elements
+	//	GL_FLOAT,						size of data lump in memory
+	//	GL_FALSE,						always...
+	//	sizeof(Vertex),					stride
+	//	(void*)(3 * sizeof(float))		offset
+	//	);
 
+	GLuint textureID = loadTextureFromFile("brick.jpg");
+	/*
+	
+	*/
+	
 
-	vec3 trianglePosition = vec3(1.0f,0.0f,0.0f);
+	//Initiate variables
+	vec3 trianglePosition = vec3(1.0f, 0.0f, 0.0f);
 	vec3 triangleScale = vec3(1.0f, 1.0f, 1.0f);
 	vec3 triangleRotation = vec3(0.0f, 0.0f, 0.0f);
 
-	
+	// Set the matrices according to the vec3s above
 	mat4 translationMatrix = translate(trianglePosition);
 	mat4 scaleMatrix = scale(triangleScale);
-	mat4 rotationMatrix= rotate(triangleRotation.x, vec3(1.0f, 0.0f, 0.0f))*rotate(triangleRotation.y, vec3(0.0f, 1.0f, 0.0f))*rotate(triangleRotation.z, vec3(0.0f, 0.0f, 1.0f));
+	mat4 rotationMatrix = rotate(triangleRotation.x, vec3(1.0f, 0.0f, 0.0f))
+						* rotate(triangleRotation.y, vec3(0.0f, 1.0f, 0.0f))
+						* rotate(triangleRotation.z, vec3(0.0f, 0.0f, 1.0f));
 
-	mat4 modelMatrix = translationMatrix*rotationMatrix*scaleMatrix;
+	// TRS!!!
+	mat4 modelMatrix = translationMatrix * rotationMatrix * scaleMatrix;
 
-	vec3 cameraPosition = vec3(0.0f, 0.0f, -10.0f);
-	vec3 cameraTarget = vec3(0.0f, 0.0f, 0.0f);
+
+	vec3 cameraPosition = vec3(0.0f, 0.0f, 0.0f);
+	vec3 cameraTarget = vec3(0.0f, 0.0f, -10.0f);
 	vec3 cameraUp = vec3(0.0f, 1.0f, 0.0f);
 
 	mat4 viewMatrix = lookAt(cameraPosition, cameraTarget, cameraUp);
 
+	// Perspective( fieldOfView, aspectRatio, nearClip, farClip )
 	mat4 projectionMatrix = perspective(radians(90.0f), float(800 / 600), 0.1f, 100.0f);
 
 
-	GLuint programID = LoadShaders("vert.glsl", "frag.glsl");
+	GLuint programID = LoadShaders("textureVert.glsl", "textureFrag.glsl");
 
 	GLint fragColourLocation=glGetUniformLocation(programID, "fragColour");
 	if (fragColourLocation < 0)
@@ -219,28 +447,27 @@ int main(int argc, char* args[])
 
 	static const GLfloat fragColour[] = { 1.0f,1.0f,0.0f,1.0f };
 
-	GLint currentTimeLocation = glGetUniformLocation(programID, "time");
-	if (currentTimeLocation < 0)
-	{
-		printf("Unable to find %s uniform", "time");
-	}
 
-	GLint currentColourLocation = glGetUniformLocation(programID, "");
-
+	// Probably want some error checking for these below
 	GLint modelMatrixLocation = glGetUniformLocation(programID, "modelMatrix");
 	GLint viewMatrixLocation = glGetUniformLocation(programID, "viewMatrix");
 	GLint projectionMatrixLocation = glGetUniformLocation(programID, "projectionMatrix");
+	GLint textureLocation = glGetUniformLocation(programID, "baseTexture");
 
-
-	int lastTicks = SDL_GetTicks();
-	int currentTicks = SDL_GetTicks();
 
 	vec3 DeltaPosition;
-	float CameraDistance = (cameraTarget - cameraPosition).length();
-	float TurnDegreesFromOriginX = 90.0f;
+	float CameraDistance = (float)(cameraTarget - cameraPosition).length();
+	float TurnDegreesFromOriginX = -90.0f;
 	float TurnDegreesFromOriginY = 0.0f;
 
 	float ControlSensitivity = 0.04f;
+
+	SDL_ShowCursor(SDL_DISABLE);
+	SDL_SetRelativeMouseMode(SDL_bool(SDL_ENABLE));
+
+	glEnable(GL_DEPTH_TEST);
+	glDepthFunc(GL_LESS);
+	glEnable(GL_CULL_FACE);
 
 	//Event loop, we will loop until running is set to false, usually if escape has been pressed or window is closed
 	bool running = true;
@@ -265,9 +492,9 @@ int main(int argc, char* args[])
 				// Adjust viewing angle variables based on mouse movement
 				TurnDegreesFromOriginX +=  ev.motion.xrel / 200.0f;
 				TurnDegreesFromOriginY += -ev.motion.yrel / 200.0f;
-				// Clamp Y
-				if		(TurnDegreesFromOriginY > 90.0f)	TurnDegreesFromOriginY = 90.0f;
-				else if (TurnDegreesFromOriginY < -90.0f)	TurnDegreesFromOriginY = -90.0f;
+				// Clamp Y to avoid gimble lock as tan tends towards infinity
+				if		(TurnDegreesFromOriginY > 85.0f)	TurnDegreesFromOriginY = 85.0f;
+				else if (TurnDegreesFromOriginY < -85.0f)	TurnDegreesFromOriginY = -85.0f;
 				
 				// Move camera lookatpoint to a trigonometry calculated position, CameraDistance far away, relative to the camera position
 				cameraTarget = cameraPosition + CameraDistance * vec3(cos(TurnDegreesFromOriginX), tan(TurnDegreesFromOriginY), sin(TurnDegreesFromOriginX));
@@ -315,23 +542,32 @@ int main(int argc, char* args[])
 
 		viewMatrix = lookAt(cameraPosition, cameraTarget, cameraUp);
 
-		currentTicks = SDL_GetTicks();
-		float deltaTime = (float)(currentTicks - lastTicks) / 1000.0f;
-
-		glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+		glClearColor(1.0f, 0.0f, 0.0f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
 
+		// "Do all geometry things before shader"
+		// Activate the texture
+		glActiveTexture(GL_TEXTURE0);
+		// Bind the texture, bind the buffers
+		glBindTexture(GL_TEXTURE_2D, textureID);
+		glBindBuffer(GL_ARRAY_BUFFER, vertexbuffer);
+		//glBindBuffer(GL_ARRAY_BUFFER, colourbuffer);
+		glBindBuffer(GL_ARRAY_BUFFER, elementBuffer);
+
+		// Use the program
 		glUseProgram(programID);
 
+		// Send everything across
 		glUniform4fv(fragColourLocation, 1, fragColour);
-		glUniform1f(currentTimeLocation, (float)(currentTicks)/1000.0f);
 		glUniformMatrix4fv(modelMatrixLocation, 1, GL_FALSE, value_ptr(modelMatrix));
 		glUniformMatrix4fv(viewMatrixLocation, 1, GL_FALSE, value_ptr(viewMatrix));
 		glUniformMatrix4fv(projectionMatrixLocation, 1, GL_FALSE, value_ptr(projectionMatrix));
+		// No uniform texture, tell the shader that the texture is in slot 0 - because of GL_TEXTURE0 above
+		glUniform1i(textureLocation, 0);
+
 
 		// 1rst attribute buffer : vertices
 		glEnableVertexAttribArray(0);
-		glBindBuffer(GL_ARRAY_BUFFER, vertexbuffer);
 		glVertexAttribPointer(
 			0,                  // attribute 0. No particular reason for 0, but must match the layout in the shader.
 			3,                  // size
@@ -343,7 +579,6 @@ int main(int argc, char* args[])
 
 		//2nd attribute buffer : colours
 		glEnableVertexAttribArray(1);
-		glBindBuffer(GL_ARRAY_BUFFER, colourbuffer);
 		glVertexAttribPointer(
 			1,                  // attribute 0. No particular reason for 0, but must match the layout in the shader.
 			3,                  // size
@@ -353,23 +588,29 @@ int main(int argc, char* args[])
 			(void*)0            // array buffer offset
 		);
 
+		glEnableVertexAttribArray(2);
+		glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)(7 * sizeof(float)));
+
 		// Draw the triangle !
-		glDrawArrays(GL_TRIANGLES, 0, 3); // Starting from vertex 0; 3 vertices total -> 1 triangle
+		glDrawArrays(GL_TRIANGLES, 0, NumberOfVertices); // Starting from vertex 0; 3 vertices total -> 1 triangle
 		glDisableVertexAttribArray(0);
 
 		SDL_GL_SwapWindow(window);
 
-		lastTicks = currentTicks;
 	}
 
 	glDeleteVertexArrays(1, &VertexArrayID);
 	glDeleteBuffers(1, &vertexbuffer);
+	glDeleteBuffers(1, &colourbuffer);
+	glDeleteTextures(1, &textureID);
 	glDeleteProgram(programID);
 
 	SDL_GL_DeleteContext(GL_Context);
 	//Destroy the window and quit SDL2, NB we should do this after all cleanup in this order!!!
 	//https://wiki.libsdl.org/SDL_DestroyWindow
 	SDL_DestroyWindow(window);
+
+	IMG_Quit();
 	//https://wiki.libsdl.org/SDL_Quit
 	SDL_Quit();
 

@@ -7,9 +7,9 @@ layout(location = 2) in vec2 vertexTextureCoord;
 out vec4 vertexColourOut;
 out vec2 vertexTextureCoordOut;
 
-uniform mat4 modelMatrix = mat4(1.0f);
-uniform mat4 viewMatrix = mat4(1.0f);
-uniform mat4 projectionMatrix = mat4(1.0f);
+uniform mat4 modelMatrix; // = mat4(1.0f);
+uniform mat4 viewMatrix; // = mat4(1.0f);
+uniform mat4 projectionMatrix; // = mat4(1.0f);
 
 void main()
 {

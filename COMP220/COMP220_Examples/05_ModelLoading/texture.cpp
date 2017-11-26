@@ -74,3 +74,17 @@ GLuint loadTextureFromFile(const std::string& filename)
 
 	return textureID;
 }
+
+GLuint CreateTexture(int width, int height)
+{
+	GLuint textureID = 0;
+
+	glGenTextures(1, &textureID);
+	glBindTexture(GL_TEXTURE_2D, textureID);
+
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, 0);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_BASE_LEVEL, 0);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAX_LEVEL, 0);
+
+	return textureID;
+}

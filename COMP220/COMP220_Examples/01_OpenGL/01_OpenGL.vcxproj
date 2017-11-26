@@ -20,7 +20,7 @@
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>15.0</VCProjectVersion>
-    <ProjectGuid>{A41AB48B-C901-45DC-815D-705E89B4AACB}</ProjectGuid>
+    <ProjectGuid>{29BDA066-E94B-4C2C-8693-40EE5B921C1F}</ProjectGuid>
     <RootNamespace>My0_SDL_Window</RootNamespace>
     <WindowsTargetPlatformVersion>10.0.15063.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
@@ -134,10 +134,7 @@ copy ..\..\..\Libraries\glew-2.1.0\bin\Release\x64\glew32.dll "$(OutDir)\glew32.
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="main.h" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="frag.glsl" />
-    <None Include="vert.glsl" />
+    <ClInclude Include="vertex.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

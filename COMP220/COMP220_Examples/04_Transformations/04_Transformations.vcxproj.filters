@@ -10,12 +10,6 @@
     <ClCompile Include="shader.cpp">
       <Filter>source</Filter>
     </ClCompile>
-    <ClCompile Include="model.cpp">
-      <Filter>source</Filter>
-    </ClCompile>
-    <ClCompile Include="Mesh.cpp">
-      <Filter>source</Filter>
-    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="main.h">
@@ -30,43 +24,18 @@
     <ClInclude Include="shader.h">
       <Filter>headers</Filter>
     </ClInclude>
-    <ClInclude Include="model.h">
-      <Filter>headers</Filter>
-    </ClInclude>
-    <ClInclude Include="Mesh.h">
-      <Filter>headers</Filter>
-    </ClInclude>
   </ItemGroup>
   <ItemGroup>
+    <None Include="frag.glsl">
+      <Filter>shaders</Filter>
+    </None>
+    <None Include="vert.glsl">
+      <Filter>shaders</Filter>
+    </None>
     <None Include="textureFrag.glsl">
       <Filter>shaders</Filter>
     </None>
     <None Include="textureVert.glsl">
-      <Filter>shaders</Filter>
-    </None>
-    <None Include="cube.nff" />
-    <None Include="lightingFrag.glsl">
-      <Filter>shaders</Filter>
-    </None>
-    <None Include="lightingVert.glsl">
-      <Filter>shaders</Filter>
-    </None>
-    <None Include="defaultFrag.glsl">
-      <Filter>shaders</Filter>
-    </None>
-    <None Include="defaultVert.glsl">
-      <Filter>shaders</Filter>
-    </None>
-    <None Include="passThroughVert.glsl">
-      <Filter>shaders</Filter>
-    </None>
-    <None Include="postTextureFrag.glsl">
-      <Filter>shaders</Filter>
-    </None>
-    <None Include="postBlackAndWhiteFrag.glsl">
-      <Filter>shaders</Filter>
-    </None>
-    <None Include="postCellNotCell.glsl">
       <Filter>shaders</Filter>
     </None>
   </ItemGroup>

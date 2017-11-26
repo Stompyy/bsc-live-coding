@@ -10,6 +10,9 @@ uniform vec4 fragColour = vec4(1.0, 1.0, 1.0, 1.0);
 
 void main()
 {
-	colour = vertexColourOut;
+	//colour = vertexColourOut;
+	
+	colour = texture2D(baseTexture, vertexTextureCoordOut);
+	
 	//colour = vec4(texture(myTextureSampler, UV).rgb, 1.0f);
 }

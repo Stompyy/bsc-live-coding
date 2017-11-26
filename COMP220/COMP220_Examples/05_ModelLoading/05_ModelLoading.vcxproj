@@ -147,10 +147,16 @@ copy ..\..\..\Libraries\assimp\bin\assimp-vc140-mt.dll "$(Outdir)\assimp-vc140-m
   </ItemGroup>
   <ItemGroup>
     <None Include="cube.nff" />
-    <None Include="frag.glsl" />
+    <None Include="defaultFrag.glsl" />
+    <None Include="lightingFrag.glsl" />
+    <None Include="lightingVert.glsl" />
+    <None Include="passThroughVert.glsl" />
+    <None Include="postBlackAndWhiteFrag.glsl" />
+    <None Include="postCellNotCell.glsl" />
+    <None Include="postTextureFrag.glsl" />
     <None Include="textureFrag.glsl" />
     <None Include="textureVert.glsl" />
-    <None Include="vert.glsl" />
+    <None Include="defaultVert.glsl" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

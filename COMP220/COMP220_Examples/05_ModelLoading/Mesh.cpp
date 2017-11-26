@@ -24,7 +24,7 @@ void Mesh::CopyBufferData(Vertex* verts, unsigned int numberOfVerts, unsigned in
 	glBufferData(GL_ARRAY_BUFFER, numberOfVerts * sizeof(Vertex), verts, GL_STATIC_DRAW);	//vertices.size() * sizeof(Vertex), vertices.data(), GL_STATIC_DRAW);
 
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_EBO);
-	glBufferData(GL_ARRAY_BUFFER, numberOfIndices * sizeof(unsigned int), indices, GL_STATIC_DRAW);
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, numberOfIndices * sizeof(unsigned int), indices, GL_STATIC_DRAW);
 
 	m_NumberOfVerts = numberOfVerts;		//vertices.size();
 	m_NumberOfIndices = numberOfIndices;	//indices.size();
@@ -46,17 +46,13 @@ void Mesh::CopyBufferData(Vertex* verts, unsigned int numberOfVerts, unsigned in
 
 	//2nd attribute buffer : colours
 	glEnableVertexAttribArray(1);
-	glVertexAttribPointer(
-		1,                  // attribute 0. No particular reason for 0, but must match the layout in the shader.
-		4,                  // size
-		GL_FLOAT,           // type
-		GL_FALSE,           // normalized?
-		sizeof(Vertex),					// stride
-		(void*)(3*sizeof(float))		// array buffer offset
-	);
+	glVertexAttribPointer(1, 4, GL_FLOAT, GL_FALSE, sizeof(Vertex),	(void*)(3 * sizeof(float)));
 
 	glEnableVertexAttribArray(2);
 	glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)(7 * sizeof(float)));
+
+	glEnableVertexAttribArray(3);
+	glVertexAttribPointer(3, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)(9 * sizeof(float)));
 
 }
 

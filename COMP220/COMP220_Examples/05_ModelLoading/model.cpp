@@ -122,6 +122,13 @@ bool loadMeshFromFile(const std::string& filename, std::vector<Mesh*>& meshes)
 				myVertex.b = currentColour.b;
 				myVertex.a = currentColour.a;
 			}
+			if (currentAIMesh->HasNormals())
+			{
+				const aiVector3D currentNormals = currentAIMesh->mNormals[v];
+				myVertex.normalX = currentNormals.x;
+				myVertex.normalY = currentNormals.y;
+				myVertex.normalZ = currentNormals.z;
+			}
 
 			vertices.push_back(myVertex);
 		}
