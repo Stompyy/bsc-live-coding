@@ -1,0 +1,144 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClCompile Include="main.cpp">
+      <Filter>source</Filter>
+    </ClCompile>
+    <ClCompile Include="texture.cpp">
+      <Filter>source</Filter>
+    </ClCompile>
+    <ClCompile Include="shader.cpp">
+      <Filter>source</Filter>
+    </ClCompile>
+    <ClCompile Include="model.cpp">
+      <Filter>source</Filter>
+    </ClCompile>
+    <ClCompile Include="Mesh.cpp">
+      <Filter>source</Filter>
+    </ClCompile>
+    <ClCompile Include="Camera.cpp">
+      <Filter>source</Filter>
+    </ClCompile>
+    <ClCompile Include="gameObject.cpp">
+      <Filter>source</Filter>
+    </ClCompile>
+    <ClCompile Include="Light.cpp">
+      <Filter>source</Filter>
+    </ClCompile>
+    <ClCompile Include="Player.cpp">
+      <Filter>source</Filter>
+    </ClCompile>
+    <ClCompile Include="Transform.cpp">
+      <Filter>source</Filter>
+    </ClCompile>
+    <ClCompile Include="Material.cpp">
+      <Filter>source</Filter>
+    </ClCompile>
+    <ClCompile Include="Physics.cpp">
+      <Filter>source</Filter>
+    </ClCompile>
+    <ClCompile Include="PhysicsEngine.cpp">
+      <Filter>source</Filter>
+    </ClCompile>
+    <ClCompile Include="PostProcessing.cpp">
+      <Filter>source</Filter>
+    </ClCompile>
+    <ClCompile Include="PlayerController.cpp">
+      <Filter>source</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="main.h">
+      <Filter>headers</Filter>
+    </ClInclude>
+    <ClInclude Include="texture.h">
+      <Filter>headers</Filter>
+    </ClInclude>
+    <ClInclude Include="vertex.h">
+      <Filter>headers</Filter>
+    </ClInclude>
+    <ClInclude Include="shader.h">
+      <Filter>headers</Filter>
+    </ClInclude>
+    <ClInclude Include="model.h">
+      <Filter>headers</Filter>
+    </ClInclude>
+    <ClInclude Include="Mesh.h">
+      <Filter>headers</Filter>
+    </ClInclude>
+    <ClInclude Include="Camera.h">
+      <Filter>headers</Filter>
+    </ClInclude>
+    <ClInclude Include="gameObject.h">
+      <Filter>headers</Filter>
+    </ClInclude>
+    <ClInclude Include="Light.h">
+      <Filter>headers</Filter>
+    </ClInclude>
+    <ClInclude Include="Player.h">
+      <Filter>headers</Filter>
+    </ClInclude>
+    <ClInclude Include="Transform.h">
+      <Filter>headers</Filter>
+    </ClInclude>
+    <ClInclude Include="Material.h">
+      <Filter>headers</Filter>
+    </ClInclude>
+    <ClInclude Include="Physics.h">
+      <Filter>headers</Filter>
+    </ClInclude>
+    <ClInclude Include="PhysicsEngine.h">
+      <Filter>headers</Filter>
+    </ClInclude>
+    <ClInclude Include="PostProcessing.h">
+      <Filter>headers</Filter>
+    </ClInclude>
+    <ClInclude Include="PlayerController.h">
+      <Filter>headers</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="textureFrag.glsl">
+      <Filter>shaders</Filter>
+    </None>
+    <None Include="textureVert.glsl">
+      <Filter>shaders</Filter>
+    </None>
+    <None Include="cube.nff" />
+    <None Include="lightingFrag.glsl">
+      <Filter>shaders</Filter>
+    </None>
+    <None Include="lightingVert.glsl">
+      <Filter>shaders</Filter>
+    </None>
+    <None Include="defaultFrag.glsl">
+      <Filter>shaders</Filter>
+    </None>
+    <None Include="defaultVert.glsl">
+      <Filter>shaders</Filter>
+    </None>
+    <None Include="passThroughVert.glsl">
+      <Filter>shaders</Filter>
+    </None>
+    <None Include="postTextureFrag.glsl">
+      <Filter>shaders</Filter>
+    </None>
+    <None Include="postBlackAndWhiteFrag.glsl">
+      <Filter>shaders</Filter>
+    </None>
+    <None Include="postCellNotCell.glsl">
+      <Filter>shaders</Filter>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="headers">
+      <UniqueIdentifier>{774f6d45-97f1-4ed0-8442-8395dfce5b0e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="source">
+      <UniqueIdentifier>{af00e0fd-322c-47bf-921f-17fe00a08253}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="shaders">
+      <UniqueIdentifier>{077c2236-5810-488b-9262-2c833adbeb20}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>
