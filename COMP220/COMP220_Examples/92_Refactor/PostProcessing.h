@@ -1,8 +1,6 @@
 #pragma once
 
 #include <GL\glew.h>
-//#include <SDL_opengl.h>
-//#include <SDL_image.h>
 #include "texture.h"
 
 class PostProcessing
@@ -10,7 +8,7 @@ class PostProcessing
 public:
 	PostProcessing();
 	~PostProcessing();
-
+	 
 	GLuint getPostProcessingProgramID() { return m_PostProcessingProgramID; }
 
 	void setPostProcessingProgramID(GLuint ID) { m_PostProcessingProgramID = ID; }
@@ -27,5 +25,6 @@ private:
 	GLuint m_ScreenVAO;
 	GLuint m_PostProcessingProgramID;
 	GLint m_Texture0Location;
+	GLfloat m_ScreenVertss[];
 };
 

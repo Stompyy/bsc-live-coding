@@ -41,7 +41,7 @@ void main()
 	// Model View Projection Matrix 
 	mat4 MVPMatrix = projectionMatrix * viewMatrix * modelMatrix;
 
-	vec4 worldNormals = normalize(modelMatrix * vec4(vertexNormals, 0.0f));
+	vec4 worldNormals = normalize(modelMatrix * vec4(vertexNormals, 1.0f));
 
 	// World position of vertex
 	vec4 worldPosition = modelMatrix * vec4(vertexPosition, 1.0f);

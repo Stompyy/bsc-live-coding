@@ -175,6 +175,7 @@ copy ..\..\..\Libraries\assimp\bin\assimp-vc140-mt.dll "$(Outdir)\assimp-vc140-m
     <None Include="cube.nff" />
     <None Include="defaultFrag.glsl" />
     <None Include="lightingFrag.glsl" />
+    <None Include="lightingFragTank.glsl" />
     <None Include="lightingVert.glsl" />
     <None Include="passThroughVert.glsl" />
     <None Include="postBlackAndWhiteFrag.glsl" />

@@ -127,30 +127,54 @@ int main(int argc, char* args[])
 
 	// Create an empty vector of GameObjects to store, all GameObjects within the scene, inside
 	std::vector<GameObject*> gameObjectList;
-/*
-	std::map<std::string, Model> modelMap{
-		{"tank", Model(loadMeshFromFile("tank.FBX", std::vector<Mesh*>&meshes), loadDiffuseMap("tankColour.png"))},
-		{"trex", Model(loadMeshFromFile("Trex.FBX", }
-	};
-*/
+
+	// Create an empty texture map. Aim to only load in each texture once, but able to reuse.
+	std::map<std::string, GLuint> textureMap;
+	// Needed?
+	textureMap.clear();
+
+	std::vector<std::string> texturesToLoad = { "TrexColour.jpg", "tankColour.png", "grass.png" };
+	
+	for (std::string textureName : texturesToLoad)
+	{
+		if (!textureMap[textureName])
+		{
+			// Error checking here? It's not catching misspelled filenames?
+			GLuint textureID = loadTextureFromFile(textureName);
+			textureMap[textureName] = textureID;
+		}
+	}
+
+	std::map<std::string, std::vector<Mesh*>> meshMap;
+
+	std::vector<std::string> meshesToLoad = { "Trex.FBX", "tank.FBX", "floor.FBX" };
+
+	for (std::string meshName : meshesToLoad)
+	{
+		std::vector<Mesh*> meshes = loadMeshFromFile(meshName);
+		meshMap[meshName] = meshes;
+	}
+
+
+
 	// Camera initialisation. To be replaced with a camera class within a player class
 	Camera* camera = new Camera();
-	camera->setPosition(0.0f, 2.0f, -15.0f);
+	camera->setPosition(0.0f, 0.5f, 15.0f);
 	camera->setTargetPosition(0.0f, 0.0f, 0.0f);
 	camera->setProjectionMatrix(90.0f, (1000 / 800), 0.1f, 1000.0f);
 
 	// Light initialisation
 	Light* light = new Light();
-	light->setDirection(0.0f, 0.0f, -1.0f);
+	light->setDirection(0.2f, -1.0f, 0.2f);
 	light->colour->setAmbientColour(1.0f, 1.0f, 1.0f);
 	light->colour->setDiffuseColour(1.0f, 1.0f, 1.0f);
-	light->colour->setSpecularColour(1.0f, 1.0f, 1.0f);
+	light->colour->setSpecularColour(0.0f, 1.0f, 0.0f);
 
 	// Create all gameObjects and add to the GameObjects vector, and the physics simulation.
 	// Will collapse all down to a local function once finished storing the Models in a map
 	GameObject* ground = new GameObject();
 	ground->loadMesh("floor.FBX");
-	ground->loadDiffuseMap("grass.png");
+	ground->setDiffuseMap(textureMap["grass.png"]);
 	ground->loadShaderProgram("textureVert.glsl", "textureFrag.glsl");
 	ground->transform->setPosition(0.0f, -5.0f, 0.0f);
 	ground->physics->setCollisionShapeSize(50.0f, 1.0f, 50.0f);
@@ -163,9 +187,9 @@ int main(int argc, char* args[])
 
 	GameObject* trex = new GameObject();
 	trex->loadMesh("Trex.FBX");
-	trex->loadDiffuseMap("TrexColour.jpg");
-	trex->loadShaderProgram("textureVert.glsl", "textureFrag.glsl");
-	trex->transform->setPosition(0.0f, 20.0f, 0.0f);
+	trex->setDiffuseMap(textureMap["TrexColour.jpg"]);
+	trex->loadShaderProgram("lightingVert.glsl", "lightingFrag.glsl");
+	trex->transform->setPosition(0.0f, 200.0f, 0.0f);
 	trex->physics->setCollisionShapeSize(0.0f, 0.0f, 0.0f);
 	trex->physics->setMass(1.0f);
 	trex->UpdateTransformOrigin();
@@ -175,8 +199,8 @@ int main(int argc, char* args[])
 
 	GameObject* tank = new GameObject();
 	tank->loadMesh("tank.FBX");
-	tank->loadDiffuseMap("tankColour.png");
-	tank->loadShaderProgram("textureVert.glsl", "textureFrag.glsl");
+	tank->setDiffuseMap(textureMap["tankColour.png"]);
+	tank->loadShaderProgram("lightingVert.glsl", "lightingFragTank.glsl");
 	tank->transform->setPosition(15.0f, 0.0f, 15.0f);
 	tank->physics->setCollisionShapeSize(0.0f, 0.0f, 0.0f);
 	tank->physics->setMass(0.1f);
@@ -184,10 +208,22 @@ int main(int argc, char* args[])
 	tank->physics->updateMotionState();
 	gameObjectList.push_back(tank);
 	dynamicsWorld->addRigidBody(tank->physics->getRigidBody());
+
+	GameObject* tank2 = new GameObject();
+	tank2->loadMesh("tank.FBX");
+	tank2->setDiffuseMap(textureMap["tankColour.png"]);
+	tank2->loadShaderProgram("textureVert.glsl", "textureFrag.glsl");
+	tank2->transform->setPosition(-15.0f, 0.0f, -15.0f);
+	tank2->physics->setCollisionShapeSize(0.0f, 0.0f, 0.0f);
+	tank2->physics->setMass(0.1f);
+	tank2->UpdateTransformOrigin();
+	tank2->physics->updateMotionState();
+	gameObjectList.push_back(tank2);
+	dynamicsWorld->addRigidBody(tank2->physics->getRigidBody());
 /*
 	Player* player = new Player();
 	player->loadMesh("tank.FBX");
-	player->loadDiffuseMap("tankColour.png");
+	player->setDiffuseMap(textureMap["tankColour.png"]); // 
 	player->loadShaderProgram("textureVert.glsl", "textureFrag.glsl");
 	player->transform->setPosition(0.0f, 0.0f, -15.0f);
 	player->physics->setCollisionShapeSize(0.1f, 0.1f, 0.1f);
@@ -210,6 +246,8 @@ int main(int argc, char* args[])
 	glEnable(GL_DEPTH_TEST);
 	//glDepthFunc(GL_LESS);
 	//glEnable(GL_CULL_FACE);
+
+	float tankRotation = 0.0f;
 
 	// Event loop, we will loop until running is set to false, usually if escape has been pressed or window is closed
 	bool running = true;
@@ -272,8 +310,11 @@ int main(int argc, char* args[])
 				case SDLK_q:
 					// Add force
 					// WIP
+					dynamicsWorld->getDynamicsWorld()->clearForces();
 					for (btRigidBody* rigidBody : dynamicsWorld->getAllRigidBodies()) {
-						rigidBody->applyCentralForce(btVector3(-100000.0f, -100000.0f, -100000.0f));
+						rigidBody->applyForce(btVector3(0.0f, 1000000000.0f, 0.0f), btVector3(0.0f, 0.0f, 0.0f));
+						rigidBody->applyCentralForce(btVector3(0.0f, 100000000.0f, 0.0f));
+						rigidBody->applyImpulse(btVector3(0.0f, 1000000000.0f, 0.0f), btVector3(0.0f, 0.0f, 0.0f));
 					}
 					break;
 
@@ -297,6 +338,8 @@ int main(int argc, char* args[])
 		}
 
 		//Input, logic with input, physics, graphics.
+		tankRotation+=0.001f;
+		tank->transform->setRotation(tank->transform->getRotation().x, tankRotation, tank->transform->getRotation().z);
 
 		// Advance the physics simulation
 		dynamicsWorld->getDynamicsWorld()->stepSimulation(1.0f / 60.0f, 10);
@@ -304,18 +347,22 @@ int main(int argc, char* args[])
 		// Apply physics simulation to every GameObject
 		for (GameObject* object : gameObjectList)
 		{
-			object->physics->getCollisionShape()->calculateLocalInertia(object->physics->getMass(), object->physics->getInertia());
+			//object->physics->getCollisionShape()->calculateLocalInertia(object->physics->getMass(), object->physics->getInertia());
+			//object->transform->setPosition(object->physics->getTransform().getOrigin());
+			//object->UpdateTransformOrigin();
 			object->physics->setTransform(object->physics->getRigidBody()->getWorldTransform());
 
 			btVector3 objectOrigin = object->physics->getTransform().getOrigin();
 			btQuaternion objectRotation = object->physics->getTransform().getRotation();
 			object->transform->setPosition(vec3(objectOrigin.getX(), objectOrigin.getY(), objectOrigin.getZ()));
-			//object->transform->setRotation(vec3(btQuatToGlmVec3(objectRotation)));
+//Wrong->			//object->transform->setRotation(vec3(btQuatToGlmVec3(objectRotation)));
 
 			// Update the model matrix (TRS!)
 			object->update();
 		}
 
+		
+		 
 		//tank->transform->setPosition(camera->getPosition());
 
 		postProcessing->bindFrameBuffer();

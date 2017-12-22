@@ -16,7 +16,7 @@ float roundColour(float x)
 
 vec3 roundVec3Colour(vec3 colour)
 {
-    float roundAmount = 40.0f;
+    float roundAmount = 80.0f;
     float r = float(int(colour.r * 255.0f/roundAmount) * roundAmount/255.0f);
     float g = float(int(colour.g * 255.0f/roundAmount) * roundAmount/255.0f);
     float b = float(int(colour.b * 255.0f/roundAmount) * roundAmount/255.0f);

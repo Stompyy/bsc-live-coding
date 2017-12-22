@@ -18,7 +18,7 @@ Camera::Camera()
 	m_MovementSpeed = 0.2f;
 
 	// Starts off at 90 degrees?
-	m_TurnX = 90.0f;
+	m_TurnX = -90.0f;
 	m_TurnY = 0.0f;
 }
 
@@ -28,6 +28,7 @@ Camera::~Camera()
 
 void Camera::moveForward(float value)
 {
+	// Move the camera position and the target position towards the target position
 	m_DeltaPosition = normalize(m_TargetPosition - m_Position) * m_MovementSpeed * value;
 	m_Position += vec3(m_DeltaPosition.x, 0.0f, m_DeltaPosition.z);
 	m_TargetPosition += vec3(m_DeltaPosition.x, 0.0f, m_DeltaPosition.z);
@@ -35,6 +36,7 @@ void Camera::moveForward(float value)
 
 void Camera::moveRight(float value)
 {
+	// Move the camera position and the target position at a right angle to the target position
 	m_DeltaPosition = cross((normalize(m_TargetPosition - m_Position)), m_Up) * m_MovementSpeed * value;
 	m_Position += vec3(m_DeltaPosition.x, 0.0f, m_DeltaPosition.z);
 	m_TargetPosition += vec3(m_DeltaPosition.x, 0.0f, m_DeltaPosition.z);
@@ -50,12 +52,15 @@ void Camera::turn(float mouseX, float mouseY)
 	if (m_TurnY > 0.95f) m_TurnY = 0.95f;
 	else if (m_TurnY < -0.95f)	m_TurnY = -0.95f;
 
-	// Move camera lookatpoint to a trigonometry calculated position, CameraDistance far away, relative to the camera position CameraDistance *
+	// Move camera lookatpoint to a trigonometry calculated position
 	m_TargetPosition = m_Position + vec3(cos(m_TurnX), m_TurnY, sin(m_TurnX));
 }
 
 void Camera::update()
 {
+	// Update the camera position to be at a third person view
 	m_CameraPosition = m_Position - m_CameraBoomLength * normalize(m_TargetPosition - m_Position);
+
+	// Update view matrix
 	m_ViewMatrix = lookAt(m_CameraPosition, m_TargetPosition, m_Up);
 }

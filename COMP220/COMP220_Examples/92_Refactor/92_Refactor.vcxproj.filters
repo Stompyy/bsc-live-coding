@@ -129,6 +129,9 @@
     <None Include="postCellNotCell.glsl">
       <Filter>shaders</Filter>
     </None>
+    <None Include="lightingFragTank.glsl">
+      <Filter>shaders</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="headers">

@@ -30,7 +30,10 @@ public:
 	void UpdateTransformOrigin() { physics->getTransform().setOrigin(btVector3(transform->getPosition().x, transform->getPosition().y, transform->getPosition().z)); }
 
 	void loadMesh(const std::string& filename);
-	void loadDiffuseMap(const std::string& filename);
+	void setMesh(const std::vector<Mesh*> meshes) { m_Meshes = meshes; }
+
+	//void loadDiffuseMap(const std::string& filename);
+	void setDiffuseMap(const GLuint textureID) { m_DiffuseMapID = textureID; }
 	void loadShaderProgram(const std::string& vertexShaderFilename, const std::string& fragmentShaderFilename);
 	void destroy();
 	

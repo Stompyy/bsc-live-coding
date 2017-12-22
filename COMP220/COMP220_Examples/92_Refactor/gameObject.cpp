@@ -27,13 +27,15 @@ GameObject::~GameObject()
 void GameObject::loadMesh(const std::string& filename)
 {
 	// Include skeleton stuff here too
-	loadMeshFromFile(filename, m_Meshes);
+	oldLoadMeshFromFile(filename, m_Meshes);
 }
 
+/*
 void GameObject::loadDiffuseMap(const std::string & filename)
 {
 	m_DiffuseMapID = loadTextureFromFile(filename);
 }
+*/
 
 void GameObject::loadShaderProgram(const std::string& vertexShaderFilename, const std::string& fragmentShaderFilename)
 {
@@ -66,6 +68,19 @@ void GameObject::destroy()
 
 void GameObject::update()
 {
+
+	if (physics->getRigidBody() != nullptr)
+	{
+		transform->setPosition(vec3(physics->getTransform().getOrigin().getX(), physics->getTransform().getOrigin().getY(), physics->getTransform().getOrigin().getZ()));
+	}
+
+	//if (Rigidbody)
+	//{
+	//	get pos rb
+	//		update transform pos
+	//}
+
+
 	// Update the model matrix
 	glm::mat4 translationMatrix = glm::translate(transform->getPosition());
 	glm::mat4 scaleMatrix = glm::scale(transform->getScale());
@@ -76,6 +91,8 @@ void GameObject::update()
 
 	// TRS
 	m_ModelMatrix = translationMatrix * rotationMatrix * scaleMatrix;
+
+	
 
 }
 

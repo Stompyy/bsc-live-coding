@@ -13,6 +13,7 @@
 #include "Mesh.h"
 
 //VBO is Vertex Buffer Object EBO is Element Buffer Object
-bool loadModelFromFile(const std::string& filename, GLuint VBO, GLuint EBO, unsigned int& numberOfVerts, unsigned int& numberOfIndices);
+//bool loadModelFromFile(const std::string& filename, GLuint VBO, GLuint EBO, unsigned int& numberOfVerts, unsigned int& numberOfIndices);
 
-bool loadMeshFromFile(const std::string& filename, std::vector<Mesh*>& meshes);	// Memory address of the vector of pointers?!
+bool oldLoadMeshFromFile(const std::string& filename, std::vector<Mesh*>& meshes);	// Memory address of the vector of pointers?!
+std::vector<Mesh*>& loadMeshFromFile(const std::string& filename);
