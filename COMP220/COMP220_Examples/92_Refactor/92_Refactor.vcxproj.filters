@@ -46,6 +46,7 @@
     <ClCompile Include="PlayerController.cpp">
       <Filter>source</Filter>
     </ClCompile>
+    <ClCompile Include="textureLoader.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="main.h">
@@ -96,6 +97,7 @@
     <ClInclude Include="PlayerController.h">
       <Filter>headers</Filter>
     </ClInclude>
+    <ClInclude Include="textureLoader.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="textureFrag.glsl">

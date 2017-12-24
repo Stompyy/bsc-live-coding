@@ -128,22 +128,9 @@ int main(int argc, char* args[])
 	// Create an empty vector of GameObjects to store, all GameObjects within the scene, inside
 	std::vector<GameObject*> gameObjectList;
 
-	// Create an empty texture map. Aim to only load in each texture once, but able to reuse.
-	std::map<std::string, GLuint> textureMap;
-	// Needed?
-	textureMap.clear();
-
 	std::vector<std::string> texturesToLoad = { "TrexColour.jpg", "tankColour.png", "grass.png" };
-	
-	for (std::string textureName : texturesToLoad)
-	{
-		if (!textureMap[textureName])
-		{
-			// Error checking here? It's not catching misspelled filenames?
-			GLuint textureID = loadTextureFromFile(textureName);
-			textureMap[textureName] = textureID;
-		}
-	}
+	TextureLoader* textureLoader = new TextureLoader(texturesToLoad);
+
 
 	std::map<std::string, std::vector<Mesh*>> meshMap;
 
@@ -173,7 +160,7 @@ int main(int argc, char* args[])
 	// Will collapse all down to a local function once finished storing the Models in a map
 	GameObject* ground = new GameObject();
 	ground->setMesh(meshMap["floor.FBX"]);
-	ground->setDiffuseMap(textureMap["grass.png"]);
+	ground->setDiffuseMap(textureLoader->getTextureID("grass.png"));
 	ground->loadShaderProgram("textureVert.glsl", "textureFrag.glsl");
 	ground->transform->setPosition(0.0f, -5.0f, 0.0f);
 	ground->physics->setCollisionShapeSize(50.0f, 1.0f, 50.0f);
@@ -186,7 +173,7 @@ int main(int argc, char* args[])
 
 	GameObject* trex = new GameObject();
 	trex->setMesh(meshMap["Trex.FBX"]);
-	trex->setDiffuseMap(textureMap["TrexColour.jpg"]);
+	trex->setDiffuseMap(textureLoader->getTextureID("TrexColour.jpg"));
 	trex->loadShaderProgram("lightingVert.glsl", "lightingFrag.glsl");
 	trex->transform->setPosition(0.0f, 200.0f, 0.0f);
 	trex->physics->setCollisionShapeSize(0.0f, 0.0f, 0.0f);
@@ -198,7 +185,7 @@ int main(int argc, char* args[])
 
 	GameObject* tank = new GameObject();
 	tank->setMesh(meshMap["tank.FBX"]);
-	tank->setDiffuseMap(textureMap["tankColour.png"]);
+	tank->setDiffuseMap(textureLoader->getTextureID("tankColour.png"));
 	tank->loadShaderProgram("lightingVert.glsl", "lightingFragTank.glsl");
 	tank->transform->setPosition(15.0f, 0.0f, 15.0f);
 	tank->physics->setCollisionShapeSize(0.0f, 0.0f, 0.0f);
@@ -210,7 +197,7 @@ int main(int argc, char* args[])
 
 	GameObject* tank2 = new GameObject();
 	tank2->setMesh(meshMap["tank.FBX"]);
-	tank2->setDiffuseMap(textureMap["tankColour.png"]);
+	tank2->setDiffuseMap(textureLoader->getTextureID("tankColour.png"));
 	tank2->loadShaderProgram("textureVert.glsl", "textureFrag.glsl");
 	tank2->transform->setPosition(-15.0f, 0.0f, -15.0f);
 	tank2->physics->setCollisionShapeSize(0.0f, 0.0f, 0.0f);
