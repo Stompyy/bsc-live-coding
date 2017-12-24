@@ -235,7 +235,7 @@ bool oldLoadMeshFromFile(const std::string& filename, std::vector<Mesh*>& meshes
 	return true;
 }
 
-std::vector<Mesh*>& loadMeshFromFile(const std::string& filename)
+std::vector<Mesh*> loadMeshFromFile(const std::string& filename)
 {
 	std::vector<Mesh*> meshes = {};
 	Assimp::Importer importer;

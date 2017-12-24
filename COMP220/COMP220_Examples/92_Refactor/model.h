@@ -16,4 +16,4 @@
 //bool loadModelFromFile(const std::string& filename, GLuint VBO, GLuint EBO, unsigned int& numberOfVerts, unsigned int& numberOfIndices);
 
 bool oldLoadMeshFromFile(const std::string& filename, std::vector<Mesh*>& meshes);	// Memory address of the vector of pointers?!
-std::vector<Mesh*>& loadMeshFromFile(const std::string& filename);
+std::vector<Mesh*> loadMeshFromFile(const std::string& filename);

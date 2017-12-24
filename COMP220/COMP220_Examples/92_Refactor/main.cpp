@@ -151,8 +151,7 @@ int main(int argc, char* args[])
 
 	for (std::string meshName : meshesToLoad)
 	{
-		std::vector<Mesh*> meshes = loadMeshFromFile(meshName);
-		meshMap[meshName] = meshes;
+		meshMap[meshName] = loadMeshFromFile(meshName);
 	}
 
 
@@ -173,7 +172,7 @@ int main(int argc, char* args[])
 	// Create all gameObjects and add to the GameObjects vector, and the physics simulation.
 	// Will collapse all down to a local function once finished storing the Models in a map
 	GameObject* ground = new GameObject();
-	ground->loadMesh("floor.FBX");
+	ground->setMesh(meshMap["floor.FBX"]);
 	ground->setDiffuseMap(textureMap["grass.png"]);
 	ground->loadShaderProgram("textureVert.glsl", "textureFrag.glsl");
 	ground->transform->setPosition(0.0f, -5.0f, 0.0f);
@@ -186,7 +185,7 @@ int main(int argc, char* args[])
 	dynamicsWorld->addRigidBody(ground->physics->getRigidBody());
 
 	GameObject* trex = new GameObject();
-	trex->loadMesh("Trex.FBX");
+	trex->setMesh(meshMap["Trex.FBX"]);
 	trex->setDiffuseMap(textureMap["TrexColour.jpg"]);
 	trex->loadShaderProgram("lightingVert.glsl", "lightingFrag.glsl");
 	trex->transform->setPosition(0.0f, 200.0f, 0.0f);
@@ -198,7 +197,7 @@ int main(int argc, char* args[])
 	dynamicsWorld->addRigidBody(trex->physics->getRigidBody());
 
 	GameObject* tank = new GameObject();
-	tank->loadMesh("tank.FBX");
+	tank->setMesh(meshMap["tank.FBX"]);
 	tank->setDiffuseMap(textureMap["tankColour.png"]);
 	tank->loadShaderProgram("lightingVert.glsl", "lightingFragTank.glsl");
 	tank->transform->setPosition(15.0f, 0.0f, 15.0f);
@@ -210,7 +209,7 @@ int main(int argc, char* args[])
 	dynamicsWorld->addRigidBody(tank->physics->getRigidBody());
 
 	GameObject* tank2 = new GameObject();
-	tank2->loadMesh("tank.FBX");
+	tank2->setMesh(meshMap["tank.FBX"]);
 	tank2->setDiffuseMap(textureMap["tankColour.png"]);
 	tank2->loadShaderProgram("textureVert.glsl", "textureFrag.glsl");
 	tank2->transform->setPosition(-15.0f, 0.0f, -15.0f);
@@ -222,7 +221,7 @@ int main(int argc, char* args[])
 	dynamicsWorld->addRigidBody(tank2->physics->getRigidBody());
 /*
 	Player* player = new Player();
-	player->loadMesh("tank.FBX");
+	player->setMesh(meshMap["tank.FBX"]);
 	player->setDiffuseMap(textureMap["tankColour.png"]); // 
 	player->loadShaderProgram("textureVert.glsl", "textureFrag.glsl");
 	player->transform->setPosition(0.0f, 0.0f, -15.0f);
@@ -422,6 +421,8 @@ int main(int argc, char* args[])
 			iter++;
 		}
 	}
+	// Call destroy() functions instead of delete
+	postProcessing->destroy();
 	delete postProcessing;
 	delete dynamicsWorld;
 	close(SDL_window, GL_Context);

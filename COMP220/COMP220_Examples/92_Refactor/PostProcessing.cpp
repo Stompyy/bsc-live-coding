@@ -42,6 +42,11 @@ PostProcessing::PostProcessing()
 
 PostProcessing::~PostProcessing()
 {
+	// Call destroy here too just in case
+}
+
+void PostProcessing::destroy()
+{
 	glDeleteProgram(m_PostProcessingProgramID);
 	glDeleteVertexArrays(1, &m_ScreenVAO);
 	glDeleteBuffers(1, &m_ScreenQuadVBOID);

@@ -16,6 +16,7 @@ public:
 
 	void bindFrameBuffer();
 	void render();
+	void destroy();
 
 private:
 	GLuint m_ColourBufferID;
