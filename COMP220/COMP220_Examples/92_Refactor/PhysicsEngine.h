@@ -14,6 +14,8 @@ public:
 
 	std::vector<btRigidBody*> getAllRigidBodies() { return m_RigidBodies; }
 
+	void destroy();
+
 private:
 	btDefaultCollisionConfiguration* m_CollisionConfiguration;
 	btCollisionDispatcher* m_Dispatcher;

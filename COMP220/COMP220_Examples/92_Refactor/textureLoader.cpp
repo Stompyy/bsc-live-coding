@@ -56,7 +56,7 @@ TextureLoader::TextureLoader(std::vector<std::string> textureNamesToLoad)
 	for (std::string textureName : textureNamesToLoad)
 	{
 		// Error checking here? It's not catching misspelled filenames?
-		m_TextureMap[textureName] = loadTextureFromFilename(textureName); // loadTextureFromFile(textureName);
+		m_TextureMap[textureName] = loadTextureFromFilename(textureName);
 	}
 }
 

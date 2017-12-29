@@ -46,7 +46,10 @@
     <ClCompile Include="PlayerController.cpp">
       <Filter>source</Filter>
     </ClCompile>
-    <ClCompile Include="textureLoader.cpp" />
+    <ClCompile Include="textureLoader.cpp">
+      <Filter>source</Filter>
+    </ClCompile>
+    <ClCompile Include="MeshLoader.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="main.h">
@@ -97,7 +100,10 @@
     <ClInclude Include="PlayerController.h">
       <Filter>headers</Filter>
     </ClInclude>
-    <ClInclude Include="textureLoader.h" />
+    <ClInclude Include="textureLoader.h">
+      <Filter>headers</Filter>
+    </ClInclude>
+    <ClInclude Include="MeshLoader.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="textureFrag.glsl">

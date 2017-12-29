@@ -1,3 +1,4 @@
+
 //main.cpp - defines the entry point of the application
 
 #include "main.h"
@@ -11,11 +12,13 @@ struct Model {
 	GLuint* texture;
 };
 
-vec3 SphereCoordinates(float radius, float angle)
-// Work in progress function to calcuate all the vertices of a sphere
-{
-	return vec3(0.0f) + radius * vec3(cos(angle), tan(angle), sin(angle));
-}
+struct SceneInfo {
+	SceneInfo(MeshLoader* meshLoader, TextureLoader* textureLoader, std::vector<GameObject*> gameObjectList, PhysicsEngine* dynamicsWorld) : meshLoader(meshLoader), textureLoader(textureLoader), gameObjectList(gameObjectList), dynamicsWorld(dynamicsWorld) {}
+	MeshLoader* meshLoader;
+	TextureLoader* textureLoader;
+	std::vector<GameObject*> gameObjectList;
+	PhysicsEngine* dynamicsWorld;
+};
 
 vec3 btQuatToGlmVec3(const btQuaternion& q)
 // https://en.wikipedia.org/wiki/Conversion_between_quaternions_and_Euler_angles
@@ -116,7 +119,7 @@ int main(int argc, char* args[])
 	SDL_Window* SDL_window = SDL_Init();
 	SDL_GLContext GL_Context = GL_Init(SDL_window);
 
-	if ((SDL_window == nullptr) | (GL_Context == nullptr))
+	if ((SDL_window == nullptr) | (GL_Context == nullptr))  // GL_Context is not a pointer?
 	{
 		SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, SDL_GetError(), "Initialisation failed", NULL);
 		close(SDL_window, GL_Context);
@@ -125,23 +128,17 @@ int main(int argc, char* args[])
 	// Create a physics simulation using bullet
 	PhysicsEngine* dynamicsWorld = new PhysicsEngine();
 
+	// Load in all needed textures
+	TextureLoader* textureLoader = new TextureLoader(std::vector<std::string>{ "TrexColour.jpg", "tankColour.png", "grass.png" });
+
+	// Load in all needed meshes
+	MeshLoader* meshLoader = new MeshLoader(std::vector<std::string>{ "Trex.FBX", "tank.FBX", "floor.FBX" });
+	
 	// Create an empty vector of GameObjects to store, all GameObjects within the scene, inside
 	std::vector<GameObject*> gameObjectList;
-
-	std::vector<std::string> texturesToLoad = { "TrexColour.jpg", "tankColour.png", "grass.png" };
-	TextureLoader* textureLoader = new TextureLoader(texturesToLoad);
-
-
-	std::map<std::string, std::vector<Mesh*>> meshMap;
-
-	std::vector<std::string> meshesToLoad = { "Trex.FBX", "tank.FBX", "floor.FBX" };
-
-	for (std::string meshName : meshesToLoad)
-	{
-		meshMap[meshName] = loadMeshFromFile(meshName);
-	}
-
-
+	
+	// Can delete this soon. It's quite a nice wrapper so will leave for a bit
+	SceneInfo* sceneInfo = new SceneInfo(meshLoader, textureLoader, gameObjectList, dynamicsWorld); 
 
 	// Camera initialisation. To be replaced with a camera class within a player class
 	Camera* camera = new Camera();
@@ -156,56 +153,80 @@ int main(int argc, char* args[])
 	light->colour->setDiffuseColour(1.0f, 1.0f, 1.0f);
 	light->colour->setSpecularColour(0.0f, 1.0f, 0.0f);
 
+
 	// Create all gameObjects and add to the GameObjects vector, and the physics simulation.
-	// Will collapse all down to a local function once finished storing the Models in a map
 	GameObject* ground = new GameObject();
-	ground->setMesh(meshMap["floor.FBX"]);
-	ground->setDiffuseMap(textureLoader->getTextureID("grass.png"));
-	ground->loadShaderProgram("textureVert.glsl", "textureFrag.glsl");
-	ground->transform->setPosition(0.0f, -5.0f, 0.0f);
-	ground->physics->setCollisionShapeSize(50.0f, 1.0f, 50.0f);
-	ground->physics->getTransform().setIdentity();
-	ground->UpdateTransformOrigin();
-	ground->physics->setMass(0.0f);
-	ground->physics->updateMotionState();
+	ground->init(
+		meshLoader->getMeshes("floor.FBX"),			// meshes
+		textureLoader->getTextureID("grass.png"),	// texture
+		"textureVert.glsl", "textureFrag.glsl",		// shaders
+		vec3(0.0f, -5.0f, 0.0f),					// initial position
+		0.0f,										// mass
+		btVector3(50.0f, 1.0f, 50.0f)				// collision size
+	);
 	gameObjectList.push_back(ground);
 	dynamicsWorld->addRigidBody(ground->physics->getRigidBody());
 
 	GameObject* trex = new GameObject();
-	trex->setMesh(meshMap["Trex.FBX"]);
-	trex->setDiffuseMap(textureLoader->getTextureID("TrexColour.jpg"));
-	trex->loadShaderProgram("lightingVert.glsl", "lightingFrag.glsl");
-	trex->transform->setPosition(0.0f, 200.0f, 0.0f);
-	trex->physics->setCollisionShapeSize(0.0f, 0.0f, 0.0f);
-	trex->physics->setMass(1.0f);
-	trex->UpdateTransformOrigin();
-	trex->physics->updateMotionState();
+	trex->init(
+		meshLoader->getMeshes("Trex.FBX"),
+		textureLoader->getTextureID("TrexColour.jpg"),
+		"lightingVert.glsl", "lightingFrag.glsl",
+		vec3(0.0f, 200.0f, 0.0f),
+		1.0f,
+		btVector3(0.0f, 0.0f, 0.0f)
+	);
 	gameObjectList.push_back(trex);
 	dynamicsWorld->addRigidBody(trex->physics->getRigidBody());
 
+	GameObject* tank3 = new GameObject();
+	tank3->init(
+		meshLoader->getMeshes("tank.FBX"),
+		textureLoader->getTextureID("tankColour.png"),
+		"lightingVert.glsl", "lightingFragTank.glsl",
+		vec3(-15.0f, 0.0f, 15.0f),
+		1.0f,
+		btVector3(0.0f, 0.0f, 0.0f)
+	);
+	gameObjectList.push_back(tank3);
+	dynamicsWorld->addRigidBody(tank3->physics->getRigidBody());
+
+	GameObject* tank4 = new GameObject();
+	tank4->init(
+		meshLoader->getMeshes("tank.FBX"),
+		textureLoader->getTextureID("tankColour.png"),
+		"lightingVert.glsl", "lightingFragTank.glsl",
+		vec3(15.0f, 0.0f, -15.0f),
+		1.0f,
+		btVector3(0.0f, 0.0f, 0.0f)
+	);
+	gameObjectList.push_back(tank4);
+	dynamicsWorld->addRigidBody(tank4->physics->getRigidBody());
+
 	GameObject* tank = new GameObject();
-	tank->setMesh(meshMap["tank.FBX"]);
-	tank->setDiffuseMap(textureLoader->getTextureID("tankColour.png"));
-	tank->loadShaderProgram("lightingVert.glsl", "lightingFragTank.glsl");
-	tank->transform->setPosition(15.0f, 0.0f, 15.0f);
-	tank->physics->setCollisionShapeSize(0.0f, 0.0f, 0.0f);
-	tank->physics->setMass(0.1f);
-	tank->UpdateTransformOrigin();
-	tank->physics->updateMotionState();
+	tank->init(
+		meshLoader->getMeshes("tank.FBX"),
+		textureLoader->getTextureID("tankColour.png"),
+		"lightingVert.glsl", "lightingFragTank.glsl",
+		vec3(15.0f, 0.0f, 15.0f),
+		1.0f,
+		btVector3(0.0f, 0.0f, 0.0f)
+	);
 	gameObjectList.push_back(tank);
 	dynamicsWorld->addRigidBody(tank->physics->getRigidBody());
 
 	GameObject* tank2 = new GameObject();
-	tank2->setMesh(meshMap["tank.FBX"]);
-	tank2->setDiffuseMap(textureLoader->getTextureID("tankColour.png"));
-	tank2->loadShaderProgram("textureVert.glsl", "textureFrag.glsl");
-	tank2->transform->setPosition(-15.0f, 0.0f, -15.0f);
-	tank2->physics->setCollisionShapeSize(0.0f, 0.0f, 0.0f);
-	tank2->physics->setMass(0.1f);
-	tank2->UpdateTransformOrigin();
-	tank2->physics->updateMotionState();
+	tank2->init(
+		meshLoader->getMeshes("tank.FBX"),
+		textureLoader->getTextureID("tankColour.png"),
+		"lightingVert.glsl", "lightingFragTank.glsl",
+		vec3(-15.0f, 0.0f, -15.0f),
+		1.0f,
+		btVector3(0.0f, 0.0f, 0.0f)
+	);
 	gameObjectList.push_back(tank2);
 	dynamicsWorld->addRigidBody(tank2->physics->getRigidBody());
+
 /*
 	Player* player = new Player();
 	player->setMesh(meshMap["tank.FBX"]);
@@ -383,6 +404,7 @@ int main(int argc, char* args[])
 
 			object->render();
 		}
+
 		camera->update();
 //		player->getCamera()->update();
 
@@ -411,7 +433,9 @@ int main(int argc, char* args[])
 	// Call destroy() functions instead of delete
 	postProcessing->destroy();
 	delete postProcessing;
+	dynamicsWorld->destroy();
 	delete dynamicsWorld;
+
 	close(SDL_window, GL_Context);
 	
 	return 0;

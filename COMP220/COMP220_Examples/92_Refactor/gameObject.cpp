@@ -24,6 +24,26 @@ GameObject::~GameObject()
 {
 }
 
+void GameObject::init(
+	const std::vector<Mesh*> meshes, 
+	const GLuint textureID, 
+	const std::string& vertexShaderFilename, 
+	const std::string& fragmentShaderFilename, 
+	const glm::vec3 initialPosition, 
+	const float mass,
+	const btVector3 collisionSize) 
+{
+	m_Meshes = meshes;
+	m_DiffuseMapID = textureID;
+	m_shaderProgramID = LoadShaders(vertexShaderFilename.c_str(), fragmentShaderFilename.c_str());
+	transform->setPosition(initialPosition);
+	physics->setMass(mass);
+	physics->setCollisionShapeSize(collisionSize);
+	physics->getTransform().setIdentity();
+	updateTransformOrigin();
+	physics->updateMotionState();
+}
+
 void GameObject::loadMesh(const std::string& filename)
 {
 	// Include skeleton stuff here too
@@ -60,7 +80,7 @@ void GameObject::destroy()
 			}
 			else
 			{
-				iter++;
+				iter++; 
 			}
 		}
 	}
@@ -126,14 +146,8 @@ void GameObject::preRender()
 
 void GameObject::render()
 {
-
 	for (Mesh* currentMesh : m_Meshes)
 	{
 		currentMesh->render();
-	}
-
-	//if (rigidbody != nullptr)
-	{
-
 	}
 }

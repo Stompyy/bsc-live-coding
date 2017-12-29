@@ -10,6 +10,7 @@ public:
 
 	void setTransform(const btTransform& newTransform) { m_Transform = newTransform; }
 	void setMass(const btScalar newMass) { m_Mass = newMass; }
+	void setCollisionShapeSize(const btVector3 collisionSize) { m_CollisionShape = new btBoxShape(collisionSize); }
 	void setCollisionShapeSize(const btScalar x, const btScalar y, const btScalar z) { m_CollisionShape = new btBoxShape(btVector3(x, y, z)); }
 	void setInertia(const btScalar x, const btScalar y, const btScalar z) { m_Inertia = btVector3(x, y, z); }
 

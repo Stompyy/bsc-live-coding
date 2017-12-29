@@ -20,6 +20,15 @@ public:
 	GameObject();
 	~GameObject();
 
+	void init(
+		const std::vector<Mesh*> meshes, 
+		const GLuint textureID, 
+		const std::string& vertexShaderFilename, 
+		const std::string& fragmentShaderFilename, 
+		const glm::vec3 initialPosition, 
+		const float mass,
+		const btVector3 collisionSize);
+
 	Transform* transform;
 	Material* material;
 	Physics* physics;
@@ -27,7 +36,7 @@ public:
 	glm::mat4& getModelMatrix() { return m_ModelMatrix; }
 
 	GLuint getShaderProgramID() { return m_shaderProgramID; }
-	void UpdateTransformOrigin() { physics->getTransform().setOrigin(btVector3(transform->getPosition().x, transform->getPosition().y, transform->getPosition().z)); }
+	void updateTransformOrigin() { physics->getTransform().setOrigin(btVector3(transform->getPosition().x, transform->getPosition().y, transform->getPosition().z)); }
 
 	void loadMesh(const std::string& filename);
 	void setMesh(const std::vector<Mesh*>& meshes) { m_Meshes = meshes; }

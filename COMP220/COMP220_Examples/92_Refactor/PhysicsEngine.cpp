@@ -25,6 +25,11 @@ PhysicsEngine::PhysicsEngine()
 
 PhysicsEngine::~PhysicsEngine()
 {
+	destroy();
+}
+
+void PhysicsEngine::destroy()
+{
 	for (btRigidBody* rigidBody : m_RigidBodies)
 	{
 		m_DynamicsWorld->removeRigidBody(rigidBody);
