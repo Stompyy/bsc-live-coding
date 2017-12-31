@@ -151,6 +151,7 @@ copy ..\..\..\Libraries\assimp\bin\assimp-vc140-mt.dll "$(Outdir)\assimp-vc140-m
     <ClCompile Include="PlayerController.cpp" />
     <ClCompile Include="PostProcessing.cpp" />
     <ClCompile Include="shader.cpp" />
+    <ClCompile Include="ShaderUniforms.cpp" />
     <ClCompile Include="texture.cpp" />
     <ClCompile Include="textureLoader.cpp" />
     <ClCompile Include="Transform.cpp" />
@@ -170,6 +171,7 @@ copy ..\..\..\Libraries\assimp\bin\assimp-vc140-mt.dll "$(Outdir)\assimp-vc140-m
     <ClInclude Include="PlayerController.h" />
     <ClInclude Include="PostProcessing.h" />
     <ClInclude Include="shader.h" />
+    <ClInclude Include="ShaderUniforms.h" />
     <ClInclude Include="texture.h" />
     <ClInclude Include="textureLoader.h" />
     <ClInclude Include="Transform.h" />

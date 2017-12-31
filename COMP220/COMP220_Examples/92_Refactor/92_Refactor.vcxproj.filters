@@ -50,6 +50,7 @@
       <Filter>source</Filter>
     </ClCompile>
     <ClCompile Include="MeshLoader.cpp" />
+    <ClCompile Include="ShaderUniforms.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="main.h">
@@ -104,6 +105,7 @@
       <Filter>headers</Filter>
     </ClInclude>
     <ClInclude Include="MeshLoader.h" />
+    <ClInclude Include="ShaderUniforms.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="textureFrag.glsl">

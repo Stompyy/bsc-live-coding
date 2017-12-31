@@ -5,6 +5,7 @@ GameObject::GameObject()
 	transform = new Transform();
 	material = new Material();
 	physics = new Physics();
+	shaderUniforms = new ShaderUniforms();
 
 	// Ensures initial value
 	m_Meshes.clear();
@@ -35,7 +36,8 @@ void GameObject::init(
 {
 	m_Meshes = meshes;
 	m_DiffuseMapID = textureID;
-	m_shaderProgramID = LoadShaders(vertexShaderFilename.c_str(), fragmentShaderFilename.c_str());
+	m_ShaderProgramID = LoadShaders(vertexShaderFilename.c_str(), fragmentShaderFilename.c_str());
+	shaderUniforms->init(m_ShaderProgramID);
 	transform->setPosition(initialPosition);
 	physics->setMass(mass);
 	physics->setCollisionShapeSize(collisionSize);
@@ -59,13 +61,13 @@ void GameObject::loadDiffuseMap(const std::string & filename)
 
 void GameObject::loadShaderProgram(const std::string& vertexShaderFilename, const std::string& fragmentShaderFilename)
 {
-	m_shaderProgramID = LoadShaders(vertexShaderFilename.c_str(), fragmentShaderFilename.c_str());
+	m_ShaderProgramID = LoadShaders(vertexShaderFilename.c_str(), fragmentShaderFilename.c_str());
 }
 
 void GameObject::destroy()
 {
 	glDeleteTextures(1, &m_DiffuseMapID);
-	glDeleteProgram(m_shaderProgramID);
+	glDeleteProgram(m_ShaderProgramID);
 
 	if (m_Meshes.size() > 0)
 	{
@@ -116,32 +118,15 @@ void GameObject::update()
 
 }
 
-void GameObject::preRender()
+void GameObject::preRender(Camera* camera, Light* light)
 {
-
-	glUseProgram(m_shaderProgramID);
+	glUseProgram(m_ShaderProgramID);
 	// Activate the texture
 	glActiveTexture(GL_TEXTURE0);
 	// Bind the texture
 	glBindTexture(GL_TEXTURE_2D, m_DiffuseMapID);
 
-	GLint modelMatrixLocation = glGetUniformLocation(m_shaderProgramID, "modelMatrix");
-	GLint textureLocation = glGetUniformLocation(m_shaderProgramID, "baseTexture");
-	
-	GLint ambientMaterialColourLocation = glGetUniformLocation(m_shaderProgramID, "ambientMaterialColour");
-	GLint diffuseMaterialColourLocation = glGetUniformLocation(m_shaderProgramID, "diffuseMaterialColour");
-	GLint specularMaterialColourLocation = glGetUniformLocation(m_shaderProgramID, "specularMaterialColour");
-	GLint specularPowerLocation = glGetUniformLocation(m_shaderProgramID, "specularPower");
-
-	// Bad getting every frame. store as a map in initialising, string on right, GLint on left
-
-	// Send everything across
-	glUniformMatrix4fv(modelMatrixLocation, 1, GL_FALSE, value_ptr(m_ModelMatrix));		
-	glUniform1i(textureLocation, 0);
-	glUniform4fv(ambientMaterialColourLocation, 1, value_ptr(material->getAmbientColour()));
-	glUniform4fv(diffuseMaterialColourLocation, 1, value_ptr(material->getDiffuseColour()));
-	glUniform4fv(specularMaterialColourLocation, 1, value_ptr(material->getSpecularColour()));
-	glUniform1f(specularPowerLocation, material->getSpecularPower());
+	shaderUniforms->update(camera, light, material, &m_ModelMatrix);
 }
 
 void GameObject::render()

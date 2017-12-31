@@ -136,6 +136,11 @@ int main(int argc, char* args[])
 	
 	// Create an empty vector of GameObjects to store, all GameObjects within the scene, inside
 	std::vector<GameObject*> gameObjectList;
+
+	// Post processing class initialisation
+	PostProcessing* postProcessing = new PostProcessing();
+	postProcessing->setPostProcessingProgramID(LoadShaders("passThroughVert.glsl", "postCellNotCell.glsl"));
+	postProcessing->setTexture0Location(glGetUniformLocation(postProcessing->getPostProcessingProgramID(), "texture0"));
 	
 	// Can delete this soon. It's quite a nice wrapper so will leave for a bit
 	SceneInfo* sceneInfo = new SceneInfo(meshLoader, textureLoader, gameObjectList, dynamicsWorld); 
@@ -240,10 +245,6 @@ int main(int argc, char* args[])
 	gameObjectList.push_back(player);
 	dynamicsWorld->addRigidBody(player->physics->getRigidBody());
 */
-	// Post processing class initialisation
-	PostProcessing* postProcessing = new PostProcessing();
-	postProcessing->setPostProcessingProgramID(LoadShaders("passThroughVert.glsl", "postCellNotCell.glsl"));
-	postProcessing->setTexture0Location(glGetUniformLocation(postProcessing->getPostProcessingProgramID(), "texture0"));
 	
 	// Hides the mouse and takes relative position to avoid an initial snap
 	SDL_ShowCursor(SDL_DISABLE);
@@ -351,58 +352,25 @@ int main(int argc, char* args[])
 		// Advance the physics simulation
 		dynamicsWorld->getDynamicsWorld()->stepSimulation(1.0f / 60.0f, 10);
 
+		postProcessing->bindFrameBuffer();
+
 		// Apply physics simulation to every GameObject
-		for (GameObject* object : gameObjectList)
+		for (GameObject* gameObject : gameObjectList)
 		{
 			//object->physics->getCollisionShape()->calculateLocalInertia(object->physics->getMass(), object->physics->getInertia());
 			//object->transform->setPosition(object->physics->getTransform().getOrigin());
 			//object->UpdateTransformOrigin();
-			object->physics->setTransform(object->physics->getRigidBody()->getWorldTransform());
+			gameObject->physics->setTransform(gameObject->physics->getRigidBody()->getWorldTransform());
 
-			btVector3 objectOrigin = object->physics->getTransform().getOrigin();
-			btQuaternion objectRotation = object->physics->getTransform().getRotation();
-			object->transform->setPosition(vec3(objectOrigin.getX(), objectOrigin.getY(), objectOrigin.getZ()));
+			btVector3 objectOrigin = gameObject->physics->getTransform().getOrigin();
+			btQuaternion objectRotation = gameObject->physics->getTransform().getRotation();
+			gameObject->transform->setPosition(vec3(objectOrigin.getX(), objectOrigin.getY(), objectOrigin.getZ()));
 //Wrong->			//object->transform->setRotation(vec3(btQuatToGlmVec3(objectRotation)));
 
-			// Update the model matrix (TRS!)
-			object->update();
-		}
-
-		
-		 
-		//tank->transform->setPosition(camera->getPosition());
-
-		postProcessing->bindFrameBuffer();
-
-		for (GameObject* object : gameObjectList)
-		{
-			object->preRender();
-			GLuint currentProgramID = object->getShaderProgramID();
-
-			//retrieve the shader values
-			GLint viewMatrixLocation = glGetUniformLocation(currentProgramID, "viewMatrix");
-			GLint projectionMatrixLocation = glGetUniformLocation(currentProgramID, "projectionMatrix");
-			GLint lightDirectionLocation = glGetUniformLocation(currentProgramID, "lightDirection");
-			GLint ambientLightColourLocation = glGetUniformLocation(currentProgramID, "ambientLightColour");
-			GLint diffuseLightColourLocation = glGetUniformLocation(currentProgramID, "diffuseLightColour");
-			GLint specularLightColourLocation = glGetUniformLocation(currentProgramID, "specularLightColour");
-			GLint cameraPositionLocation = glGetUniformLocation(currentProgramID, "cameraPosition");
-
-			//send shader values
-			glUniformMatrix4fv(viewMatrixLocation, 1, GL_FALSE, value_ptr(camera->getViewMatrix()));
-//			glUniformMatrix4fv(viewMatrixLocation, 1, GL_FALSE, value_ptr(player->getCamera()->getViewMatrix()));
-			glUniformMatrix4fv(projectionMatrixLocation, 1, GL_FALSE, value_ptr(camera->getProjectionMatrix()));
-//			glUniformMatrix4fv(projectionMatrixLocation, 1, GL_FALSE, value_ptr(player->getCamera()->getProjectionMatrix()));
-
-			glUniform3fv(lightDirectionLocation, 1, value_ptr(light->getDirection()));
-			glUniform4fv(ambientLightColourLocation, 1, value_ptr(light->colour->getAmbientColour()));
-			glUniform4fv(diffuseLightColourLocation, 1, value_ptr(light->colour->getDiffuseColour()));
-			glUniform4fv(specularLightColourLocation, 1, value_ptr(light->colour->getSpecularColour()));
-
-			glUniform3fv(cameraPositionLocation, 1, value_ptr(camera->getPosition()));  //Maybe just pass in camera direction?
-//			glUniform3fv(cameraPositionLocation, 1, value_ptr(player->getCamera()->getPosition()));
-
-			object->render();
+		// Update the model matrix (TRS!)
+			gameObject->update();
+			gameObject->preRender(camera, light);
+			gameObject->render();
 		}
 
 		camera->update();

@@ -16,11 +16,10 @@ public:
 	//void setRotation(const vec3& rotation) { m_Rotation = rotation; } at the very least quats...
 	void setPosition(const float x, const float y, const float z) { m_Position = vec3(x, y, z); }
 	void setTargetPosition(const float x, const float y, const float z) { m_TargetPosition = vec3(x, y, z); }
-	void setTargetPosition(const vec3& newPosition) { m_TargetPosition = newPosition; }
+	void setTargetPosition(const vec3* newPosition) { m_TargetPosition = *newPosition; }
 	void setUpVector(const float x, const float y, const float z) { m_Up = vec3(x, y, z); }
 
-	//vec3& getRotation() { return m_Rotation; }
-	vec3& getPosition() { return m_Position; }
+	vec3 getPosition() { return m_Position; }
 	vec3& getTargetPosition() { return m_TargetPosition; }
 	vec3& getUpVector() { return m_Up; }
 

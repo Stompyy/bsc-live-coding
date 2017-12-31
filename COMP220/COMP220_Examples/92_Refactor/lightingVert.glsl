@@ -11,11 +11,11 @@ uniform mat4 viewMatrix;
 uniform mat4 projectionMatrix;
 
 // Camera position
-uniform vec3 cameraPosition;
+uniform vec4 cameraPosition;
 
 // Lighting
 vec3 lightPosition = vec3(10.0f, 10.0f, 10.0f);
-uniform vec3 lightDirection;
+uniform vec4 lightDirection;
 uniform vec4 ambientLightColour;
 uniform vec4 diffuseLightColour;
 uniform vec4 specularLightColour;
@@ -46,16 +46,16 @@ void main()
 	// World position of vertex
 	vec4 worldPosition = modelMatrix * vec4(vertexPosition, 1.0f);
 
-	vec3 viewDirection = normalize(cameraPosition - worldPosition.xyz);
+	vec3 viewDirection = normalize(cameraPosition.xyz - worldPosition.xyz);
 
 	ambient = ambientMaterialColour * ambientLightColour;
 
 	// Calculate diffuse lighting, normals dot product light direction, intensity of diffuse light
-	float nDotl = clamp(dot(worldNormals.xyz, lightDirection), 0, 1);
+	float nDotl = clamp(dot(worldNormals.xyz, lightDirection.xyz), 0, 1);
 	diffuse = diffuseMaterialColour * diffuseLightColour * nDotl;
 
 	// Calculate specular lighting
-	vec3 halfway = normalize(lightDirection + viewDirection);
+	vec3 halfway = normalize(lightDirection.xyz + viewDirection);
 	float nDoth = clamp(dot(worldNormals.xyz, halfway), 0, 1);
 	float specularIntensity = pow(nDoth, specularPower);
 	specular = specularMaterialColour * specularLightColour * specularIntensity;

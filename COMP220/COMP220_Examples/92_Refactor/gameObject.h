@@ -13,6 +13,7 @@
 #include "Transform.h"
 #include "Material.h"
 #include "Physics.h"
+#include "ShaderUniforms.h"
 
 class GameObject
 {
@@ -32,22 +33,23 @@ public:
 	Transform* transform;
 	Material* material;
 	Physics* physics;
+	ShaderUniforms* shaderUniforms;
 
-	glm::mat4& getModelMatrix() { return m_ModelMatrix; }
+	//glm::mat4& getModelMatrix() { return m_ModelMatrix; }
 
-	GLuint getShaderProgramID() { return m_shaderProgramID; }
+	//GLuint getShaderProgramID() { return m_ShaderProgramID; }
 	void updateTransformOrigin() { physics->getTransform().setOrigin(btVector3(transform->getPosition().x, transform->getPosition().y, transform->getPosition().z)); }
 
 	void loadMesh(const std::string& filename);
-	void setMesh(const std::vector<Mesh*>& meshes) { m_Meshes = meshes; }
+	//void setMesh(const std::vector<Mesh*>& meshes) { m_Meshes = meshes; }
 
 	//void loadDiffuseMap(const std::string& filename);
-	void setDiffuseMap(const GLuint textureID) { m_DiffuseMapID = textureID; }
+	//void setDiffuseMap(const GLuint textureID) { m_DiffuseMapID = textureID; }
 	void loadShaderProgram(const std::string& vertexShaderFilename, const std::string& fragmentShaderFilename);
 	void destroy();
 	
 	void update();
-	void preRender();
+	void preRender(Camera* camera, Light* light);
 	void render();
 
 private:
@@ -56,6 +58,6 @@ private:
 	glm::mat4 m_ModelMatrix;
 
 	GLuint m_DiffuseMapID;
-	GLuint m_shaderProgramID;
+	GLuint m_ShaderProgramID;
 };
 
