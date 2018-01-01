@@ -4,9 +4,6 @@
     <ClCompile Include="main.cpp">
       <Filter>source</Filter>
     </ClCompile>
-    <ClCompile Include="texture.cpp">
-      <Filter>source</Filter>
-    </ClCompile>
     <ClCompile Include="shader.cpp">
       <Filter>source</Filter>
     </ClCompile>
@@ -49,23 +46,22 @@
     <ClCompile Include="textureLoader.cpp">
       <Filter>source</Filter>
     </ClCompile>
-    <ClCompile Include="MeshLoader.cpp" />
-    <ClCompile Include="ShaderUniforms.cpp" />
+    <ClCompile Include="MeshLoader.cpp">
+      <Filter>source</Filter>
+    </ClCompile>
+    <ClCompile Include="ShaderUniforms.cpp">
+      <Filter>source</Filter>
+    </ClCompile>
+    <ClCompile Include="LoadGameObjects.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="main.h">
-      <Filter>headers</Filter>
-    </ClInclude>
-    <ClInclude Include="texture.h">
       <Filter>headers</Filter>
     </ClInclude>
     <ClInclude Include="vertex.h">
       <Filter>headers</Filter>
     </ClInclude>
     <ClInclude Include="shader.h">
-      <Filter>headers</Filter>
-    </ClInclude>
-    <ClInclude Include="model.h">
       <Filter>headers</Filter>
     </ClInclude>
     <ClInclude Include="Mesh.h">
@@ -104,8 +100,13 @@
     <ClInclude Include="textureLoader.h">
       <Filter>headers</Filter>
     </ClInclude>
-    <ClInclude Include="MeshLoader.h" />
-    <ClInclude Include="ShaderUniforms.h" />
+    <ClInclude Include="MeshLoader.h">
+      <Filter>headers</Filter>
+    </ClInclude>
+    <ClInclude Include="ShaderUniforms.h">
+      <Filter>headers</Filter>
+    </ClInclude>
+    <ClInclude Include="LoadGameObjects.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="textureFrag.glsl">

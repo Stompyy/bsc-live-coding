@@ -49,7 +49,7 @@ void ShaderUniforms::update(Camera* camera, Light* light, Material* material, gl
 	glUniformMatrix4fv(m_ViewMatrixLocation, 1, GL_FALSE, value_ptr(camera->getViewMatrix()));
 	glUniformMatrix4fv(m_ProjectionMatrixLocation, 1, GL_FALSE, value_ptr(camera->getProjectionMatrix()));
 
-	// Always send vec4s for efficiency, vec3s get ammended with a homogeneous w=0 for direction, or w=1 for position
+	// Always send vec4s for efficiency, vec3s get ammended with a homogeneous w=0 for direction, or w=1 for position.
 	glUniform4fv(m_CameraPositionLocation, 1, value_ptr(glm::vec4(camera->getPosition(), 1.0f)));
 	glUniform4fv(m_LightDirectionLocation, 1, value_ptr(glm::vec4(light->getDirection(), 0.0f)));
 

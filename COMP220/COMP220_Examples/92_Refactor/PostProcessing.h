@@ -1,7 +1,7 @@
 #pragma once
 
 #include <GL\glew.h>
-#include "texture.h"
+#include <SDL_image.h>
 
 class PostProcessing
 {

@@ -52,13 +52,6 @@ void GameObject::loadMesh(const std::string& filename)
 	oldLoadMeshFromFile(filename, m_Meshes);
 }
 
-/*
-void GameObject::loadDiffuseMap(const std::string & filename)
-{
-	m_DiffuseMapID = loadTextureFromFile(filename);
-}
-*/
-
 void GameObject::loadShaderProgram(const std::string& vertexShaderFilename, const std::string& fragmentShaderFilename)
 {
 	m_ShaderProgramID = LoadShaders(vertexShaderFilename.c_str(), fragmentShaderFilename.c_str());
@@ -113,9 +106,6 @@ void GameObject::update()
 
 	// TRS
 	m_ModelMatrix = translationMatrix * rotationMatrix * scaleMatrix;
-
-	
-
 }
 
 void GameObject::preRender(Camera* camera, Light* light)

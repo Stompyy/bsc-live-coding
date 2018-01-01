@@ -14,6 +14,7 @@ public:
 	void setPosition(const vec3& newPosition) { m_Position = newPosition; }
 
 	void setScale(const float x, const float y, const float z) { m_Scale = vec3(x, y, z); }
+	void setScale(const float scale) { m_Scale = vec3(scale, scale, scale); }
 
 	void setRotation(const float x, const float y, const float z) { m_Rotation = vec3(x, y, z); }
 	void setRotation(const vec3& newRotation) { m_Rotation = newRotation; }

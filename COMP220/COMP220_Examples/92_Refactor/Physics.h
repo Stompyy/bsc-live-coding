@@ -19,6 +19,7 @@ public:
 	btCollisionShape* getCollisionShape() { return m_CollisionShape; }
 	btScalar getMass() { return m_Mass; }
 	btVector3& getInertia() { return m_Inertia; }
+	btDefaultMotionState* getMotionState() { return m_MotionState; }
 
 	void updateMotionState();
 

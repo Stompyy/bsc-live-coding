@@ -140,6 +140,7 @@ copy ..\..\..\Libraries\assimp\bin\assimp-vc140-mt.dll "$(Outdir)\assimp-vc140-m
     <ClCompile Include="Camera.cpp" />
     <ClCompile Include="gameObject.cpp" />
     <ClCompile Include="Light.cpp" />
+    <ClCompile Include="LoadGameObjects.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Material.cpp" />
     <ClCompile Include="Mesh.cpp" />
@@ -152,7 +153,6 @@ copy ..\..\..\Libraries\assimp\bin\assimp-vc140-mt.dll "$(Outdir)\assimp-vc140-m
     <ClCompile Include="PostProcessing.cpp" />
     <ClCompile Include="shader.cpp" />
     <ClCompile Include="ShaderUniforms.cpp" />
-    <ClCompile Include="texture.cpp" />
     <ClCompile Include="textureLoader.cpp" />
     <ClCompile Include="Transform.cpp" />
   </ItemGroup>
@@ -160,11 +160,11 @@ copy ..\..\..\Libraries\assimp\bin\assimp-vc140-mt.dll "$(Outdir)\assimp-vc140-m
     <ClInclude Include="Camera.h" />
     <ClInclude Include="gameObject.h" />
     <ClInclude Include="Light.h" />
+    <ClInclude Include="LoadGameObjects.h" />
     <ClInclude Include="main.h" />
     <ClInclude Include="Material.h" />
     <ClInclude Include="Mesh.h" />
     <ClInclude Include="MeshLoader.h" />
-    <ClInclude Include="model.h" />
     <ClInclude Include="Physics.h" />
     <ClInclude Include="PhysicsEngine.h" />
     <ClInclude Include="Player.h" />
@@ -172,7 +172,6 @@ copy ..\..\..\Libraries\assimp\bin\assimp-vc140-mt.dll "$(Outdir)\assimp-vc140-m
     <ClInclude Include="PostProcessing.h" />
     <ClInclude Include="shader.h" />
     <ClInclude Include="ShaderUniforms.h" />
-    <ClInclude Include="texture.h" />
     <ClInclude Include="textureLoader.h" />
     <ClInclude Include="Transform.h" />
     <ClInclude Include="vertex.h" />

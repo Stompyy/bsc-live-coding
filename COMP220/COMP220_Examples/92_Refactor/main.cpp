@@ -132,18 +132,15 @@ int main(int argc, char* args[])
 	TextureLoader* textureLoader = new TextureLoader(std::vector<std::string>{ "TrexColour.jpg", "tankColour.png", "grass.png" });
 
 	// Load in all needed meshes
-	MeshLoader* meshLoader = new MeshLoader(std::vector<std::string>{ "Trex.FBX", "tank.FBX", "floor.FBX" });
-	
-	// Create an empty vector of GameObjects to store, all GameObjects within the scene, inside
-	std::vector<GameObject*> gameObjectList;
+	MeshLoader* meshLoader = new MeshLoader(std::vector<std::string>{ "Trex.FBX", "tank.FBX", "floor.FBX", "archer.FBX" });
 
 	// Post processing class initialisation
 	PostProcessing* postProcessing = new PostProcessing();
 	postProcessing->setPostProcessingProgramID(LoadShaders("passThroughVert.glsl", "postCellNotCell.glsl"));
 	postProcessing->setTexture0Location(glGetUniformLocation(postProcessing->getPostProcessingProgramID(), "texture0"));
 	
-	// Can delete this soon. It's quite a nice wrapper so will leave for a bit
-	SceneInfo* sceneInfo = new SceneInfo(meshLoader, textureLoader, gameObjectList, dynamicsWorld); 
+	// Create an empty vector of GameObjects to store all GameObjects within the scene, inside
+	std::vector<GameObject*> gameObjectList;
 
 	// Camera initialisation. To be replaced with a camera class within a player class
 	Camera* camera = new Camera();
@@ -154,8 +151,6 @@ int main(int argc, char* args[])
 	// Light initialisation
 	Light* light = new Light();
 	light->setDirection(0.2f, -1.0f, 0.2f);
-	light->colour->setAmbientColour(1.0f, 1.0f, 1.0f);
-	light->colour->setDiffuseColour(1.0f, 1.0f, 1.0f);
 	light->colour->setSpecularColour(0.0f, 1.0f, 0.0f);
 
 
@@ -170,43 +165,39 @@ int main(int argc, char* args[])
 		btVector3(50.0f, 1.0f, 50.0f)				// collision size
 	);
 	gameObjectList.push_back(ground);
-	dynamicsWorld->addRigidBody(ground->physics->getRigidBody());
 
 	GameObject* trex = new GameObject();
 	trex->init(
 		meshLoader->getMeshes("Trex.FBX"),
 		textureLoader->getTextureID("TrexColour.jpg"),
 		"lightingVert.glsl", "lightingFrag.glsl",
-		vec3(0.0f, 200.0f, 0.0f),
+		vec3(0.0f, 0.0f, 0.0f),
 		1.0f,
 		btVector3(0.0f, 0.0f, 0.0f)
 	);
 	gameObjectList.push_back(trex);
-	dynamicsWorld->addRigidBody(trex->physics->getRigidBody());
 
 	GameObject* tank3 = new GameObject();
 	tank3->init(
 		meshLoader->getMeshes("tank.FBX"),
 		textureLoader->getTextureID("tankColour.png"),
 		"lightingVert.glsl", "lightingFragTank.glsl",
-		vec3(-15.0f, 0.0f, 15.0f),
+		vec3(-15.0f, 200.0f, 15.0f),
 		1.0f,
 		btVector3(0.0f, 0.0f, 0.0f)
 	);
 	gameObjectList.push_back(tank3);
-	dynamicsWorld->addRigidBody(tank3->physics->getRigidBody());
 
 	GameObject* tank4 = new GameObject();
 	tank4->init(
 		meshLoader->getMeshes("tank.FBX"),
 		textureLoader->getTextureID("tankColour.png"),
 		"lightingVert.glsl", "lightingFragTank.glsl",
-		vec3(15.0f, 0.0f, -15.0f),
+		vec3(15.0f, 5.0f, -15.0f),
 		1.0f,
 		btVector3(0.0f, 0.0f, 0.0f)
 	);
 	gameObjectList.push_back(tank4);
-	dynamicsWorld->addRigidBody(tank4->physics->getRigidBody());
 
 	GameObject* tank = new GameObject();
 	tank->init(
@@ -218,7 +209,6 @@ int main(int argc, char* args[])
 		btVector3(0.0f, 0.0f, 0.0f)
 	);
 	gameObjectList.push_back(tank);
-	dynamicsWorld->addRigidBody(tank->physics->getRigidBody());
 
 	GameObject* tank2 = new GameObject();
 	tank2->init(
@@ -230,21 +220,25 @@ int main(int argc, char* args[])
 		btVector3(0.0f, 0.0f, 0.0f)
 	);
 	gameObjectList.push_back(tank2);
-	dynamicsWorld->addRigidBody(tank2->physics->getRigidBody());
 
-/*
-	Player* player = new Player();
-	player->setMesh(meshMap["tank.FBX"]);
-	player->setDiffuseMap(textureMap["tankColour.png"]); // 
-	player->loadShaderProgram("textureVert.glsl", "textureFrag.glsl");
-	player->transform->setPosition(0.0f, 0.0f, -15.0f);
-	player->physics->setCollisionShapeSize(0.1f, 0.1f, 0.1f);
-	player->physics->setMass(0.1f);
-	player->UpdateTransformOrigin();
-	player->physics->updateMotionState();
+	GameObject* player = new GameObject();
+	player->init(
+		meshLoader->getMeshes("archer.FBX"),
+		textureLoader->getTextureID("TrexColour.jpg"),
+		"lightingVert.glsl", "lightingFrag.glsl",
+		vec3(10.0f, 0.0f, 10.0f),
+		1.0f,
+		btVector3(0.0f, 0.0f, 0.0f)
+	);
+	player->transform->setScale(0.02f);
 	gameObjectList.push_back(player);
-	dynamicsWorld->addRigidBody(player->physics->getRigidBody());
-*/
+ 
+	for (GameObject* gameObject : gameObjectList)
+	{
+		dynamicsWorld->addRigidBody(gameObject->physics->getRigidBody());
+	}
+
+
 	
 	// Hides the mouse and takes relative position to avoid an initial snap
 	SDL_ShowCursor(SDL_DISABLE);
@@ -315,33 +309,22 @@ int main(int argc, char* args[])
 //					player->moveRight(1.0f);
 					break;
 
+				case SDLK_1:
+					break;
+
 				case SDLK_q:
-					// Add force
-					// WIP
 					dynamicsWorld->getDynamicsWorld()->clearForces();
-					for (btRigidBody* rigidBody : dynamicsWorld->getAllRigidBodies()) {
-						rigidBody->applyForce(btVector3(0.0f, 1000000000.0f, 0.0f), btVector3(0.0f, 0.0f, 0.0f));
-						rigidBody->applyCentralForce(btVector3(0.0f, 100000000.0f, 0.0f));
-						rigidBody->applyImpulse(btVector3(0.0f, 1000000000.0f, 0.0f), btVector3(0.0f, 0.0f, 0.0f));
-					}
+
+					trex->physics->getRigidBody()->activate(true);
+					trex->physics->getRigidBody()->applyCentralForce(btVector3(0.0f, 500.0f, 0.0f));
 					break;
 
 				case SDLK_e:
-					// Add torque
-					// WIP
-					for (btRigidBody* rigidBody : dynamicsWorld->getAllRigidBodies()) {
-						rigidBody->applyCentralForce(btVector3(100000.0f, 100000.0f, 100000.0f));
-					}
 					break;
 
 				default:
-					
 					break;
 				}
-				// Update positions potentially multiple times, for each event, before rendering?
-				camera->update();
-//				player->getCamera()->update();
-
 			}
 		}
 
@@ -350,24 +333,23 @@ int main(int argc, char* args[])
 		tank->transform->setRotation(tank->transform->getRotation().x, tankRotation, tank->transform->getRotation().z);
 
 		// Advance the physics simulation
-		dynamicsWorld->getDynamicsWorld()->stepSimulation(1.0f / 60.0f, 10);
+		dynamicsWorld->getDynamicsWorld()->stepSimulation(1.0f / 60.0f); // , 10);
 
 		postProcessing->bindFrameBuffer();
 
 		// Apply physics simulation to every GameObject
 		for (GameObject* gameObject : gameObjectList)
 		{
-			//object->physics->getCollisionShape()->calculateLocalInertia(object->physics->getMass(), object->physics->getInertia());
-			//object->transform->setPosition(object->physics->getTransform().getOrigin());
-			//object->UpdateTransformOrigin();
+			// Update physics transform to the rigidbody transform
 			gameObject->physics->setTransform(gameObject->physics->getRigidBody()->getWorldTransform());
 
-			btVector3 objectOrigin = gameObject->physics->getTransform().getOrigin();
-			btQuaternion objectRotation = gameObject->physics->getTransform().getRotation();
-			gameObject->transform->setPosition(vec3(objectOrigin.getX(), objectOrigin.getY(), objectOrigin.getZ()));
-//Wrong->			//object->transform->setRotation(vec3(btQuatToGlmVec3(objectRotation)));
+			// Update gameObject Position to the Physics position
+			btVector3 gameObjectPhysicsOrigin = gameObject->physics->getTransform().getOrigin();
+			gameObject->transform->setPosition(vec3(gameObjectPhysicsOrigin.getX(), gameObjectPhysicsOrigin.getY(), gameObjectPhysicsOrigin.getZ()));
 
-		// Update the model matrix (TRS!)
+			btQuaternion objectRotation = gameObject->physics->getTransform().getRotation();
+
+			// Update the model matrix (TRS!)
 			gameObject->update();
 			gameObject->preRender(camera, light);
 			gameObject->render();
@@ -382,7 +364,7 @@ int main(int argc, char* args[])
 	}
 
 	// Delete all Objects in reverse instantiation order
-	
+/*	
 	// Important! remember all this!
 	auto iter = gameObjectList.begin();
 	while (iter != gameObjectList.end())
@@ -398,10 +380,10 @@ int main(int argc, char* args[])
 			iter++;
 		}
 	}
-	// Call destroy() functions instead of delete
+*/	// Call destroy() functions instead of delete
 	postProcessing->destroy();
 	delete postProcessing;
-	dynamicsWorld->destroy();
+//	dynamicsWorld->destroy();
 	delete dynamicsWorld;
 
 	close(SDL_window, GL_Context);
