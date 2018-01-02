@@ -14,7 +14,6 @@ uniform mat4 projectionMatrix;
 uniform vec4 cameraPosition;
 
 // Lighting
-//uniform vec4 lightPosition; // = vec3(10.0f, 10.0f, 10.0f);
 uniform vec4 lightDirection;
 uniform vec4 ambientLightColour;
 uniform vec4 diffuseLightColour;
@@ -59,15 +58,6 @@ void main()
 	float nDoth = clamp(dot(worldNormals.xyz, halfway), 0, 1);
 	float specularIntensity = pow(nDoth, specularPower);
 	specular = specularMaterialColour * specularLightColour * specularIntensity;
-
-	// https://www.tomdalling.com/blog/modern-opengl/07-more-lighting-ambient-specular-attenuation-gamma/
-//	vec3 surfaceToLightDirection = normalize(worldPosition.xyz - lightPosition.xyz);
-//	vec3 reflectionVector = reflect(surfaceToLightDirection, worldNormals.xyz);
-//	vec3 surfaceToCamera = -viewDirection;
-//	float cosAngle = max(0.0, dot(surfaceToCamera, reflectionVector));			// max instead of clamp to avoid negative values?
-//	float specularIntensity = pow(cosAngle, specularPower);
-
-//	specular = specularIntensity * specularMaterialColour * specularLightColour;
 
 	gl_Position = MVPMatrix * vec4(vertexPosition,1.0f);
 

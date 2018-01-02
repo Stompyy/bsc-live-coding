@@ -19,6 +19,8 @@ public:
 	void setRotation(const float x, const float y, const float z) { m_Rotation = vec3(x, y, z); }
 	void setRotation(const vec3& newRotation) { m_Rotation = newRotation; }
 
+	void addPosition(const vec3& deltaPosition) { m_Position += deltaPosition; }
+
 	vec3& getPosition() { return m_Position; }
 	vec3& getRotation() { return m_Rotation; }
 	vec3& getScale() { return m_Scale; }

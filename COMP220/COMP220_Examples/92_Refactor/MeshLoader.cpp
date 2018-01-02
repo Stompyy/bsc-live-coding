@@ -1,5 +1,60 @@
 #include "MeshLoader.h"
 
+// https://gamedev.stackexchange.com/questions/26382/i-cant-figure-out-how-to-animate-my-loaded-model-with-assimp
+//
+//https://www.youtube.com/watch?v=F-kcaonjHf8&index=2&list=PLRIWtICgwaX2tKWCxdeB7Wv_rTET9JtWW
+int currentBoneID = 0;
+std::map<std::string, int> BoneMap;
+
+bool loadAnimationFromFile(const std::string & filename, AnimationClip ** clip)
+{
+	Assimp::Importer importer;
+
+	const aiScene* scene = importer.ReadFile(filename, aiProcess_JoinIdenticalVertices | aiProcess_Triangulate | aiProcess_FlipUVs | aiProcess_GenSmoothNormals | aiProcess_GenUVCoords | aiProcess_CalcTangentSpace);
+
+	if (!scene)
+	{
+		printf("Model Loading Error - %s\n", importer.GetErrorString());
+		return false;
+	}
+
+	if (!scene->HasAnimations())
+		return false;
+
+	//the file we are using has one animation per file
+	aiAnimation * currentAnimation = scene->mAnimations[0];
+
+	for (int i = 0; i < currentAnimation->mNumChannels; i++)
+	{
+		aiNodeAnim *currentNode = currentAnimation->mChannels[i];
+		//printf("Animation Node %s\n", currentNode->mNodeName.C_Str());
+
+		aiVector3D position = currentNode->mPositionKeys[0].mValue;
+		aiVector3D scale = currentNode->mScalingKeys[0].mValue;
+		aiQuaternion rotation = currentNode->mRotationKeys[0].mValue;
+	}
+
+
+	return true;
+}
+
+
+void processNode(aiNode * parentNode, Joint *parentJoint)
+{
+	Joint * pJoint = parentJoint;
+	for (int i = 0; i < parentNode->mNumChildren; i++)
+	{
+		std::string nodeName = std::string(parentNode->mChildren[i]->mName.C_Str());
+		if (BoneMap.find(nodeName) != BoneMap.end())
+		{
+			pJoint = new Joint(BoneMap[nodeName], nodeName, parentJoint->getBindTransform());
+			parentJoint->addChildJoint(pJoint);
+		}
+
+		processNode(parentNode->mChildren[i], pJoint);
+	}
+}
+
 std::vector<Mesh*> loadMeshFromFilename(const std::string& filename)
 {
 	std::vector<Mesh*> meshes = {};

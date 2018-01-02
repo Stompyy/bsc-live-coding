@@ -9,6 +9,8 @@
 #include <assimp\postprocess.h>
 
 #include "Mesh.h"
+#include "Animation.h"
+#include "Joint.h"
 
 class MeshLoader
 {

@@ -14,7 +14,7 @@ uniform vec4 fragColour;
 void main()
 {
 	// No ambient for tank...
-	colour = texture(baseTexture, vertexTextureCoordOut) * diffuse * 4.0f + specular;
+	colour = texture(baseTexture, vertexTextureCoordOut) * diffuse * 4.0f + specular + ambient * texture(baseTexture, vertexTextureCoordOut);
 
 	//colour = vec4(0.1f, 0.1f, 0.1f, 1.0f) + ambient + specular;
 	

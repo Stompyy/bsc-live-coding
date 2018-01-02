@@ -137,8 +137,10 @@ copy ..\..\..\Libraries\assimp\bin\assimp-vc140-mt.dll "$(Outdir)\assimp-vc140-m
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Animation.cpp" />
     <ClCompile Include="Camera.cpp" />
     <ClCompile Include="gameObject.cpp" />
+    <ClCompile Include="Joint.cpp" />
     <ClCompile Include="Light.cpp" />
     <ClCompile Include="LoadGameObjects.cpp" />
     <ClCompile Include="main.cpp" />
@@ -157,8 +159,10 @@ copy ..\..\..\Libraries\assimp\bin\assimp-vc140-mt.dll "$(Outdir)\assimp-vc140-m
     <ClCompile Include="Transform.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Animation.h" />
     <ClInclude Include="Camera.h" />
     <ClInclude Include="gameObject.h" />
+    <ClInclude Include="Joint.h" />
     <ClInclude Include="Light.h" />
     <ClInclude Include="LoadGameObjects.h" />
     <ClInclude Include="main.h" />
