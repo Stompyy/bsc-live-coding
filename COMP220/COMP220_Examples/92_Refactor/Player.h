@@ -1,6 +1,5 @@
 #pragma once
 
-#include <glm\gtx\transform.hpp>
 #include "Camera.h"
 #include "gameObject.h"
 #include "PlayerController.h"
@@ -22,9 +21,11 @@ public:
 	void setMovementSpeed(const float newMovementSpeed) { m_MovementSpeed = newMovementSpeed; }
 	float getMovementSpeed() { return m_MovementSpeed; }
 
+	void updateMovement();
+
 private:
-	glm::vec3 m_Up;
 	glm::vec3 m_DeltaPosition;
+	glm::vec3 m_Up;
 
 	float m_MovementSpeed;
 	float m_JumpForce;

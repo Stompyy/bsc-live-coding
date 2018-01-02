@@ -42,5 +42,8 @@ private:
 	float m_CameraBoomLength;
 	float m_CameraPivotHeight;
 	float m_CameraTargetDistance;
+
+	float m_CameraLowerLimitY;
+	float m_CameraUpperLimitY;
 };
 

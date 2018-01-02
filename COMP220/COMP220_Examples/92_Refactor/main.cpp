@@ -323,19 +323,11 @@ int main(int argc, char* args[])
 			}
 		}
 
-		player->camera->worldLocation->setPosition(player->transform->getPosition());
-
-		btVector3 tempPos = btVector3(
-			player->camera->worldLocation->getPosition().x,
-			player->camera->worldLocation->getPosition().y,
-			player->camera->worldLocation->getPosition().z);
-
-		player->physics->getRigidBody()->getWorldTransform().setOrigin(tempPos);
-		player->physics->getTransform().setOrigin(tempPos);
+		player->updateMovement();
 
 		//Input, logic with input, physics, graphics.
 		tankRotation+=0.001f;
-		tank->transform->setRotation(tank->transform->getRotation().x, tankRotation, tank->transform->getRotation().z);
+		//tank->transform->setRotation(tank->transform->getRotation().x, tankRotation, tank->transform->getRotation().z);
 
 		postProcessing->bindFrameBuffer();
 

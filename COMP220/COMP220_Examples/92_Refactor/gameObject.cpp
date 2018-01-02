@@ -99,10 +99,10 @@ void GameObject::update()
 	// Update the model matrix
 	glm::mat4 translationMatrix = glm::translate(transform->getPosition());
 	glm::mat4 scaleMatrix = glm::scale(transform->getScale());
-	glm::mat4 rotationMatrix = 
-		  glm::rotate(transform->getRotation().x, glm::vec3(1.0f, 0.0f, 0.0f))
-		* glm::rotate(transform->getRotation().y, glm::vec3(0.0f, 1.0f, 0.0f))
-		* glm::rotate(transform->getRotation().z, glm::vec3(0.0f, 0.0f, 1.0f));
+	glm::mat4 rotationMatrix = glm::toMat4(transform->getRotation());
+//		  glm::rotate(transform->getRotation().x, glm::vec3(1.0f, 0.0f, 0.0f))
+//		* glm::rotate(transform->getRotation().y, glm::vec3(0.0f, 1.0f, 0.0f))
+//		* glm::rotate(transform->getRotation().z, glm::vec3(0.0f, 0.0f, 1.0f));
 
 	// TRS
 	m_ModelMatrix = translationMatrix * rotationMatrix * scaleMatrix;

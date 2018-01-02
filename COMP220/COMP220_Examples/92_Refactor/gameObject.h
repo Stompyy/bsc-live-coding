@@ -4,6 +4,8 @@
 #include <glm\glm.hpp>
 #include <glm\gtx\transform.hpp>
 #include <glm\gtc\type_ptr.hpp>
+#include <glm\gtc\quaternion.hpp>
+#include <glm\gtx\quaternion.hpp>
 
 #include "Mesh.h"
 #include "model.h"
@@ -59,5 +61,7 @@ private:
 
 	GLuint m_DiffuseMapID;
 	GLuint m_ShaderProgramID;
+
+	glm::vec3 m_Up;
 };
 

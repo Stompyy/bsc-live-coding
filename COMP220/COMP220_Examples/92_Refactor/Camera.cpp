@@ -10,6 +10,8 @@ Camera::Camera()
 	m_CameraBoomLength = 4.0f;
 	m_CameraPivotHeight = 1.0f;
 	m_CameraTargetDistance = 50.0f;
+	m_CameraLowerLimitY = -5.0f;
+	m_CameraUpperLimitY = 0.1f;
 
 	m_ProjectionMatrix = perspective(radians(90.0f), float(1000 / 800), 0.1f, 100.0f);
 
@@ -34,8 +36,10 @@ void Camera::turn(float mouseX, float mouseY)
 	m_TurnY += -tan(mouseY * m_AimSensitivity);
 
 	// Clamp Y to avoid gimble lock as tan tends towards infinity
-	if (m_TurnY > 0.9f) m_TurnY = 0.9f;
-	else if (m_TurnY < -5.0f)	m_TurnY = -5.0f;
+	if (m_TurnY > m_CameraUpperLimitY) 
+		m_TurnY = m_CameraUpperLimitY;
+	else if (m_TurnY < m_CameraLowerLimitY)	
+		m_TurnY = m_CameraLowerLimitY;
 
 	// Move camera lookatpoint to a trigonometry calculated position
 	target->setPosition(worldLocation->getPosition() + vec3(cos(m_TurnX), m_TurnY, sin(m_TurnX)) * m_CameraTargetDistance);
