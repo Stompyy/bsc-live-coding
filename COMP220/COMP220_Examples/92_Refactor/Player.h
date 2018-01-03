@@ -2,7 +2,7 @@
 
 #include "Camera.h"
 #include "gameObject.h"
-#include "PlayerController.h"
+//#include "EmbeddedTextureFBXLoader.h"
 
 class Player : public GameObject
 {
@@ -11,9 +11,11 @@ public:
 	~Player();
 
 	Camera* camera;
+	//EmbeddedTextureFBXLoader* FBXTexture;
 
 	void moveForward(float value);
 	void moveRight(float value);
+	void jump();
 
 	void setJumpForce(const float newJumpForce) { m_JumpForce = newJumpForce; }
 	float getJumpForce() { return m_JumpForce; }
@@ -30,4 +32,3 @@ private:
 	float m_MovementSpeed;
 	float m_JumpForce;
 };
-

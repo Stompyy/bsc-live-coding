@@ -9,7 +9,7 @@
 
 #include "Mesh.h"
 #include "model.h"
-#include "texture.h"
+//#include "texture.h"
 #include "shader.h"
 
 #include "Transform.h"
@@ -24,11 +24,11 @@ public:
 	~GameObject();
 
 	void init(
-		const std::vector<Mesh*> meshes, 
-		const GLuint textureID, 
-		const std::string& vertexShaderFilename, 
-		const std::string& fragmentShaderFilename, 
-		const glm::vec3 initialPosition, 
+		const std::vector<Mesh*> meshes,
+		const GLuint textureID,
+		const std::string& vertexShaderFilename,
+		const std::string& fragmentShaderFilename,
+		const glm::vec3 initialPosition,
 		const float mass,
 		const btVector3 collisionSize);
 
@@ -42,14 +42,14 @@ public:
 	//GLuint getShaderProgramID() { return m_ShaderProgramID; }
 	void updateTransformOrigin() { physics->getTransform().setOrigin(btVector3(transform->getPosition().x, transform->getPosition().y, transform->getPosition().z)); }
 
-	void loadMesh(const std::string& filename);
+	//void loadMesh(const std::string& filename);
 	//void setMesh(const std::vector<Mesh*>& meshes) { m_Meshes = meshes; }
 
 	//void loadDiffuseMap(const std::string& filename);
 	//void setDiffuseMap(const GLuint textureID) { m_DiffuseMapID = textureID; }
 	void loadShaderProgram(const std::string& vertexShaderFilename, const std::string& fragmentShaderFilename);
 	void destroy();
-	
+
 	void update();
 	void preRender(Camera* camera, Light* light);
 	void render();
@@ -64,4 +64,3 @@ private:
 
 	glm::vec3 m_Up;
 };
-

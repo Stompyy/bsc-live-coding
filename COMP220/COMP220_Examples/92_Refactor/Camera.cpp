@@ -8,7 +8,7 @@ Camera::Camera()
 	m_Up = vec3(0.0f, 1.0f, 0.0f);
 
 	m_CameraBoomLength = 4.0f;
-	m_CameraPivotHeight = 1.0f;
+	m_CameraPivotHeight = 2.5f;
 	m_CameraTargetDistance = 50.0f;
 	m_CameraLowerLimitY = -5.0f;
 	m_CameraUpperLimitY = 0.1f;
@@ -36,9 +36,9 @@ void Camera::turn(float mouseX, float mouseY)
 	m_TurnY += -tan(mouseY * m_AimSensitivity);
 
 	// Clamp Y to avoid gimble lock as tan tends towards infinity
-	if (m_TurnY > m_CameraUpperLimitY) 
+	if (m_TurnY > m_CameraUpperLimitY)
 		m_TurnY = m_CameraUpperLimitY;
-	else if (m_TurnY < m_CameraLowerLimitY)	
+	else if (m_TurnY < m_CameraLowerLimitY)
 		m_TurnY = m_CameraLowerLimitY;
 
 	// Move camera lookatpoint to a trigonometry calculated position

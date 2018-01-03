@@ -24,7 +24,7 @@ bool loadAnimationFromFile(const std::string & filename, AnimationClip ** clip)
 	//the file we are using has one animation per file
 	aiAnimation * currentAnimation = scene->mAnimations[0];
 
-	for (int i = 0; i < currentAnimation->mNumChannels; i++)
+	for (unsigned int i = 0; i < currentAnimation->mNumChannels; i++)
 	{
 		aiNodeAnim *currentNode = currentAnimation->mChannels[i];
 		//printf("Animation Node %s\n", currentNode->mNodeName.C_Str());
@@ -42,7 +42,7 @@ bool loadAnimationFromFile(const std::string & filename, AnimationClip ** clip)
 void processNode(aiNode * parentNode, Joint *parentJoint)
 {
 	Joint * pJoint = parentJoint;
-	for (int i = 0; i < parentNode->mNumChildren; i++)
+	for (unsigned int i = 0; i < parentNode->mNumChildren; i++)
 	{
 		std::string nodeName = std::string(parentNode->mChildren[i]->mName.C_Str());
 		if (BoneMap.find(nodeName) != BoneMap.end())
@@ -55,7 +55,66 @@ void processNode(aiNode * parentNode, Joint *parentJoint)
 	}
 }
 
-std::vector<Mesh*> loadMeshFromFilename(const std::string& filename)
+GLint TextureFromFile(const char* path)//, string directory)
+{
+/*	//Generate texture ID and load texture data 
+	string filename = string(path);
+	//filename = directory + '/' + filename;
+	GLuint textureID;
+	glGenTextures(1, &textureID);
+	int width, height;
+	unsigned char* image = SOIL_load_image(filename.c_str(), &width, &height, 0, SOIL_LOAD_RGB);
+	// Assign texture to ID
+	glBindTexture(GL_TEXTURE_2D, textureID);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, image);
+	glGenerateMipmap(GL_TEXTURE_2D);
+
+	// Parameters
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+	glBindTexture(GL_TEXTURE_2D, 0);
+	SOIL_free_image_data(image);
+	return textureID;
+*/
+	return 0;//temp
+	}
+
+// Checks all material textures of a given type and loads the textures if they're not loaded yet.
+// The required info is returned as an FBXTexture struct.
+vector<FBXTexture> MeshLoader::loadMaterialTextures(aiMaterial* mat, aiTextureType type, string typeName)
+{
+	vector<FBXTexture> textures;
+	for (GLuint i = 0; i < mat->GetTextureCount(type); i++)
+	{
+		aiString str;
+		mat->GetTexture(type, i, &str);
+		// Check if texture was loaded before and if so, continue to next iteration: skip loading a new texture
+		GLboolean skip = false;
+		for (GLuint j = 0; j < m_FBXTextures.size(); j++)
+		{
+			if (m_FBXTextures[j].path == str)
+			{
+				textures.push_back(m_FBXTextures[j]);
+				skip = true; // A texture with the same filepath has already been loaded, continue to next one. (optimization)
+				break;
+			}
+		}
+		if (!skip)
+		{   // If texture hasn't been loaded already, load it
+			FBXTexture texture;
+			texture.id = TextureFromFile(str.C_Str());//, this->directory);
+			texture.type = typeName;
+			texture.path = str;
+			textures.push_back(texture);
+			this->m_FBXTextures.push_back(texture);  // Store it as texture loaded for entire model, to ensure we won't unnecesery load duplicate textures.
+		}
+	}
+	return textures;
+}
+
+std::vector<Mesh*> MeshLoader::loadMeshFromFilename(const std::string& filename)
 {
 	std::vector<Mesh*> meshes = {};
 	Assimp::Importer importer;
@@ -77,6 +136,7 @@ std::vector<Mesh*> loadMeshFromFilename(const std::string& filename)
 
 	std::vector<Vertex> vertices;
 	std::vector<unsigned int> indices;
+	std::vector<FBXTexture> textures;
 
 	for (unsigned int m = 0; m < scene->mNumMeshes; m++)
 	{
@@ -118,7 +178,25 @@ std::vector<Mesh*> loadMeshFromFilename(const std::string& filename)
 				myVertex.normalY = currentNormals.y;
 				myVertex.normalZ = currentNormals.z;
 			}
+/*			// https://www.opengl.org/discussion_boards/showthread.php/199257-Problem-loading-3d-Model?highlight=fbx+texture+assimp
+			if (currentAIMesh->mMaterialIndex >= 0)
+			{
+				aiMaterial* material = scene->mMaterials[currentAIMesh->mMaterialIndex];
+				// We assume a convention for sampler names in the shaders. Each diffuse texture should be named
+				// as 'texture_diffuseN' where N is a sequential number ranging from 1 to MAX_SAMPLER_NUMBER. 
+				// Same applies to other texture as the following list summarizes:
+				// Diffuse: texture_diffuseN
+				// Specular: texture_specularN
+				// Normal: texture_normalN
 
+				// 1. Diffuse maps
+				vector<FBXTexture> diffuseMaps = this->loadMaterialTextures(material, aiTextureType_DIFFUSE, "texture_diffuse");
+				m_FBXTextures.insert(m_FBXTextures.end(), diffuseMaps.begin(), diffuseMaps.end());
+				// 2. Specular maps
+				vector<FBXTexture> specularMaps = this->loadMaterialTextures(material, aiTextureType_SPECULAR, "texture_specular");
+				m_FBXTextures.insert(m_FBXTextures.end(), specularMaps.begin(), specularMaps.end());
+			}
+*/
 			vertices.push_back(myVertex);
 		}
 		for (unsigned int f = 0; f < currentAIMesh->mNumFaces; f++)
@@ -134,6 +212,7 @@ std::vector<Mesh*> loadMeshFromFilename(const std::string& filename)
 
 		vertices.clear();
 		indices.clear();
+		textures.clear();
 
 	}
 	return meshes;
@@ -144,8 +223,9 @@ MeshLoader::MeshLoader(std::vector<std::string> meshFileNames)
 {
 	// Ensures empty starting value
 	m_MeshMap.clear();
+	m_FBXTextures.clear();
 
-	for (std::string meshName : meshFileNames) 
+	for (std::string meshName : meshFileNames)
 	{
 		m_MeshMap[meshName] = loadMeshFromFilename(meshName);
 	}

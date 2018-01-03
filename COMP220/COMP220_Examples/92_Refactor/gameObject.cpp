@@ -26,13 +26,13 @@ GameObject::~GameObject()
 }
 
 void GameObject::init(
-	const std::vector<Mesh*> meshes, 
-	const GLuint textureID, 
-	const std::string& vertexShaderFilename, 
-	const std::string& fragmentShaderFilename, 
-	const glm::vec3 initialPosition, 
+	const std::vector<Mesh*> meshes,
+	const GLuint textureID,
+	const std::string& vertexShaderFilename,
+	const std::string& fragmentShaderFilename,
+	const glm::vec3 initialPosition,
 	const float mass,
-	const btVector3 collisionSize) 
+	const btVector3 collisionSize)
 {
 	m_Meshes = meshes;
 	m_DiffuseMapID = textureID;
@@ -44,12 +44,6 @@ void GameObject::init(
 	physics->getTransform().setIdentity();
 	updateTransformOrigin();
 	physics->updateMotionState();
-}
-
-void GameObject::loadMesh(const std::string& filename)
-{
-	// Include skeleton stuff here too
-	oldLoadMeshFromFile(filename, m_Meshes);
 }
 
 void GameObject::loadShaderProgram(const std::string& vertexShaderFilename, const std::string& fragmentShaderFilename)
@@ -75,7 +69,7 @@ void GameObject::destroy()
 			}
 			else
 			{
-				iter++; 
+				iter++;
 			}
 		}
 	}
@@ -100,9 +94,6 @@ void GameObject::update()
 	glm::mat4 translationMatrix = glm::translate(transform->getPosition());
 	glm::mat4 scaleMatrix = glm::scale(transform->getScale());
 	glm::mat4 rotationMatrix = glm::toMat4(transform->getRotation());
-//		  glm::rotate(transform->getRotation().x, glm::vec3(1.0f, 0.0f, 0.0f))
-//		* glm::rotate(transform->getRotation().y, glm::vec3(0.0f, 1.0f, 0.0f))
-//		* glm::rotate(transform->getRotation().z, glm::vec3(0.0f, 0.0f, 1.0f));
 
 	// TRS
 	m_ModelMatrix = translationMatrix * rotationMatrix * scaleMatrix;

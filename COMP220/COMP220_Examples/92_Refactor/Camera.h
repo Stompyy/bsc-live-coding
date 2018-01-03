@@ -4,7 +4,7 @@
 #include <glm\gtx\transform.hpp>
 #include "Transform.h"
 
-// Only using glm vector library
+// Only using glm vector library here
 using namespace glm;
 
 class Camera
@@ -15,13 +15,16 @@ public:
 
 	Transform* worldLocation;
 	Transform* target;
-	
+
 	void setAimSensitivity(const float sensitivity) { m_AimSensitivity = sensitivity; }
 
 	void setProjectionMatrix(const float fov, const int aspectRatio, const float near, const float far) { m_ProjectionMatrix = perspective(radians(fov), float(aspectRatio), near, far); };
 
 	mat4& getProjectionMatrix() { return m_ProjectionMatrix; }
 	mat4& getViewMatrix() { return m_ViewMatrix; }
+
+	float getBoomLength() { return m_CameraBoomLength; }
+	void setBoomLength(const float newLength) { m_CameraBoomLength = newLength; }
 
 	void turn(float mouseX, float mouseY);
 	void update();

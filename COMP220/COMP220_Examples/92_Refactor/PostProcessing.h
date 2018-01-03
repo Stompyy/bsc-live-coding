@@ -8,7 +8,7 @@ class PostProcessing
 public:
 	PostProcessing();
 	~PostProcessing();
-	 
+
 	GLuint getPostProcessingProgramID() { return m_PostProcessingProgramID; }
 
 	void setPostProcessingProgramID(GLuint ID) { m_PostProcessingProgramID = ID; }

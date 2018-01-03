@@ -7,9 +7,6 @@
     <ClCompile Include="shader.cpp">
       <Filter>source</Filter>
     </ClCompile>
-    <ClCompile Include="model.cpp">
-      <Filter>source</Filter>
-    </ClCompile>
     <ClCompile Include="Mesh.cpp">
       <Filter>source</Filter>
     </ClCompile>
@@ -40,21 +37,11 @@
     <ClCompile Include="PostProcessing.cpp">
       <Filter>source</Filter>
     </ClCompile>
-    <ClCompile Include="PlayerController.cpp">
-      <Filter>source</Filter>
-    </ClCompile>
-    <ClCompile Include="textureLoader.cpp">
-      <Filter>source</Filter>
-    </ClCompile>
-    <ClCompile Include="MeshLoader.cpp">
-      <Filter>source</Filter>
-    </ClCompile>
-    <ClCompile Include="ShaderUniforms.cpp">
-      <Filter>source</Filter>
-    </ClCompile>
-    <ClCompile Include="LoadGameObjects.cpp" />
     <ClCompile Include="Animation.cpp" />
     <ClCompile Include="Joint.cpp" />
+    <ClCompile Include="MeshLoader.cpp" />
+    <ClCompile Include="ShaderUniforms.cpp" />
+    <ClCompile Include="TextureLoader.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="main.h">
@@ -64,6 +51,9 @@
       <Filter>headers</Filter>
     </ClInclude>
     <ClInclude Include="shader.h">
+      <Filter>headers</Filter>
+    </ClInclude>
+    <ClInclude Include="model.h">
       <Filter>headers</Filter>
     </ClInclude>
     <ClInclude Include="Mesh.h">
@@ -96,21 +86,11 @@
     <ClInclude Include="PostProcessing.h">
       <Filter>headers</Filter>
     </ClInclude>
-    <ClInclude Include="PlayerController.h">
-      <Filter>headers</Filter>
-    </ClInclude>
-    <ClInclude Include="textureLoader.h">
-      <Filter>headers</Filter>
-    </ClInclude>
-    <ClInclude Include="MeshLoader.h">
-      <Filter>headers</Filter>
-    </ClInclude>
-    <ClInclude Include="ShaderUniforms.h">
-      <Filter>headers</Filter>
-    </ClInclude>
-    <ClInclude Include="LoadGameObjects.h" />
     <ClInclude Include="Animation.h" />
     <ClInclude Include="Joint.h" />
+    <ClInclude Include="MeshLoader.h" />
+    <ClInclude Include="ShaderUniforms.h" />
+    <ClInclude Include="TextureLoader.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="textureFrag.glsl">

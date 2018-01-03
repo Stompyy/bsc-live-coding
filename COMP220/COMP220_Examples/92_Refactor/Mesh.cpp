@@ -1,7 +1,5 @@
 #include "Mesh.h"
 
-
-
 Mesh::Mesh()
 {
 	// Set all to a default value
@@ -10,6 +8,7 @@ Mesh::Mesh()
 	m_VAO = 0;
 	m_NumberOfVerts = 0;
 	m_NumberOfIndices = 0;
+	m_NumberOfTextures = 0;
 }
 
 
@@ -46,7 +45,7 @@ void Mesh::CopyBufferData(Vertex* verts, unsigned int numberOfVerts, unsigned in
 
 	//2nd attribute buffer : colours
 	glEnableVertexAttribArray(1);
-	glVertexAttribPointer(1, 4, GL_FLOAT, GL_FALSE, sizeof(Vertex),	(void*)(3 * sizeof(float)));
+	glVertexAttribPointer(1, 4, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)(3 * sizeof(float)));
 
 	glEnableVertexAttribArray(2);
 	glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)(7 * sizeof(float)));

@@ -129,7 +129,7 @@ int main(int argc, char* args[])
 	PhysicsEngine* dynamicsWorld = new PhysicsEngine();
 
 	// Load in all needed textures
-	TextureLoader* textureLoader = new TextureLoader(std::vector<std::string>{ "TrexColour.jpg", "tankColour.png", "grass.png" });
+	TextureLoader* textureLoader = new TextureLoader(std::vector<std::string>{ "TrexColour.jpg", "tankColour.png", "grass.png", "archerTex1.png" });
 
 	// Load in all needed meshes
 	MeshLoader* meshLoader = new MeshLoader(std::vector<std::string>{ "Trex.FBX", "tank.FBX", "floor.FBX", "archer.FBX" });
@@ -138,16 +138,16 @@ int main(int argc, char* args[])
 	PostProcessing* postProcessing = new PostProcessing();
 	postProcessing->setPostProcessingProgramID(LoadShaders("passThroughVert.glsl", "postCellNotCell.glsl"));
 	postProcessing->setTexture0Location(glGetUniformLocation(postProcessing->getPostProcessingProgramID(), "texture0"));
-	
+
 	// Create an empty vector of GameObjects to store all GameObjects within the scene, inside
 	std::vector<GameObject*> gameObjectList;
 
-/*	// Camera initialisation. To be replaced with a camera class within a player class
+	/*	// Camera initialisation. To be replaced with a camera class within a player class
 	Camera* camera = new Camera();
 	camera->worldLocation->setPosition(0.0f, 0.5f, 15.0f);
 	camera->target->setPosition(0.0f, 0.0f, 0.0f);
 	camera->setProjectionMatrix(90.0f, (1000 / 800), 0.1f, 1000.0f);
-*/
+	*/
 	// Light initialisation
 	Light* light = new Light();
 	light->setDirection(0.2f, -1.0f, 0.2f);
@@ -224,27 +224,29 @@ int main(int argc, char* args[])
 	Player* player = new Player();
 	player->init(
 		meshLoader->getMeshes("archer.FBX"),
-		textureLoader->getTextureID("TrexColour.jpg"),
+		textureLoader->getTextureID("archerTex1.png"),
 		"lightingVert.glsl", "lightingFrag.glsl",
 		vec3(10.0f, 10.0f, 0.0f),
 		0.3f,
 		btVector3(0.0f, 0.0f, 0.0f)
 	);
+	//player->FBXTexture->LoadTextureFromFBXFile("archer.FBX");
+	//player->FBXTexture->loadGLTextureCall("archer.FBX");
 	player->camera->setProjectionMatrix(90.0f, (1000 / 800), 0.1f, 1000.0f);
 	player->transform->setScale(0.015f);
 	//player->camera->worldLocation->setPosition(10.0f, 15.0f, 0.0f);
 	gameObjectList.push_back(player);
- 
+
 	for (GameObject* gameObject : gameObjectList)
 		dynamicsWorld->addRigidBody(gameObject->physics->getRigidBody());
-	
 
 
 
 
 
 
-	
+
+
 	// Hides the mouse and takes relative position to avoid an initial snap
 	SDL_ShowCursor(SDL_DISABLE);
 	SDL_SetRelativeMouseMode(SDL_bool(SDL_ENABLE));
@@ -274,7 +276,7 @@ int main(int argc, char* args[])
 				running = false;
 				break;
 
-				// MOUSEMOTION Message, called when the mouse has been moved
+				// MOUSEMOTION Message, called when the mouse has been moved 
 			case SDL_MOUSEMOTION:
 				player->camera->turn(SDLEvent.motion.xrel, SDLEvent.motion.yrel);
 				break;
@@ -311,10 +313,20 @@ int main(int argc, char* args[])
 
 				case SDLK_SPACE:
 					// Jump
-					dynamicsWorld->getDynamicsWorld()->clearForces();
+					//dynamicsWorld->getDynamicsWorld()->clearForces();
+					player->jump();
+					break;
 
-					player->physics->getRigidBody()->activate(true);
-					player->physics->getRigidBody()->applyCentralForce(btVector3(0.0f, player->getJumpForce(), 0.0f));
+				case SDLK_UP:
+					// zoom in on player
+					if (player->camera->getBoomLength() > 0.1f)
+						player->camera->setBoomLength(player->camera->getBoomLength() - 0.1f);
+					break;
+
+				case SDLK_DOWN:
+					// zoom in on player
+					if (player->camera->getBoomLength() < 10.0f)
+						player->camera->setBoomLength(player->camera->getBoomLength() + 0.1f);
 					break;
 
 				default:
@@ -326,7 +338,7 @@ int main(int argc, char* args[])
 		player->updateMovement();
 
 		//Input, logic with input, physics, graphics.
-		tankRotation+=0.001f;
+		tankRotation += 0.001f;
 		//tank->transform->setRotation(tank->transform->getRotation().x, tankRotation, tank->transform->getRotation().z);
 
 		postProcessing->bindFrameBuffer();
@@ -334,7 +346,7 @@ int main(int argc, char* args[])
 		// Advance the physics simulation
 		dynamicsWorld->getDynamicsWorld()->stepSimulation(1.0f / 60.0f); // , 10);
 
-		// Apply physics simulation to every GameObject
+																		 // Apply physics simulation to every GameObject
 		for (GameObject* gameObject : gameObjectList)
 		{
 			// Update physics transform to the rigidbody transform
@@ -351,7 +363,7 @@ int main(int argc, char* args[])
 			gameObject->preRender(player->camera, light);
 			gameObject->render();
 		}
-
+		//player->FBXTexture->display();
 		player->camera->update();
 
 		// "Do all geometry things before shader"
@@ -360,29 +372,29 @@ int main(int argc, char* args[])
 	}
 
 	// Delete all Objects in reverse instantiation order
-/*	
+	/*
 	// Important! remember all this!
 	auto iter = gameObjectList.begin();
 	while (iter != gameObjectList.end())
 	{
-		if ((*iter))
-		{
-			(*iter)->destroy();
-			delete (*iter);
-			iter = gameObjectList.erase(iter);	// iter = ... because it will return back the next iter value to use next
-		}
-		else
-		{
-			iter++;
-		}
+	if ((*iter))
+	{
+	(*iter)->destroy();
+	delete (*iter);
+	iter = gameObjectList.erase(iter);	// iter = ... because it will return back the next iter value to use next
 	}
-*/	// Call destroy() functions instead of delete
+	else
+	{
+	iter++;
+	}
+	}
+	*/	// Call destroy() functions instead of delete
 	postProcessing->destroy();
 	delete postProcessing;
-//	dynamicsWorld->destroy();
+	//	dynamicsWorld->destroy();
 	delete dynamicsWorld;
 
 	close(SDL_window, GL_Context);
-	
+
 	return 0;
 }

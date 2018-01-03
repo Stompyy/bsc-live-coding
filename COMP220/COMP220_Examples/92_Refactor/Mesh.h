@@ -3,8 +3,17 @@
 #include <GL\glew.h>
 #include <SDL_opengl.h>
 #include <vector>
+#include <string>
+
+#include <assimp\Importer.hpp>
 
 #include "vertex.h"
+
+struct FBXTexture {
+	GLuint id;
+	std::string type;
+	aiString path;
+};
 
 class Mesh
 {
@@ -22,11 +31,11 @@ private:
 	GLuint m_VBO;	// Vertex buffer object
 	GLuint m_EBO;	// Element buffer object
 	GLuint m_VAO;	// Vertex array object
-	
+
 	unsigned int m_NumberOfVerts;
 	unsigned int m_NumberOfIndices;
+	unsigned int m_NumberOfTextures;
 
-	
 
 };
 
