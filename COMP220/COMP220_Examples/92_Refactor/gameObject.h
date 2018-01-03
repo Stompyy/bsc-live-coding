@@ -9,7 +9,6 @@
 
 #include "Mesh.h"
 #include "model.h"
-//#include "texture.h"
 #include "shader.h"
 
 #include "Transform.h"
@@ -41,9 +40,6 @@ public:
 
 	//GLuint getShaderProgramID() { return m_ShaderProgramID; }
 	void updateTransformOrigin() { physics->getTransform().setOrigin(btVector3(transform->getPosition().x, transform->getPosition().y, transform->getPosition().z)); }
-
-	//void loadMesh(const std::string& filename);
-	//void setMesh(const std::vector<Mesh*>& meshes) { m_Meshes = meshes; }
 
 	//void loadDiffuseMap(const std::string& filename);
 	//void setDiffuseMap(const GLuint textureID) { m_DiffuseMapID = textureID; }

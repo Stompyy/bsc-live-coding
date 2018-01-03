@@ -37,11 +37,22 @@
     <ClCompile Include="PostProcessing.cpp">
       <Filter>source</Filter>
     </ClCompile>
-    <ClCompile Include="Animation.cpp" />
-    <ClCompile Include="Joint.cpp" />
-    <ClCompile Include="MeshLoader.cpp" />
-    <ClCompile Include="ShaderUniforms.cpp" />
-    <ClCompile Include="TextureLoader.cpp" />
+    <ClCompile Include="Animation.cpp">
+      <Filter>source</Filter>
+    </ClCompile>
+    <ClCompile Include="Joint.cpp">
+      <Filter>source</Filter>
+    </ClCompile>
+    <ClCompile Include="MeshLoader.cpp">
+      <Filter>source</Filter>
+    </ClCompile>
+    <ClCompile Include="ShaderUniforms.cpp">
+      <Filter>source</Filter>
+    </ClCompile>
+    <ClCompile Include="TextureLoader.cpp">
+      <Filter>source</Filter>
+    </ClCompile>
+    <ClCompile Include="Raycast.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="main.h">
@@ -86,11 +97,22 @@
     <ClInclude Include="PostProcessing.h">
       <Filter>headers</Filter>
     </ClInclude>
-    <ClInclude Include="Animation.h" />
-    <ClInclude Include="Joint.h" />
-    <ClInclude Include="MeshLoader.h" />
-    <ClInclude Include="ShaderUniforms.h" />
-    <ClInclude Include="TextureLoader.h" />
+    <ClInclude Include="TextureLoader.h">
+      <Filter>headers</Filter>
+    </ClInclude>
+    <ClInclude Include="Joint.h">
+      <Filter>headers</Filter>
+    </ClInclude>
+    <ClInclude Include="MeshLoader.h">
+      <Filter>headers</Filter>
+    </ClInclude>
+    <ClInclude Include="ShaderUniforms.h">
+      <Filter>headers</Filter>
+    </ClInclude>
+    <ClInclude Include="Animation.h">
+      <Filter>headers</Filter>
+    </ClInclude>
+    <ClInclude Include="Raycast.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="textureFrag.glsl">

@@ -6,10 +6,11 @@ Player::Player()
 	//FBXTexture = new EmbeddedTextureFBXLoader();
 
 	//LoadTextureFromFBXFile("archer.FBX");
-
 	m_MovementSpeed = 0.2f;
 	m_JumpForce = 200.0f;
 	m_Up = vec3(0.0f, 1.0f, 0.0f);
+
+	updateRotation();
 }
 
 Player::~Player()
@@ -24,8 +25,7 @@ void Player::moveForward(float value)
 	camera->target->addPosition(vec3(m_DeltaPosition.x, 0.0f, m_DeltaPosition.z));
 	camera->worldLocation->addPosition(vec3(m_DeltaPosition.x, 0.0f, m_DeltaPosition.z));
 
-	transform->setRotation(conjugate(toQuat(lookAt(camera->target->getFloorPosition(), transform->getFloorPosition(), m_Up))));
-	//transform->updateOrientation(camera->target->getFloorPosition()); 
+	updateRotation();
 }
 
 void Player::moveRight(float value)
@@ -35,12 +35,20 @@ void Player::moveRight(float value)
 	transform->addPosition(vec3(m_DeltaPosition.x, 0.0f, m_DeltaPosition.z));
 	camera->target->addPosition(vec3(m_DeltaPosition.x, 0.0f, m_DeltaPosition.z));
 	camera->worldLocation->addPosition(vec3(m_DeltaPosition.x, 0.0f, m_DeltaPosition.z));
+
+	updateRotation();
 }
 
 void Player::jump()
 {
 	physics->getRigidBody()->activate(true);
 	physics->getRigidBody()->applyCentralForce(btVector3(0.0f, m_JumpForce, 0.0f));
+}
+
+void Player::updateRotation()
+{
+	transform->setRotation(conjugate(toQuat(lookAt(camera->target->getFloorPosition(), transform->getFloorPosition(), m_Up))));
+	//transform->updateOrientation(camera->target->getFloorPosition()); 
 }
 
 void Player::updateMovement()
@@ -55,5 +63,4 @@ void Player::updateMovement()
 	physics->getRigidBody()->getWorldTransform().setOrigin(tempPos);
 	physics->getTransform().setOrigin(tempPos);
 }
-
 

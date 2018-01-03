@@ -1,7 +1,5 @@
 #include "Transform.h"
 
-
-
 Transform::Transform()
 {
 	m_Position = vec3(0.0f, 0.0f, 0.0f);

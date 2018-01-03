@@ -20,6 +20,7 @@ struct SceneInfo {
 	PhysicsEngine* dynamicsWorld;
 };
 
+/*
 vec3 btQuatToGlmVec3(const btQuaternion& q)
 // https://en.wikipedia.org/wiki/Conversion_between_quaternions_and_Euler_angles
 {
@@ -44,6 +45,7 @@ vec3 btQuatToGlmVec3(const btQuaternion& q)
 
 	return vec3(roll, pitch, yaw);
 }
+*/
 
 SDL_Window* SDL_Init()
 {
@@ -139,15 +141,12 @@ int main(int argc, char* args[])
 	postProcessing->setPostProcessingProgramID(LoadShaders("passThroughVert.glsl", "postCellNotCell.glsl"));
 	postProcessing->setTexture0Location(glGetUniformLocation(postProcessing->getPostProcessingProgramID(), "texture0"));
 
+	// Single raycast instance can be reused
+	Raycast* raycast = new Raycast();
+
 	// Create an empty vector of GameObjects to store all GameObjects within the scene, inside
 	std::vector<GameObject*> gameObjectList;
 
-	/*	// Camera initialisation. To be replaced with a camera class within a player class
-	Camera* camera = new Camera();
-	camera->worldLocation->setPosition(0.0f, 0.5f, 15.0f);
-	camera->target->setPosition(0.0f, 0.0f, 0.0f);
-	camera->setProjectionMatrix(90.0f, (1000 / 800), 0.1f, 1000.0f);
-	*/
 	// Light initialisation
 	Light* light = new Light();
 	light->setDirection(0.2f, -1.0f, 0.2f);
@@ -234,16 +233,10 @@ int main(int argc, char* args[])
 	//player->FBXTexture->loadGLTextureCall("archer.FBX");
 	player->camera->setProjectionMatrix(90.0f, (1000 / 800), 0.1f, 1000.0f);
 	player->transform->setScale(0.015f);
-	//player->camera->worldLocation->setPosition(10.0f, 15.0f, 0.0f);
 	gameObjectList.push_back(player);
 
 	for (GameObject* gameObject : gameObjectList)
 		dynamicsWorld->addRigidBody(gameObject->physics->getRigidBody());
-
-
-
-
-
 
 
 
@@ -255,8 +248,6 @@ int main(int argc, char* args[])
 	glEnable(GL_DEPTH_TEST);
 	//glDepthFunc(GL_LESS);
 	//glEnable(GL_CULL_FACE);
-
-	float tankRotation = 0.0f;
 
 	// Event loop, we will loop until running is set to false, usually if escape has been pressed or window is closed
 	bool running = true;
@@ -317,7 +308,14 @@ int main(int argc, char* args[])
 					player->jump();
 					break;
 
+				case SDLK_LSHIFT:
+					// toggle to run
+					if (player->isRunning()) player->walk();
+					else player->run();
+					break;
+
 				case SDLK_UP:
+					// Using to debug FBX textures!
 					// zoom in on player
 					if (player->camera->getBoomLength() > 0.1f)
 						player->camera->setBoomLength(player->camera->getBoomLength() - 0.1f);
@@ -329,17 +327,29 @@ int main(int argc, char* args[])
 						player->camera->setBoomLength(player->camera->getBoomLength() + 0.1f);
 					break;
 
+				case SDLK_e:
+					raycast->init(player->camera, dynamicsWorld->getDynamicsWorld());
+					break;
+
 				default:
 					break;
 				}
+			case SDL_KEYUP:
+			{
+				// Check the actual key code of the key that has been released
+				switch (SDLEvent.key.keysym.sym)
+				{
+				case SDLK_LSHIFT:
+					//player->walk();
+					break;
+				}
+			}
 			}
 		}
-
+		// Update the player's physics position to the new position set by the controls
 		player->updateMovement();
 
 		//Input, logic with input, physics, graphics.
-		tankRotation += 0.001f;
-		//tank->transform->setRotation(tank->transform->getRotation().x, tankRotation, tank->transform->getRotation().z);
 
 		postProcessing->bindFrameBuffer();
 
@@ -389,8 +399,11 @@ int main(int argc, char* args[])
 	}
 	}
 	*/	// Call destroy() functions instead of delete
+	delete raycast;
 	postProcessing->destroy();
 	delete postProcessing;
+	delete meshLoader;
+	delete textureLoader;
 	//	dynamicsWorld->destroy();
 	delete dynamicsWorld;
 
