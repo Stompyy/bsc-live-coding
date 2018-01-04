@@ -56,7 +56,6 @@ PostProcessing::PostProcessing()
 
 PostProcessing::~PostProcessing()
 {
-	// Call destroy here too just in case
 	destroy();
 }
 

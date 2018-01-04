@@ -6,6 +6,7 @@
 int currentBoneID = 0;
 std::map<std::string, int> BoneMap;
 
+
 bool loadAnimationFromFile(const std::string & filename, AnimationClip ** clip)
 {
 	Assimp::Importer importer;
@@ -33,11 +34,8 @@ bool loadAnimationFromFile(const std::string & filename, AnimationClip ** clip)
 		aiVector3D scale = currentNode->mScalingKeys[0].mValue;
 		aiQuaternion rotation = currentNode->mRotationKeys[0].mValue;
 	}
-
-
 	return true;
 }
-
 
 void processNode(aiNode * parentNode, Joint *parentJoint)
 {
@@ -117,20 +115,20 @@ vector<FBXTexture> MeshLoader::loadMaterialTextures(aiMaterial* mat, aiTextureTy
 std::vector<Mesh*> MeshLoader::loadMeshFromFilename(const std::string& filename)
 {
 	std::vector<Mesh*> meshes = {};
-	Assimp::Importer importer;
+	//Assimp::Importer importer;
 
 	//const aiScene* scene = importer.ReadFile(filename, aiProcessPreset_TargetRealtime_Fast | aiProcess_FlipUVs);
-	const aiScene* scene = importer.ReadFile(filename, aiProcess_JoinIdenticalVertices | aiProcess_Triangulate | aiProcess_FlipUVs | aiProcess_GenSmoothNormals | aiProcess_GenUVCoords | aiProcess_CalcTangentSpace);
+	m_Scene = m_Importer.ReadFile(filename, aiProcess_JoinIdenticalVertices | aiProcess_Triangulate | aiProcess_FlipUVs | aiProcess_GenSmoothNormals | aiProcess_GenUVCoords | aiProcess_CalcTangentSpace);
 
 
-	if (scene == nullptr)
+	if (m_Scene == nullptr)
 	{
-		printf("Error loading model %s", importer.GetErrorString());
+		printf("Error loading model %s", m_Importer.GetErrorString());
 		return meshes;
 	}
-	if (!scene)
+	if (!m_Scene)
 	{
-		printf("Model Loading Error - %s\n", importer.GetErrorString());
+		printf("Model Loading Error - %s\n", m_Importer.GetErrorString());
 		return meshes;
 	}
 
@@ -138,9 +136,9 @@ std::vector<Mesh*> MeshLoader::loadMeshFromFilename(const std::string& filename)
 	std::vector<unsigned int> indices;
 	std::vector<FBXTexture> textures;
 
-	for (unsigned int m = 0; m < scene->mNumMeshes; m++)
+	for (unsigned int m = 0; m < m_Scene->mNumMeshes; m++)
 	{
-		const aiMesh* currentAIMesh = scene->mMeshes[m];
+		const aiMesh* currentAIMesh = m_Scene->mMeshes[m];
 
 		// For each mesh loaded in scene, copy all information into our Mesh class version, before at the end, pushing onto the meshes vector<Mesh>
 		Mesh* myCurrentMesh = new Mesh();
@@ -218,19 +216,20 @@ std::vector<Mesh*> MeshLoader::loadMeshFromFilename(const std::string& filename)
 	return meshes;
 }
 
-
 MeshLoader::MeshLoader(std::vector<std::string> meshFileNames)
 {
+	//m_Importer = new Importer();
+
 	// Ensures empty starting value
 	m_MeshMap.clear();
 	m_FBXTextures.clear();
 
+	// Builds the map of meshes and their identifying string keys
 	for (std::string meshName : meshFileNames)
 	{
 		m_MeshMap[meshName] = loadMeshFromFilename(meshName);
 	}
 }
-
 
 MeshLoader::~MeshLoader()
 {

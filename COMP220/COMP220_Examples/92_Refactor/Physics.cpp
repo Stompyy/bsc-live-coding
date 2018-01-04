@@ -16,6 +16,7 @@ Physics::Physics()
 
 Physics::~Physics()
 {
+	destroy();
 }
 
 void Physics::updateMotionState()
@@ -23,4 +24,9 @@ void Physics::updateMotionState()
 	m_MotionState = new btDefaultMotionState(m_Transform);
 	btRigidBody::btRigidBodyConstructionInfo m_RigidBodyInfo(m_Mass, m_MotionState, m_CollisionShape, m_Inertia);
 	m_RigidBody = new btRigidBody(m_RigidBodyInfo);
+}
+
+void Physics::destroy()
+{
+	//?
 }

@@ -152,6 +152,7 @@ copy ..\..\..\Libraries\assimp\bin\assimp-vc140-mt.dll "$(Outdir)\assimp-vc140-m
     <ClCompile Include="PostProcessing.cpp" />
     <ClCompile Include="Raycast.cpp" />
     <ClCompile Include="shader.cpp" />
+    <ClCompile Include="ShaderLoader.cpp" />
     <ClCompile Include="ShaderUniforms.cpp" />
     <ClCompile Include="TextureLoader.cpp" />
     <ClCompile Include="Transform.cpp" />
@@ -166,13 +167,13 @@ copy ..\..\..\Libraries\assimp\bin\assimp-vc140-mt.dll "$(Outdir)\assimp-vc140-m
     <ClInclude Include="Material.h" />
     <ClInclude Include="Mesh.h" />
     <ClInclude Include="MeshLoader.h" />
-    <ClInclude Include="model.h" />
     <ClInclude Include="Physics.h" />
     <ClInclude Include="PhysicsEngine.h" />
     <ClInclude Include="Player.h" />
     <ClInclude Include="PostProcessing.h" />
     <ClInclude Include="Raycast.h" />
     <ClInclude Include="shader.h" />
+    <ClInclude Include="ShaderLoader.h" />
     <ClInclude Include="ShaderUniforms.h" />
     <ClInclude Include="TextureLoader.h" />
     <ClInclude Include="Transform.h" />

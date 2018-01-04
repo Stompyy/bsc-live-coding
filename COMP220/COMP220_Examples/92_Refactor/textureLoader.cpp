@@ -53,13 +53,18 @@ TextureLoader::TextureLoader(std::vector<std::string> textureNamesToLoad)
 	// Ensures empty starting value
 	m_TextureMap.clear();
 
+	// Builds the map of GLuint textureIDs and their identifying string keys
 	for (std::string textureName : textureNamesToLoad)
 	{
-		// Error checking here? It's not catching misspelled filenames?
 		m_TextureMap[textureName] = loadTextureFromFilename(textureName);
 	}
 }
 
 TextureLoader::~TextureLoader()
+{
+	destroy();
+}
+
+void TextureLoader::destroy()
 {
 }

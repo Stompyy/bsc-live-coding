@@ -1,21 +1,24 @@
 #pragma once
 
 #include <glm\glm.hpp>
+#include <string>
 #include "Camera.h"
 #include "btBulletDynamicsCommon.h"
-
-using namespace glm;
 
 class Raycast
 {
 public:
 	Raycast();
 	~Raycast();
-	void init(Camera* camera, btDynamicsWorld* dynamicsWorld);
+
+	// Sets the raycast at a vector dependant on the camera, and checks for collisions in the dynamics world
+	void update(Camera* camera, btDynamicsWorld* dynamicsWorld);
+
+	void destroy();
 
 private:
-	// The ray start and end positions, in Normalized Device Coordinates
-	vec4 rayStart_NDC;
-	vec4 rayEnd_NDC;
+	// The ray start and end positions, in Normalized Device Coordinates [-1, 1]
+	glm::vec4 rayStart_NDC;
+	glm::vec4 rayEnd_NDC;
 };
 

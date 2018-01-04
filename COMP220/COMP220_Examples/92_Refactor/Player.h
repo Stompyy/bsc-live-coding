@@ -10,9 +10,13 @@ public:
 	Player();
 	~Player();
 
+	// The players view of the game
 	Camera* camera;
+	
 	//EmbeddedTextureFBXLoader* FBXTexture;
 
+	// Movement
+	// Would refactor into a player controller class, but the functions need to access all inherited members, physics, transform etc, so more efficient to be here
 	void moveForward(float value);
 	void moveRight(float value);
 	void jump();
@@ -28,8 +32,13 @@ public:
 	float getRunningSpeed() { return m_RunningSpeed; }
 	float getWalkingSpeed() { return m_WalkingSpeed; }
 
+	// Updates the camera and physics transform positions to the current gameObject transform position
 	void updateMovement();
+
+	// Updates the transform rotation to the current camera rotation. Only called when moved to allow a third person camera rotate to inspect the player model when stationary
 	void updateRotation();
+
+	void destroy();
 
 private:
 	glm::vec3 m_DeltaPosition;

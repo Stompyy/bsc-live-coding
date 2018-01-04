@@ -52,7 +52,12 @@
     <ClCompile Include="TextureLoader.cpp">
       <Filter>source</Filter>
     </ClCompile>
-    <ClCompile Include="Raycast.cpp" />
+    <ClCompile Include="Raycast.cpp">
+      <Filter>source</Filter>
+    </ClCompile>
+    <ClCompile Include="ShaderLoader.cpp">
+      <Filter>source</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="main.h">
@@ -62,9 +67,6 @@
       <Filter>headers</Filter>
     </ClInclude>
     <ClInclude Include="shader.h">
-      <Filter>headers</Filter>
-    </ClInclude>
-    <ClInclude Include="model.h">
       <Filter>headers</Filter>
     </ClInclude>
     <ClInclude Include="Mesh.h">
@@ -112,7 +114,12 @@
     <ClInclude Include="Animation.h">
       <Filter>headers</Filter>
     </ClInclude>
-    <ClInclude Include="Raycast.h" />
+    <ClInclude Include="Raycast.h">
+      <Filter>headers</Filter>
+    </ClInclude>
+    <ClInclude Include="ShaderLoader.h">
+      <Filter>headers</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="textureFrag.glsl">

@@ -10,6 +10,7 @@ public:
 	Material();
 	~Material();
 
+	// Constructors taking 3 or 4 arguments for readability when setting rgb or rgba values
 	void setAmbientColour(const float r, const float g, const float b, const float a) { m_AmbientColour = vec4(r, g, b, a); }
 	void setDiffuseColour(const float r, const float g, const float b, const float a) { m_DiffuseColour = vec4(r, g, b, a); }
 	void setSpecularColour(const float r, const float g, const float b, const float a) { m_SpecularColour = vec4(r, g, b, a); }

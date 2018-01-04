@@ -17,22 +17,22 @@ Mesh::~Mesh()
 	destroy();
 }
 
-void Mesh::CopyBufferData(Vertex* verts, unsigned int numberOfVerts, unsigned int* indices, unsigned int numberOfIndices)	//(std::vector<Vertex>& vertices, std::vector<unsigned int>& indices)
+void Mesh::CopyBufferData(Vertex* verts, unsigned int numberOfVerts, unsigned int* indices, unsigned int numberOfIndices)
 {
 	glBindBuffer(GL_ARRAY_BUFFER, m_VBO);
-	glBufferData(GL_ARRAY_BUFFER, numberOfVerts * sizeof(Vertex), verts, GL_STATIC_DRAW);	//vertices.size() * sizeof(Vertex), vertices.data(), GL_STATIC_DRAW);
+	glBufferData(GL_ARRAY_BUFFER, numberOfVerts * sizeof(Vertex), verts, GL_STATIC_DRAW);
 
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_EBO);
 	glBufferData(GL_ELEMENT_ARRAY_BUFFER, numberOfIndices * sizeof(unsigned int), indices, GL_STATIC_DRAW);
 
-	m_NumberOfVerts = numberOfVerts;		//vertices.size();
-	m_NumberOfIndices = numberOfIndices;	//indices.size();
+	m_NumberOfVerts = numberOfVerts;	
+	m_NumberOfIndices = numberOfIndices;
 
 	glBindVertexArray(m_VAO);
 
 	// Always define attribute pointer AFTER putting data into vertex buffer!!!
 
-	// 1rst attribute buffer : vertices
+	// 1st attribute buffer : vertices
 	glEnableVertexAttribArray(0);
 	glVertexAttribPointer(
 		0,                  // attribute 0. No particular reason for 0, but must match the layout in the shader.
@@ -47,10 +47,11 @@ void Mesh::CopyBufferData(Vertex* verts, unsigned int numberOfVerts, unsigned in
 	glEnableVertexAttribArray(1);
 	glVertexAttribPointer(1, 4, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)(3 * sizeof(float)));
 
+	// 3rd attribute buffer : texture coordinates
 	glEnableVertexAttribArray(2);
 	glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)(7 * sizeof(float)));
 
-	// Send this across again at end re Triss?
+	// 4th attribute buffer : normals
 	glEnableVertexAttribArray(3);
 	glVertexAttribPointer(3, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)(9 * sizeof(float)));
 
@@ -80,7 +81,6 @@ void Mesh::render()
 	glBindVertexArray(m_VAO);
 	glBindBuffer(GL_ARRAY_BUFFER, m_VBO);
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_EBO);
-
 
 	glDrawElements(GL_TRIANGLES, m_NumberOfIndices, GL_UNSIGNED_INT, (void*)0);
 }

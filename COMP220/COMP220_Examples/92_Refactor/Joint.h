@@ -16,7 +16,7 @@ public:
 	~Joint();
 
 	void addChildJoint(Joint * joint);
-	void destory();
+	void destroy();
 
 	glm::mat4& getTransform()
 	{

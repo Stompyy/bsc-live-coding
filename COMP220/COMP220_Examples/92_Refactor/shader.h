@@ -2,9 +2,9 @@
 
 #include <GL/glew.h>
 #include <SDL_opengl.h>
-
 #include <string>
 #include <vector>
 #include <fstream> 
 
+// Loads the vertex and fragment shaders and returns the GLuint location
 GLuint LoadShaders(const char* vertex_file_path, const char* fragment_file_path);

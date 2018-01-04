@@ -28,27 +28,22 @@ GameObject::~GameObject()
 void GameObject::init(
 	const std::vector<Mesh*> meshes,
 	const GLuint textureID,
-	const std::string& vertexShaderFilename,
-	const std::string& fragmentShaderFilename,
+	const GLuint shaderID,
 	const glm::vec3 initialPosition,
 	const float mass,
 	const btVector3 collisionSize)
 {
 	m_Meshes = meshes;
 	m_DiffuseMapID = textureID;
-	m_ShaderProgramID = LoadShaders(vertexShaderFilename.c_str(), fragmentShaderFilename.c_str());
+	m_ShaderProgramID = shaderID;
 	shaderUniforms->init(m_ShaderProgramID);
 	transform->setPosition(initialPosition);
 	physics->setMass(mass);
 	physics->setCollisionShapeSize(collisionSize);
 	physics->getTransform().setIdentity();
-	updateTransformOrigin();
+	// Set the physics position to the gameObject's transform
+	physics->getTransform().setOrigin(btVector3(transform->getPosition().x, transform->getPosition().y, transform->getPosition().z));
 	physics->updateMotionState();
-}
-
-void GameObject::loadShaderProgram(const std::string& vertexShaderFilename, const std::string& fragmentShaderFilename)
-{
-	m_ShaderProgramID = LoadShaders(vertexShaderFilename.c_str(), fragmentShaderFilename.c_str());
 }
 
 void GameObject::destroy()
@@ -73,6 +68,10 @@ void GameObject::destroy()
 			}
 		}
 	}
+	delete shaderUniforms;
+	delete physics;
+	delete material;
+	delete transform;
 }
 
 void GameObject::update()
@@ -80,33 +79,32 @@ void GameObject::update()
 
 	if (physics->getRigidBody() != nullptr)
 	{
-		transform->setPosition(vec3(physics->getTransform().getOrigin().getX(), physics->getTransform().getOrigin().getY(), physics->getTransform().getOrigin().getZ()));
+		transform->setPosition(
+			physics->getTransform().getOrigin().getX(), 
+			physics->getTransform().getOrigin().getY(), 
+			physics->getTransform().getOrigin().getZ());
 	}
-
-	//if (Rigidbody)
-	//{
-	//	get pos rb
-	//		update transform pos
-	//}
-
 
 	// Update the model matrix
 	glm::mat4 translationMatrix = glm::translate(transform->getPosition());
 	glm::mat4 scaleMatrix = glm::scale(transform->getScale());
 	glm::mat4 rotationMatrix = glm::toMat4(transform->getRotation());
 
-	// TRS
+	// Remember TRS order
 	m_ModelMatrix = translationMatrix * rotationMatrix * scaleMatrix;
 }
 
 void GameObject::preRender(Camera* camera, Light* light)
 {
 	glUseProgram(m_ShaderProgramID);
+
 	// Activate the texture
 	glActiveTexture(GL_TEXTURE0);
+
 	// Bind the texture
 	glBindTexture(GL_TEXTURE_2D, m_DiffuseMapID);
 
+	// Send the values to the shaders
 	shaderUniforms->update(camera, light, material, &m_ModelMatrix);
 }
 

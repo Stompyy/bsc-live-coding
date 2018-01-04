@@ -17,7 +17,7 @@ Joint::Joint()
 
 Joint::~Joint()
 {
-	destory();
+	destroy();
 }
 
 void Joint::addChildJoint(Joint * joint)
@@ -25,7 +25,7 @@ void Joint::addChildJoint(Joint * joint)
 	m_Children.push_back(joint);
 }
 
-void Joint::destory()
+void Joint::destroy()
 {
 	auto iter = m_Children.begin();
 	while (iter != m_Children.end())

@@ -37,6 +37,9 @@ public:
 	vector<FBXTexture> loadMaterialTextures(aiMaterial* mat, aiTextureType type, string typeName);
 
 private:
+	Importer m_Importer;
+	const aiScene* m_Scene;
+
 	// Create an empty texture map. Aim to only load in each texture once, but able to reuse.
 	std::map<std::string, std::vector<Mesh*>> m_MeshMap;
 

@@ -7,12 +7,16 @@
 #include "Light.h"
 
 class ShaderUniforms
+	// Each rendered object will have it's own instantiation of this class, finding all the appropriate uniform locations at initialisation, and sending the values across on update()
 {
 public:
 	ShaderUniforms();
 	~ShaderUniforms();
 
+	// Find all of the uniform locations
 	void init(GLuint shaderProgramID);
+
+	// Send the values to the shader
 	void update(Camera* camera, Light* light, Material* material, glm::mat4* modelMatrix);
 
 private:

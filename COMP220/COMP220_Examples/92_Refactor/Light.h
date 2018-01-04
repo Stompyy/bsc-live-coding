@@ -5,7 +5,7 @@
 #include "Transform.h"
 #include "Material.h"
 
-// Only using glm vector library
+// Only using glm vectors
 using namespace glm;
 
 class Light
@@ -17,11 +17,13 @@ public:
 	Transform* transform;
 	Material* colour;
 
+	// Set the direction of the light
 	void setDirection(const float x, const float y, const float z) { m_Direction = vec3(x, y, z); }
 	vec3 getDirection() { return m_Direction; }
 
+	void destroy();
+
 private:
-	// Do I want it to move?
 	vec3 m_Direction; 
 };
 

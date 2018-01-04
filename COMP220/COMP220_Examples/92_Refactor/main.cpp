@@ -3,21 +3,12 @@
 
 #include "main.h"
 
-// #define PI = 3.14159		M_PI seems to be part of a library already
-
+// To load in all gameObjects away from main.cpp, would lose all direct references to objects however
 struct Model {
 	Model(Mesh* mesh, GLuint* texture) : mesh(mesh), texture(texture) {}
 	Mesh* mesh;
 	std::vector<Mesh*>meshes;
 	GLuint* texture;
-};
-
-struct SceneInfo {
-	SceneInfo(MeshLoader* meshLoader, TextureLoader* textureLoader, std::vector<GameObject*> gameObjectList, PhysicsEngine* dynamicsWorld) : meshLoader(meshLoader), textureLoader(textureLoader), gameObjectList(gameObjectList), dynamicsWorld(dynamicsWorld) {}
-	MeshLoader* meshLoader;
-	TextureLoader* textureLoader;
-	std::vector<GameObject*> gameObjectList;
-	PhysicsEngine* dynamicsWorld;
 };
 
 /*
@@ -85,6 +76,7 @@ SDL_GLContext GL_Init(SDL_Window* SDL_window)
 	SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE);
 	SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
 
+	// Create the GL context
 	SDL_GLContext GL_Context = SDL_GL_CreateContext(SDL_window);
 	if (GL_Context == nullptr)
 	{
@@ -93,7 +85,7 @@ SDL_GLContext GL_Init(SDL_Window* SDL_window)
 		SDL_Quit();
 		return nullptr;
 	}
-	//Initialize GLEW
+	// Initialize GLEW
 	glewExperimental = GL_TRUE;
 	GLenum glewError = glewInit();
 	if (glewError != GLEW_OK)
@@ -118,10 +110,12 @@ void close(SDL_Window* SDL_window, SDL_GLContext GL_Context)
 
 int main(int argc, char* args[])
 {
+	// Initialise both SDL and GL
 	SDL_Window* SDL_window = SDL_Init();
 	SDL_GLContext GL_Context = GL_Init(SDL_window);
 
-	if ((SDL_window == nullptr) | (GL_Context == nullptr))  // GL_Context is not a pointer?
+	// If either did not initialise then exit
+	if ((SDL_window == nullptr) | (GL_Context == nullptr))
 	{
 		SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, SDL_GetError(), "Initialisation failed", NULL);
 		close(SDL_window, GL_Context);
@@ -136,6 +130,13 @@ int main(int argc, char* args[])
 	// Load in all needed meshes
 	MeshLoader* meshLoader = new MeshLoader(std::vector<std::string>{ "Trex.FBX", "tank.FBX", "floor.FBX", "archer.FBX" });
 
+	// Load in and label all needed shaders
+	ShaderLoader* shaderLoader = new ShaderLoader(std::vector<ShaderInfo*>{
+			new ShaderInfo("grassShader", "textureVert.glsl", "textureFrag.glsl"),
+			new ShaderInfo("trexShader", "lightingVert.glsl", "lightingFrag.glsl"),
+			new ShaderInfo("tankShader", "lightingVert.glsl", "lightingFragTank.glsl")
+	});
+
 	// Post processing class initialisation
 	PostProcessing* postProcessing = new PostProcessing();
 	postProcessing->setPostProcessingProgramID(LoadShaders("passThroughVert.glsl", "postCellNotCell.glsl"));
@@ -144,65 +145,47 @@ int main(int argc, char* args[])
 	// Single raycast instance can be reused
 	Raycast* raycast = new Raycast();
 
-	// Create an empty vector of GameObjects to store all GameObjects within the scene, inside
+	// Create an empty vector of GameObjects to store all GameObjects within the scene
 	std::vector<GameObject*> gameObjectList;
+	gameObjectList.clear();
 
 	// Light initialisation
 	Light* light = new Light();
 	light->setDirection(0.2f, -1.0f, 0.2f);
+	// Specular green!
 	light->colour->setSpecularColour(0.0f, 1.0f, 0.0f);
 
-
-	// Create all gameObjects and add to the GameObjects vector, and the physics simulation.
+	// Create all gameObjects and add to the GameObjects vector
+	// Ground
 	GameObject* ground = new GameObject();
 	ground->init(
 		meshLoader->getMeshes("floor.FBX"),			// meshes
 		textureLoader->getTextureID("grass.png"),	// texture
-		"textureVert.glsl", "textureFrag.glsl",		// shaders
+		shaderLoader->getShaderID("grassShader"),	// shader
 		vec3(0.0f, -5.0f, 0.0f),					// initial position
 		0.0f,										// mass
 		btVector3(50.0f, 1.0f, 50.0f)				// collision size
 	);
 	gameObjectList.push_back(ground);
 
+	// T-rex
 	GameObject* trex = new GameObject();
 	trex->init(
 		meshLoader->getMeshes("Trex.FBX"),
 		textureLoader->getTextureID("TrexColour.jpg"),
-		"lightingVert.glsl", "lightingFrag.glsl",
+		shaderLoader->getShaderID("trexShader"),
 		vec3(0.0f, 0.0f, 0.0f),
 		1.0f,
 		btVector3(0.0f, 0.0f, 0.0f)
 	);
 	gameObjectList.push_back(trex);
 
-	GameObject* tank3 = new GameObject();
-	tank3->init(
-		meshLoader->getMeshes("tank.FBX"),
-		textureLoader->getTextureID("tankColour.png"),
-		"lightingVert.glsl", "lightingFragTank.glsl",
-		vec3(-15.0f, 200.0f, 15.0f),
-		1.0f,
-		btVector3(0.0f, 0.0f, 0.0f)
-	);
-	gameObjectList.push_back(tank3);
-
-	GameObject* tank4 = new GameObject();
-	tank4->init(
-		meshLoader->getMeshes("tank.FBX"),
-		textureLoader->getTextureID("tankColour.png"),
-		"lightingVert.glsl", "lightingFragTank.glsl",
-		vec3(15.0f, 5.0f, -15.0f),
-		1.0f,
-		btVector3(0.0f, 0.0f, 0.0f)
-	);
-	gameObjectList.push_back(tank4);
-
+	// 4 x tanks
 	GameObject* tank = new GameObject();
 	tank->init(
 		meshLoader->getMeshes("tank.FBX"),
 		textureLoader->getTextureID("tankColour.png"),
-		"lightingVert.glsl", "lightingFragTank.glsl",
+		shaderLoader->getShaderID("tankShader"),
 		vec3(15.0f, 0.0f, 15.0f),
 		1.0f,
 		btVector3(0.0f, 0.0f, 0.0f)
@@ -213,28 +196,55 @@ int main(int argc, char* args[])
 	tank2->init(
 		meshLoader->getMeshes("tank.FBX"),
 		textureLoader->getTextureID("tankColour.png"),
-		"lightingVert.glsl", "lightingFragTank.glsl",
+		shaderLoader->getShaderID("tankShader"),
 		vec3(-15.0f, 0.0f, -15.0f),
 		1.0f,
 		btVector3(0.0f, 0.0f, 0.0f)
 	);
 	gameObjectList.push_back(tank2);
 
+	GameObject* tank3 = new GameObject();
+	tank3->init(
+		meshLoader->getMeshes("tank.FBX"),
+		textureLoader->getTextureID("tankColour.png"),
+		shaderLoader->getShaderID("tankShader"),
+		vec3(-15.0f, 200.0f, 15.0f),
+		1.0f,
+		btVector3(0.0f, 0.0f, 0.0f)
+	);
+	gameObjectList.push_back(tank3);
+
+	GameObject* tank4 = new GameObject();
+	tank4->init(
+		meshLoader->getMeshes("tank.FBX"),
+		textureLoader->getTextureID("tankColour.png"),
+		shaderLoader->getShaderID("tankShader"),
+		vec3(15.0f, 5.0f, -15.0f),
+		1.0f,
+		btVector3(0.0f, 0.0f, 0.0f)
+	);
+	gameObjectList.push_back(tank4);
+
+	// Our player
 	Player* player = new Player();
 	player->init(
 		meshLoader->getMeshes("archer.FBX"),
 		textureLoader->getTextureID("archerTex1.png"),
-		"lightingVert.glsl", "lightingFrag.glsl",
+		shaderLoader->getShaderID("tankShader"),
+//		shaderLoader->getShaderID("trexShader"),
 		vec3(10.0f, 10.0f, 0.0f),
 		0.3f,
 		btVector3(0.0f, 0.0f, 0.0f)
 	);
 	//player->FBXTexture->LoadTextureFromFBXFile("archer.FBX");
 	//player->FBXTexture->loadGLTextureCall("archer.FBX");
-	player->camera->setProjectionMatrix(90.0f, (1000 / 800), 0.1f, 1000.0f);
 	player->transform->setScale(0.015f);
 	gameObjectList.push_back(player);
 
+	// Set up camera
+	player->camera->setProjectionMatrix(90.0f, (1000 / 800), 0.1f, 1000.0f);
+	
+	// Add all gameObjects to the physics simulation
 	for (GameObject* gameObject : gameObjectList)
 		dynamicsWorld->addRigidBody(gameObject->physics->getRigidBody());
 
@@ -249,10 +259,12 @@ int main(int argc, char* args[])
 	//glDepthFunc(GL_LESS);
 	//glEnable(GL_CULL_FACE);
 
-	// Event loop, we will loop until running is set to false, usually if escape has been pressed or window is closed
+	// Event loop, we will loop until running is set to false, if escape has been pressed or window is closed
 	bool running = true;
+
 	// SDL Event structure, this will be checked in the while loop
 	SDL_Event SDLEvent;
+
 	while (running)
 	{
 		// Poll for the events which have happened in this frame
@@ -272,7 +284,64 @@ int main(int argc, char* args[])
 				player->camera->turn(SDLEvent.motion.xrel, SDLEvent.motion.yrel);
 				break;
 
-				// KEYDOWN Message, called when a key has been pressed down
+				// MOUSEBUTTONDOWN message, called when a mouse button has been pressed down
+			case SDL_MOUSEBUTTONDOWN:
+				// Check button code of the pressed mouse button
+				switch (SDLEvent.button.button)
+				{
+				case SDL_BUTTON_LEFT:
+				{
+					// Fire off a raycast
+					raycast->update(player->camera, dynamicsWorld->getDynamicsWorld());
+					break;
+				}
+				}
+				// SDL_MOUSEWHEEL message, called when the mouse wheel has been moved
+			case SDL_MOUSEWHEEL:
+			{
+				// Check mouse wheel orientation
+				switch (SDLEvent.wheel.direction)
+				{
+					// Standard mouse wheel orientation
+				case SDL_MOUSEWHEEL_NORMAL:
+				{
+					// Zoom in/out on player by changing the length of the third person camera boom
+					// Scroll forwards
+					if (SDLEvent.wheel.y == 1)
+					{
+						if (player->camera->getBoomLength() > 0.1f)
+							player->camera->setBoomLength(player->camera->getBoomLength() - 0.1f);
+					}
+					// Scroll backwards
+					else if (SDLEvent.wheel.y == -1)
+					{
+						if (player->camera->getBoomLength() < 10.0f)
+							player->camera->setBoomLength(player->camera->getBoomLength() + 0.1f);
+					}
+					break;
+				}
+				// Mouse wheel can be set up flipped (i.e. MacOS) this detects this
+				case SDL_MOUSEWHEEL_FLIPPED:
+				{
+					// Zoom in/out on player by changing the length of the third person camera boom
+					// Scroll forwards
+					if (SDLEvent.wheel.y == -1)
+					{
+						if (player->camera->getBoomLength() > 0.1f)
+							player->camera->setBoomLength(player->camera->getBoomLength() - 0.1f);
+					}
+					// Scroll backwards
+					else if (SDLEvent.wheel.y == 1)
+					{
+						if (player->camera->getBoomLength() < 10.0f)
+							player->camera->setBoomLength(player->camera->getBoomLength() + 0.1f);
+					}
+					break;
+				}
+				}
+				
+			}
+				// KEYDOWN message, called when a key has been pressed down
 			case SDL_KEYDOWN:
 				// Check the actual key code of the key that has been pressed
 				switch (SDLEvent.key.keysym.sym)
@@ -315,20 +384,17 @@ int main(int argc, char* args[])
 					break;
 
 				case SDLK_UP:
-					// Using to debug FBX textures!
+					// Zoom in/out on player by changing the length of the third person camera boom
+					// Using to debug FBX textures! Alternative to other zoom in/out if no mouse wheel available, i.e. trackpad
 					// zoom in on player
 					if (player->camera->getBoomLength() > 0.1f)
 						player->camera->setBoomLength(player->camera->getBoomLength() - 0.1f);
 					break;
 
 				case SDLK_DOWN:
-					// zoom in on player
+					// zoom out on player
 					if (player->camera->getBoomLength() < 10.0f)
 						player->camera->setBoomLength(player->camera->getBoomLength() + 0.1f);
-					break;
-
-				case SDLK_e:
-					raycast->init(player->camera, dynamicsWorld->getDynamicsWorld());
 					break;
 
 				default:
@@ -340,33 +406,38 @@ int main(int argc, char* args[])
 				switch (SDLEvent.key.keysym.sym)
 				{
 				case SDLK_LSHIFT:
+					// Toggling now, as holding messes it all up!
 					//player->walk();
 					break;
 				}
 			}
 			}
 		}
+
+		// Input, logic with input, physics, graphics.
+
 		// Update the player's physics position to the new position set by the controls
 		player->updateMovement();
 
-		//Input, logic with input, physics, graphics.
-
+		// Bind the frame buffer
 		postProcessing->bindFrameBuffer();
 
 		// Advance the physics simulation
 		dynamicsWorld->getDynamicsWorld()->stepSimulation(1.0f / 60.0f); // , 10);
 
-																		 // Apply physics simulation to every GameObject
+		// Apply physics simulation to every GameObject
 		for (GameObject* gameObject : gameObjectList)
 		{
 			// Update physics transform to the rigidbody transform
 			gameObject->physics->setTransform(gameObject->physics->getRigidBody()->getWorldTransform());
 
-			// Update gameObject Position to the Physics position
+			// Update gameObject position to the physics position
 			btVector3 gameObjectPhysicsOrigin = gameObject->physics->getTransform().getOrigin();
 			gameObject->transform->setPosition(vec3(gameObjectPhysicsOrigin.getX(), gameObjectPhysicsOrigin.getY(), gameObjectPhysicsOrigin.getZ()));
 
+			// Update gameObject rotation to the physics rotation
 			btQuaternion objectRotation = gameObject->physics->getTransform().getRotation();
+			//gameObject->transform->setRotation(objectRotation.getX(), objectRotation.getY(), objectRotation.getZ(), objectRotation.getW());
 
 			// Update the model matrix (TRS!)
 			gameObject->update();
@@ -376,8 +447,10 @@ int main(int argc, char* args[])
 		//player->FBXTexture->display();
 		player->camera->update();
 
-		// "Do all geometry things before shader"
+		// Post processing frame buffer
 		postProcessing->render();
+
+		// Swap the SDL window to display our new image
 		SDL_GL_SwapWindow(SDL_window);
 	}
 
@@ -398,13 +471,23 @@ int main(int argc, char* args[])
 	iter++;
 	}
 	}
-	*/	// Call destroy() functions instead of delete
-	delete raycast;
+	*/	
+	
+	// Call destroy() functions instead of delete
+	
+/*	light->destroy();
+	raycast->destroy();
 	postProcessing->destroy();
+	shaderLoader->destroy();
+	//meshLoader->destroy();
+	textureLoader->destroy();
+	dynamicsWorld->destroy();
+*/	delete light;
+	delete raycast;
 	delete postProcessing;
+	delete shaderLoader;
 	delete meshLoader;
 	delete textureLoader;
-	//	dynamicsWorld->destroy();
 	delete dynamicsWorld;
 
 	close(SDL_window, GL_Context);

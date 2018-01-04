@@ -13,4 +13,11 @@ Light::Light()
 
 Light::~Light()
 {
+	destroy();
+}
+
+void Light::destroy()
+{
+	delete colour;
+	delete transform;
 }

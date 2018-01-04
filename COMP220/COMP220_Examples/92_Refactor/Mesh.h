@@ -1,14 +1,14 @@
 #pragma once
 
-#include <GL\glew.h>
-#include <SDL_opengl.h>
 #include <vector>
 #include <string>
-
+#include <GL\glew.h>
+#include <SDL_opengl.h>
 #include <assimp\Importer.hpp>
 
 #include "vertex.h"
 
+// Trying to read texture values from mesh import... wip
 struct FBXTexture {
 	GLuint id;
 	std::string type;
@@ -21,7 +21,7 @@ public:
 	Mesh();
 	~Mesh();
 
-	void CopyBufferData(Vertex* verts, unsigned int numberOfVerts, unsigned int* indices, unsigned int numberOfIndices);	// std::vector<Vertex>& vertices, std::vector<unsigned int>& indices);
+	void CopyBufferData(Vertex* verts, unsigned int numberOfVerts, unsigned int* indices, unsigned int numberOfIndices);
 
 	void init();
 	void render();
@@ -35,7 +35,5 @@ private:
 	unsigned int m_NumberOfVerts;
 	unsigned int m_NumberOfIndices;
 	unsigned int m_NumberOfTextures;
-
-
 };
 

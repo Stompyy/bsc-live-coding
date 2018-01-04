@@ -8,7 +8,6 @@
 #include <glm\gtx\quaternion.hpp>
 
 #include "Mesh.h"
-#include "model.h"
 #include "shader.h"
 
 #include "Transform.h"
@@ -22,11 +21,11 @@ public:
 	GameObject();
 	~GameObject();
 
+	// Tidier initialisation of class than by setting individually in main.cpp
 	void init(
 		const std::vector<Mesh*> meshes,
 		const GLuint textureID,
-		const std::string& vertexShaderFilename,
-		const std::string& fragmentShaderFilename,
+		const GLuint shaderID,
 		const glm::vec3 initialPosition,
 		const float mass,
 		const btVector3 collisionSize);
@@ -36,18 +35,13 @@ public:
 	Physics* physics;
 	ShaderUniforms* shaderUniforms;
 
-	//glm::mat4& getModelMatrix() { return m_ModelMatrix; }
-
-	//GLuint getShaderProgramID() { return m_ShaderProgramID; }
-	void updateTransformOrigin() { physics->getTransform().setOrigin(btVector3(transform->getPosition().x, transform->getPosition().y, transform->getPosition().z)); }
-
-	//void loadDiffuseMap(const std::string& filename);
-	//void setDiffuseMap(const GLuint textureID) { m_DiffuseMapID = textureID; }
-	void loadShaderProgram(const std::string& vertexShaderFilename, const std::string& fragmentShaderFilename);
 	void destroy();
-
 	void update();
+
+	// Update the shaders with the latest values
 	void preRender(Camera* camera, Light* light);
+
+	// Draw
 	void render();
 
 private:

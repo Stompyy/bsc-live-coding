@@ -1,6 +1,6 @@
 #include "Raycast.h"
 
-
+// http://www.opengl-tutorial.org/miscellaneous/clicking-on-objects/picking-with-a-physics-library/
 
 Raycast::Raycast()
 {
@@ -12,7 +12,7 @@ Raycast::Raycast()
 	rayEnd_NDC = vec4(0.0f, 0.0f, 0.0f, 1.0f);
 }
 
-void Raycast::init(Camera* camera, btDynamicsWorld* dynamicsWorld)
+void Raycast::update(Camera* camera, btDynamicsWorld* dynamicsWorld)
 {
 	// The Projection matrix goes from Camera Space to NDC.
 	// So inverse(ProjectionMatrix) goes from NDC to Camera Space.
@@ -52,17 +52,23 @@ void Raycast::init(Camera* camera, btDynamicsWorld* dynamicsWorld)
 
 	if (RayCallback.hasHit()) 
 	{
-		printf("mesh %i \n", (int)RayCallback.m_collisionObject->getUserPointer());
-		RayCallback.m_collisionObject->activate(true);
-		((btRigidBody*)RayCallback.m_collisionObject)->activate(true);
-		((btRigidBody*)RayCallback.m_collisionObject)->applyCentralForce(btVector3(0.0f, 1000.0f, 0.0f));
+		// What to do with this information though?
+		printf("mesh: %i \n", (int)RayCallback.m_collisionObject->getUserIndex()); // getUserPointer());
+		const btRigidBody* hitRigidBody = btRigidBody::upcast(RayCallback.m_collisionObject);
+		btRigidBody hitObjectValue = btRigidBody(*hitRigidBody);
+		hitObjectValue.activate(true);
+		hitObjectValue.applyCentralForce(btVector3(0.0f, 1000.0f, 0.0f));
 	}
 	else {
 		printf("background \n");
 	}
 }
 
+void Raycast::destroy()
+{
+}
 
 Raycast::~Raycast()
 {
+	destroy();
 }

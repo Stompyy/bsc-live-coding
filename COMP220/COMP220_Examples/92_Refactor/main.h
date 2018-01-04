@@ -19,7 +19,6 @@
 #include "shader.h"
 
 #include "vertex.h"
-#include "model.h"
 #include "gameObject.h"
 #include "Player.h"
 #include "Camera.h"
@@ -28,5 +27,6 @@
 #include "PostProcessing.h"
 #include "textureLoader.h"
 #include "MeshLoader.h"
+#include "ShaderLoader.h"
 #include "Animation.h"
 #include "Raycast.h"
