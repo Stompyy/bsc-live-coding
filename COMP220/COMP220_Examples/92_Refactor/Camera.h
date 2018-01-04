@@ -31,6 +31,8 @@ public:
 	void setBoomLength(const float newLength) { m_CameraBoomLength = newLength; }
 
 	void turn(float mouseX, float mouseY);
+	void moveCloser();
+	void moveAway();
 
 	// Updates the view matrix before sending values to the shader
 	void update();
@@ -63,5 +65,10 @@ private:
 	float m_CameraLowerLimitY;
 	// To avoid going out of scope as tan() tends towards infinity
 	float m_CameraUpperLimitY;
+
+	// Camera moving in and out requirements
+	float m_ZoomSpeed;
+	float m_MinimumDistanceToPlayer;
+	float m_MaximumDistanceToPlayer;
 };
 

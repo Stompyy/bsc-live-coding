@@ -23,10 +23,10 @@ Player::~Player()
 	destroy();
 }
 
-void Player::moveForward(float value)
+void Player::moveForward()
 {
 	// Move the camera position and the target position towards the target position
-	m_DeltaPosition = normalize(camera->target->getPosition() - camera->worldLocation->getPosition()) * m_MovementSpeed * value;
+	m_DeltaPosition = normalize(camera->target->getPosition() - camera->worldLocation->getPosition()) * m_MovementSpeed;
 	transform->addPosition(vec3(m_DeltaPosition.x, 0.0f, m_DeltaPosition.z));
 	camera->target->addPosition(vec3(m_DeltaPosition.x, 0.0f, m_DeltaPosition.z));
 	camera->worldLocation->addPosition(vec3(m_DeltaPosition.x, 0.0f, m_DeltaPosition.z));
@@ -35,10 +35,10 @@ void Player::moveForward(float value)
 	updateRotation();
 }
 
-void Player::moveRight(float value)
+void Player::moveRight()
 {
 	// Move the camera position and the target position at a right angle to the target position
-	m_DeltaPosition = cross((normalize(camera->target->getPosition() - camera->worldLocation->getPosition())), m_Up) * m_MovementSpeed * value;
+	m_DeltaPosition = cross((normalize(camera->target->getPosition() - camera->worldLocation->getPosition())), m_Up) * m_MovementSpeed;
 	transform->addPosition(vec3(m_DeltaPosition.x, 0.0f, m_DeltaPosition.z));
 	camera->target->addPosition(vec3(m_DeltaPosition.x, 0.0f, m_DeltaPosition.z));
 	camera->worldLocation->addPosition(vec3(m_DeltaPosition.x, 0.0f, m_DeltaPosition.z));

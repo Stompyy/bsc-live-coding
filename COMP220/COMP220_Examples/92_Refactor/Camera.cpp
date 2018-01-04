@@ -9,6 +9,9 @@ Camera::Camera()
 
 	m_CameraBoomLength = 4.0f;
 	m_CameraPivotHeight = 2.5f;
+	m_ZoomSpeed = 0.1f;
+	m_MinimumDistanceToPlayer = 0.5f;
+	m_MaximumDistanceToPlayer = 10.f;
 
 	// keep at a good distance to stop jarring jumping view changes
 	m_CameraTargetDistance = 50.0f;
@@ -47,6 +50,19 @@ void Camera::turn(float mouseX, float mouseY)
 
 	// Move camera lookatpoint to a trigonometry calculated position
 	target->setPosition(worldLocation->getPosition() + vec3(cos(m_TurnX), m_TurnY, sin(m_TurnX)) * m_CameraTargetDistance);
+}
+
+// If Camera is within the distance to player tolerances, then move
+void Camera::moveCloser()
+{
+	if (m_CameraBoomLength > m_MinimumDistanceToPlayer)
+		m_CameraBoomLength -= m_ZoomSpeed;
+}
+
+void Camera::moveAway()
+{
+	if (m_CameraBoomLength < m_MaximumDistanceToPlayer)
+		m_CameraBoomLength += m_ZoomSpeed;
 }
 
 void Camera::update()

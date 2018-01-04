@@ -19,6 +19,11 @@ ShaderLoader::~ShaderLoader()
 
 void ShaderLoader::destroy()
 {
+
+/*	for (std::string iter : m_ShaderMap)
+		glDeleteProgram(m_ShaderMap[iter]);
+*/
+
 /*	if (m_ShaderMap.size() > 0)
 	{
 		auto iter = m_ShaderMap.begin();

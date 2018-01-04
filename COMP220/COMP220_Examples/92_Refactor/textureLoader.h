@@ -4,9 +4,7 @@
 #include <vector>
 #include <map>
 #include <GL\glew.h>
-//#include <SDL_opengl.h>
 #include <SDL_image.h>
-//#include "model.h"
 
 class TextureLoader
 	// Preload in all textures needed so as to be able to reuse, rather than just reload everytime

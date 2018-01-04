@@ -32,7 +32,7 @@ vec3 btQuatToGlmVec3(const btQuaternion& q)
 	// yaw (z-axis rotation)
 	double siny = +2.0 * (q.getW() * q.getZ() + q.getX() * q.getY());
 	double cosy = +1.0 - 2.0 * (q.getY() * q.getY() + q.getZ() * q.getZ());
-	yaw = atan2(siny, cosy);
+	yaw = atan2(siny, cosy); 
 
 	return vec3(roll, pitch, yaw);
 }
@@ -107,6 +107,18 @@ void close(SDL_Window* SDL_window, SDL_GLContext GL_Context)
 	//https://wiki.libsdl.org/SDL_Quit
 	SDL_Quit();
 }
+
+/**		_____		_______		 ___    ___		   ______		 _____		 _____		   ______		
+*	  / _____\	   / _____ \	|   \  |   \	  |  __  \		|_____ \	|_____ \	  / ____ \	
+*	 / /		  /	/	  \ \	| |\ \ | |\ \	  | |__/ |			  \ \		  \ \	 / /	\ \	
+*	| |		 __	 | |	   | |	| | \ \| | \ \	  |  ___/		     / /	     / /	| |		 | |	
+*	 \ \____/ /	  \ \_____/ /	| |  \___|	\ \	  | |			 __/ /___	 __/ /___	 \ \____/ /	
+*	  \______/	   \_______/	|_|			 \_\  |_|			|________|	|________|	  \______/	
+*
+*	https://github.com/Stompyy/bsc-live-coding
+*/
+
+
 
 int main(int argc, char* args[])
 {
@@ -308,16 +320,11 @@ int main(int argc, char* args[])
 					// Zoom in/out on player by changing the length of the third person camera boom
 					// Scroll forwards
 					if (SDLEvent.wheel.y == 1)
-					{
-						if (player->camera->getBoomLength() > 0.1f)
-							player->camera->setBoomLength(player->camera->getBoomLength() - 0.1f);
-					}
+						player->camera->moveCloser();
+
 					// Scroll backwards
 					else if (SDLEvent.wheel.y == -1)
-					{
-						if (player->camera->getBoomLength() < 10.0f)
-							player->camera->setBoomLength(player->camera->getBoomLength() + 0.1f);
-					}
+						player->camera->moveAway();
 					break;
 				}
 				// Mouse wheel can be set up flipped (i.e. MacOS) this detects this
@@ -325,17 +332,12 @@ int main(int argc, char* args[])
 				{
 					// Zoom in/out on player by changing the length of the third person camera boom
 					// Scroll forwards
-					if (SDLEvent.wheel.y == -1)
-					{
-						if (player->camera->getBoomLength() > 0.1f)
-							player->camera->setBoomLength(player->camera->getBoomLength() - 0.1f);
-					}
+					if (SDLEvent.wheel.y == 1)
+						player->camera->moveCloser();
+
 					// Scroll backwards
-					else if (SDLEvent.wheel.y == 1)
-					{
-						if (player->camera->getBoomLength() < 10.0f)
-							player->camera->setBoomLength(player->camera->getBoomLength() + 0.1f);
-					}
+					else if (SDLEvent.wheel.y == -1)
+						player->camera->moveAway();
 					break;
 				}
 				}
@@ -353,22 +355,22 @@ int main(int argc, char* args[])
 
 				case SDLK_w:
 					// Move Forward
-					player->moveForward(1.0f);
+					player->moveForward();
 					break;
 
 				case SDLK_s:
 					// Move backwards
-					player->moveForward(-1.0f);
+					player->moveForward();
 					break;
 
 				case SDLK_a:
 					// Move left
-					player->moveRight(-1.0f);
+					player->moveRight();
 					break;
 
 				case SDLK_d:
 					// Move right
-					player->moveRight(1.0f);
+					player->moveRight();
 					break;
 
 				case SDLK_SPACE:
@@ -387,14 +389,12 @@ int main(int argc, char* args[])
 					// Zoom in/out on player by changing the length of the third person camera boom
 					// Using to debug FBX textures! Alternative to other zoom in/out if no mouse wheel available, i.e. trackpad
 					// zoom in on player
-					if (player->camera->getBoomLength() > 0.1f)
-						player->camera->setBoomLength(player->camera->getBoomLength() - 0.1f);
+					player->camera->moveCloser();
 					break;
 
 				case SDLK_DOWN:
 					// zoom out on player
-					if (player->camera->getBoomLength() < 10.0f)
-						player->camera->setBoomLength(player->camera->getBoomLength() + 0.1f);
+					player->camera->moveAway();
 					break;
 
 				default:
@@ -441,16 +441,22 @@ int main(int argc, char* args[])
 
 			// Update the model matrix (TRS!)
 			gameObject->update();
+
+			// Pass all values to the shader
 			gameObject->preRender(player->camera, light);
+
+			// Draw
 			gameObject->render();
 		}
 		//player->FBXTexture->display();
+
+		// Update the camera MVP
 		player->camera->update();
 
-		// Post processing frame buffer
+		// Post processing frame buffer render
 		postProcessing->render();
 
-		// Swap the SDL window to display our new image
+		// Swap the SDL window to display the new image
 		SDL_GL_SwapWindow(SDL_window);
 	}
 
@@ -473,7 +479,7 @@ int main(int argc, char* args[])
 	}
 	*/	
 	
-	// Call destroy() functions instead of delete
+	// Call destroy() functions instead/as well as delete
 	
 /*	light->destroy();
 	raycast->destroy();

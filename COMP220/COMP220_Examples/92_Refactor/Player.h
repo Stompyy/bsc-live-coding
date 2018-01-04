@@ -17,8 +17,8 @@ public:
 
 	// Movement
 	// Would refactor into a player controller class, but the functions need to access all inherited members, physics, transform etc, so more efficient to be here
-	void moveForward(float value);
-	void moveRight(float value);
+	void moveForward();
+	void moveRight();
 	void jump();
 	void run() { m_MovementSpeed = m_RunningSpeed; m_IsRunning = true; }
 	void walk() { m_MovementSpeed = m_WalkingSpeed; m_IsRunning = false; }
