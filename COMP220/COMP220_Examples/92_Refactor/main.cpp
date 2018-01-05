@@ -3,14 +3,6 @@
 
 #include "main.h"
 
-// To load in all gameObjects away from main.cpp, would lose all direct references to objects however
-struct Model {
-	Model(Mesh* mesh, GLuint* texture) : mesh(mesh), texture(texture) {}
-	Mesh* mesh;
-	std::vector<Mesh*>meshes;
-	GLuint* texture;
-};
-
 /*
 vec3 btQuatToGlmVec3(const btQuaternion& q)
 // https://en.wikipedia.org/wiki/Conversion_between_quaternions_and_Euler_angles
@@ -38,6 +30,7 @@ vec3 btQuatToGlmVec3(const btQuaternion& q)
 }
 */
 
+// Initialise SDL
 SDL_Window* SDL_Init()
 {
 	//Initialises the SDL Library, passing in SDL_INIT_VIDEO to only initialise the video subsystems
@@ -68,6 +61,7 @@ SDL_Window* SDL_Init()
 	return SDL_window;
 }
 
+// Get the GL_Context
 SDL_GLContext GL_Init(SDL_Window* SDL_window)
 {
 	// 3.2 core profile version of OpenGL
@@ -96,6 +90,7 @@ SDL_GLContext GL_Init(SDL_Window* SDL_window)
 	return GL_Context;
 }
 
+// Destroy SDL window, delete GL_Context, and quit
 void close(SDL_Window* SDL_window, SDL_GLContext GL_Context)
 {
 	SDL_GL_DeleteContext(GL_Context);
@@ -108,6 +103,43 @@ void close(SDL_Window* SDL_window, SDL_GLContext GL_Context)
 	SDL_Quit();
 }
 
+void update(GameObjectLoader* gameObjects, PostProcessing* postProcessing, PhysicsEngine* dynamicsWorld)
+{
+	// Update the player's physics position to the new position set by the controls
+	gameObjects->getPlayer()->updateMovement();
+
+	// Bind the frame buffer
+	postProcessing->bindFrameBuffer();
+
+	// Advance the physics simulation
+	dynamicsWorld->getDynamicsWorld()->stepSimulation(1.0f / 60.0f, 10);
+
+	// Apply physics simulation to every GameObject
+	for (auto const& mapElement : gameObjects->getGameObjectMap())
+	{
+		// Retrieve the GameObject* from the mapElement <std::string, GameObject*>
+		GameObject* gameObject = mapElement.second;
+
+		// Update the model matrix (TRS!)
+		gameObject->update();
+	};
+}
+
+void render(GameObjectLoader* gameObjects, Light* lightOne, Light* lightTwo)
+{
+	for (auto const& mapElement : gameObjects->getGameObjectMap())
+	{
+		// Retrieve the GameObject* from the mapElement <std::string, GameObject*>
+		GameObject* gameObject = mapElement.second;
+
+		// Pass all values to the shader
+		gameObject->preRender(gameObjects->getPlayer()->getCamera(), lightOne, lightTwo);
+
+		// Draw
+		gameObject->render();
+	}
+}
+
 /**		_____		_______		 ___    ___		   ______		 _____		 _____		   ______		
 *	  / _____\	   / _____ \	|   \  |   \	  |  __  \		|_____ \	|_____ \	  / ____ \	
 *	 / /		  /	/	  \ \	| |\ \ | |\ \	  | |__/ |			  \ \		  \ \	 / /	\ \	
@@ -117,51 +149,7 @@ void close(SDL_Window* SDL_window, SDL_GLContext GL_Context)
 *
 *	https://github.com/Stompyy/bsc-live-coding
 */
-/*
-void update()
-{
-	// Input, logic with input, physics, graphics.
 
-	// Update the player's physics position to the new position set by the controls
-	player->updateMovement();
-
-	// Bind the frame buffer
-	postProcessing->bindFrameBuffer();
-
-	// Advance the physics simulation
-	dynamicsWorld->getDynamicsWorld()->stepSimulation(1.0f / 60.0f); // , 10);
-
-																	 // Apply physics simulation to every GameObject
-	for (GameObject* gameObject : gameObjectList)
-	{
-		// Update physics transform to the rigidbody transform
-		gameObject->physics->setTransform(gameObject->physics->getRigidBody()->getWorldTransform());
-
-		// Update gameObject position to the physics position
-		btVector3 gameObjectPhysicsOrigin = gameObject->physics->getTransform().getOrigin();
-		gameObject->transform->setPosition(vec3(gameObjectPhysicsOrigin.getX(), gameObjectPhysicsOrigin.getY(), gameObjectPhysicsOrigin.getZ()));
-
-		// Update gameObject rotation to the physics rotation
-		btQuaternion objectRotation = gameObject->physics->getTransform().getRotation();
-		//gameObject->transform->setRotation(objectRotation.getX(), objectRotation.getY(), objectRotation.getZ(), objectRotation.getW());
-
-		// Update the model matrix (TRS!)
-		gameObject->update();
-	}
-}
-
-void render()
-{
-	for (GameObject* gameObject : gameObjectList)
-	{
-
-		gameObject->preRender(player->camera, light);
-
-		// Draw
-		gameObject->render();
-	}
-}
-*/
 int main(int argc, char* args[])
 {
 	// Initialise both SDL and GL
@@ -200,9 +188,10 @@ int main(int argc, char* args[])
 	postProcessing->setPostProcessingProgramID(shaderLoader->getShaderID("postProcessingShader"));
 	postProcessing->setTexture0Location(glGetUniformLocation(postProcessing->getPostProcessingProgramID(), "texture0"));
 
-	// Single raycast instance can be reused
+	// Single raycast instance to be reused
 	Raycast* raycast = new Raycast();
 
+	// Load in all game objects
 	GameObjectLoader* gameObjects = new GameObjectLoader();
 	gameObjects->init(meshLoader, textureLoader, shaderLoader, dynamicsWorld,
 		std::vector<GameObjectInfo*>{
@@ -217,6 +206,7 @@ int main(int argc, char* args[])
 	gameObjects->addPlayer(meshLoader, textureLoader, shaderLoader, dynamicsWorld,
 		new GameObjectInfo("player", "archer.FBX", "archerTex1.png", "tankShader", vec3(10.0f, 0.0f, 0.0f), 0.3f, btVector3(0.0f, 0.0f, 0.0f))
 	);
+
 	// Set up camera
 	gameObjects->getPlayer()->getCamera()->setProjectionMatrix(90.0f, (1000 / 800), 0.1f, 1000.0f);
 
@@ -224,16 +214,15 @@ int main(int argc, char* args[])
 	gameObjects->getPlayer()->getTransform()->setScale(0.015f);
 
 	// Lights initialisation
+	// Specular green!
 	Light* lightOne = new Light();
 	lightOne->setDirection(0.2f, -1.0f, 0.2f);
-	// Specular green!
 	lightOne->getColour()->setSpecularColour(0.0f, 1.0f, 0.0f);
 
+	// Specular purple!
 	Light* lightTwo = new Light();
 	lightTwo->setDirection(-0.6f, -1.0f, -0.1f);
-	// Specular purple!
 	lightTwo->getColour()->setSpecularColour(1.0f, 0.0f, 1.0f);
-
 
 	// Hides the mouse and takes relative position to avoid an initial snap
 	SDL_ShowCursor(SDL_DISABLE);
@@ -395,42 +384,13 @@ int main(int argc, char* args[])
 
 		// Input, logic with input, physics, graphics.
 		//http://sdl.beuc.net/sdl.wiki/SDL_GetKeyState
-		// Update the player's physics position to the new position set by the controls
-		gameObjects->getPlayer()->updateMovement();
 
-		// Bind the frame buffer
-		postProcessing->bindFrameBuffer();
-
-		// Advance the physics simulation
-		dynamicsWorld->getDynamicsWorld()->stepSimulation(1.0f / 60.0f, 10);
-
-		// Apply physics simulation to every GameObject
-		for (auto const& mapElement : gameObjects->getGameObjectMap())
-		{
-			// Retrieve the GameObject* from the mapElement <std::string, GameObject*>
-			GameObject* gameObject = mapElement.second;
-
-			// Update physics transform to the rigidbody transform
-			gameObject->getPhysics()->setTransform(gameObject->getPhysics()->getRigidBody()->getWorldTransform());
-
-			// Update gameObject position to the physics position
-			btVector3 gameObjectPhysicsOrigin = gameObject->getPhysics()->getTransform().getOrigin();
-			gameObject->getTransform()->setPosition(vec3(gameObjectPhysicsOrigin.getX(), gameObjectPhysicsOrigin.getY(), gameObjectPhysicsOrigin.getZ()));
-
-			// Update gameObject rotation to the physics rotation
-			btQuaternion objectRotation = gameObject->getPhysics()->getTransform().getRotation();
-			gameObject->getTransform()->setRotation(objectRotation.getX(), objectRotation.getY(), objectRotation.getZ(), objectRotation.getW());
-
-			// Update the model matrix (TRS!)
-			gameObject->update();
-
-			// Pass all values to the shader
-			gameObject->preRender(gameObjects->getPlayer()->getCamera(), lightOne, lightTwo);
-
-			// Draw
-			gameObject->render();
-		}
-
+		// Update the player, each gameObjects physics simulation, and bind the frame buffer
+		update(gameObjects, postProcessing, dynamicsWorld);
+		
+		// Send all gameObjects values to the shader and draw
+		render(gameObjects, lightOne, lightTwo);
+		
 		// Update the camera MVP
 		gameObjects->getPlayer()->getCamera()->update();
 

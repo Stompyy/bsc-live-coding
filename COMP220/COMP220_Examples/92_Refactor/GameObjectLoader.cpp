@@ -6,7 +6,6 @@ GameObjectLoader::GameObjectLoader()
 {
 	// Ensures empty starting value
 	m_GameObjectMap.clear();
-	m_GameObjectVector.clear();
 }
 
 
@@ -36,7 +35,8 @@ void GameObjectLoader::init(MeshLoader* meshLoader, TextureLoader* textureLoader
 
 		// Add to the map with the gameObjectName as the map key
 		m_GameObjectMap[constructionInfo->gameObjectName] = newGameObject;
-		m_GameObjectVector.push_back(newGameObject);
+
+		// Add the newly created Rigid/body to the physics simulation
 		dynamicsWorld->addRigidBody(newGameObject->getPhysics()->getRigidBody());
 	}
 }
@@ -56,6 +56,7 @@ void GameObjectLoader::addPlayer(MeshLoader* meshLoader, TextureLoader* textureL
 
 	// Add to the map with the gameObjectName as the map key
 	m_GameObjectMap[constructionInfo->gameObjectName] = player;
-	m_GameObjectVector.push_back(player);
+
+	// Add the newly created Rigid/body to the physics simulation
 	dynamicsWorld->addRigidBody(player->getPhysics()->getRigidBody());
 }

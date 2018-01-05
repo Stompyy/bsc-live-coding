@@ -77,7 +77,10 @@ void GameObject::destroy()
 
 void GameObject::update()
 {
+	// Update physics transform to the rigidbody transform
+	m_Physics->setTransform(m_Physics->getRigidBody()->getWorldTransform());
 
+	// Update gameObject position to the physics position
 	if (m_Physics->getRigidBody() != nullptr)
 	{
 		m_Transform->setPosition(
@@ -85,6 +88,7 @@ void GameObject::update()
 			m_Physics->getTransform().getOrigin().getY(), 
 			m_Physics->getTransform().getOrigin().getZ());
 
+		// Update the model matrix
 		m_Transform->update();
 	}
 }
