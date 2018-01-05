@@ -85,5 +85,16 @@ void Player::updateMovement()
 	// Update the physics position
 	getPhysics()->getRigidBody()->getWorldTransform().setOrigin(tempPos);
 	getPhysics()->getTransform().setOrigin(tempPos);
+
+	// Temporary bullet quaternion to update the physics rotation
+	btQuaternion tempRot = btQuaternion(
+		getTransform()->getRotation().w,
+		getTransform()->getRotation().x,
+		getTransform()->getRotation().y,
+		getTransform()->getRotation().z
+	);
+
+	// Update the physics rotation
+	getPhysics()->getRigidBody()->getWorldTransform().setRotation(tempRot);
 }
 

@@ -222,7 +222,7 @@ MeshLoader::MeshLoader()
 	m_MeshMap.clear();
 	m_FBXTextures.clear();
 }
-void MeshLoader::init(std::vector<std::string> meshFileNames)
+void MeshLoader::init(const std::vector<std::string> meshFileNames)
 {
 	// Builds the map of meshes and their identifying string keys
 	for (std::string meshName : meshFileNames)

@@ -30,7 +30,7 @@ public:
 	MeshLoader(); 
 	~MeshLoader();
 
-	void init(std::vector<std::string> meshFileNames);
+	void init(const std::vector<std::string> meshFileNames);
 
 	void destroy();
 

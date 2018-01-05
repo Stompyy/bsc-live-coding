@@ -15,9 +15,7 @@
 #include <glm\gtc\type_ptr.hpp>
 #include <btBulletDynamicsCommon.h>
 
-//#include "texture.h"
 #include "shader.h"
-
 #include "vertex.h"
 #include "GameObject.h"
 #include "Player.h"
@@ -28,5 +26,5 @@
 #include "textureLoader.h"
 #include "MeshLoader.h"
 #include "ShaderLoader.h"
-#include "Animation.h"
+#include "GameObjectLoader.h"
 #include "Raycast.h"

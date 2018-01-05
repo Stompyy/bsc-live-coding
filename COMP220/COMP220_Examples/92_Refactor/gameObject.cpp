@@ -39,8 +39,10 @@ void GameObject::init(
 	m_Physics->setMass(mass);
 	m_Physics->setCollisionShapeSize(collisionSize);
 	m_Physics->getTransform().setIdentity();
-	// Set the physics position to the gameObject's transform
+
+	// Set the physics transform to the gameObject's transform
 	m_Physics->getTransform().setOrigin(btVector3(m_Transform->getPosition().x, m_Transform->getPosition().y, m_Transform->getPosition().z));
+	m_Physics->getTransform().setRotation(btQuaternion(m_Transform->getRotation().w, m_Transform->getRotation().x, m_Transform->getRotation().y, m_Transform->getRotation().z));
 	m_Physics->createRigidBody();
 	m_Physics->getRigidBody()->setUserPointer(this);
 }

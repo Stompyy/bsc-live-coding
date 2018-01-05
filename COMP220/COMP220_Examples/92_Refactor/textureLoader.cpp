@@ -53,7 +53,7 @@ TextureLoader::TextureLoader()
 	// Ensures empty starting value
 	m_TextureMap.clear();
 }
-void TextureLoader::init(std::vector<std::string> textureNamesToLoad)
+void TextureLoader::init(const std::vector<std::string> textureNamesToLoad)
 {
 
 	// Builds the map of GLuint textureIDs and their identifying string keys

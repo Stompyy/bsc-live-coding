@@ -6,7 +6,7 @@ ShaderLoader::ShaderLoader()
 	m_ShaderMap.clear();
 }
 
-void ShaderLoader::init(std::vector<ShaderInfo*>& shaderFileNames)
+void ShaderLoader::init(const std::vector<ShaderInfo*>& shaderFileNames)
 {
 	// Builds the map of GLuint shaderIDs and their identifying string keys
 	for (ShaderInfo* shaderInfo : shaderFileNames)
