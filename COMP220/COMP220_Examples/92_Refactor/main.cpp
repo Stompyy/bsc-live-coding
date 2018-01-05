@@ -3,106 +3,6 @@
 
 #include "main.h"
 
-/*
-vec3 btQuatToGlmVec3(const btQuaternion& q)
-// https://en.wikipedia.org/wiki/Conversion_between_quaternions_and_Euler_angles
-{
-	double roll, pitch, yaw;
-
-	// roll (x-axis rotation)
-	double sinr = +2.0 * (q.getW() * q.getX() + q.getY() * q.getZ());
-	double cosr = +1.0 - 2.0 * (q.getX() * q.getX() + q.getY() * q.getY());
-	roll = atan2(sinr, cosr);
-
-	// pitch (y-axis rotation)
-	double sinp = +2.0 * (q.getW() * q.getY() - q.getZ() * q.getX());
-	if (fabs(sinp) >= 1)
-		pitch = copysign(M_PI / 2, sinp); // use 90 degrees if out of range
-	else
-		pitch = asin(sinp);
-
-	// yaw (z-axis rotation)
-	double siny = +2.0 * (q.getW() * q.getZ() + q.getX() * q.getY());
-	double cosy = +1.0 - 2.0 * (q.getY() * q.getY() + q.getZ() * q.getZ());
-	yaw = atan2(siny, cosy); 
-
-	return vec3(roll, pitch, yaw);
-}
-*/
-
-// Initialise SDL
-SDL_Window* SDL_Init()
-{
-	//Initialises the SDL Library, passing in SDL_INIT_VIDEO to only initialise the video subsystems
-	//https://wiki.libsdl.org/SDL_Init
-	if (SDL_Init(SDL_INIT_VIDEO) < 0)
-	{
-		//Display an error message box
-		//https://wiki.libsdl.org/SDL_ShowSimpleMessageBox
-		SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, SDL_GetError(), "SDL_Init failed", NULL);
-		return nullptr;
-	}
-
-	IMG_Init(IMG_INIT_JPG | IMG_INIT_PNG);
-
-	//Create a window, note we have to free the pointer returned using the DestroyWindow Function
-	//https://wiki.libsdl.org/SDL_CreateWindow
-	SDL_Window* SDL_window = SDL_CreateWindow("SDL2 Window", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, 1000, 800, SDL_WINDOW_SHOWN | SDL_WINDOW_OPENGL);
-	//Checks to see if the window has been created, the pointer will have a value of some kind
-	if (SDL_window == nullptr)
-	{
-		//Show error
-		SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, SDL_GetError(), "SDL_CreateWindow failed", NULL);
-		//Close the SDL Library
-		//https://wiki.libsdl.org/SDL_Quit
-		SDL_Quit();
-		return nullptr;
-	}
-	return SDL_window;
-}
-
-// Get the GL_Context
-SDL_GLContext GL_Init(SDL_Window* SDL_window)
-{
-	// 3.2 core profile version of OpenGL
-	SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 3);
-	SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 2);
-	SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE);
-	SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
-
-	// Create the GL context
-	SDL_GLContext GL_Context = SDL_GL_CreateContext(SDL_window);
-	if (GL_Context == nullptr)
-	{
-		SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, SDL_GetError(), "SDL GL Create Context failed", NULL);
-		SDL_DestroyWindow(SDL_window);
-		SDL_Quit();
-		return nullptr;
-	}
-	// Initialize GLEW
-	glewExperimental = GL_TRUE;
-	GLenum glewError = glewInit();
-	if (glewError != GLEW_OK)
-	{
-		SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, (char*)glewGetErrorString(glewError), "GLEW Init Failed", NULL);
-		return nullptr;
-	}
-	return GL_Context;
-}
-
-// Destroy SDL window, delete GL_Context, and quit
-void close(SDL_Window* SDL_window, SDL_GLContext GL_Context)
-{
-	SDL_GL_DeleteContext(GL_Context);
-	//Destroy the window and quit SDL2, NB we should do this after all cleanup in this order!!!
-	//https://wiki.libsdl.org/SDL_DestroyWindow
-	SDL_DestroyWindow(SDL_window);
-
-	IMG_Quit();
-	//https://wiki.libsdl.org/SDL_Quit
-	SDL_Quit();
-}
-
 void update(GameObjectLoader* gameObjects, PostProcessing* postProcessing, PhysicsEngine* dynamicsWorld)
 {
 	// Update the player's physics position to the new position set by the controls
@@ -135,7 +35,7 @@ void render(GameObjectLoader* gameObjects, Light* lightOne, Light* lightTwo)
 		// Pass all values to the shader
 		gameObject->preRender(gameObjects->getPlayer()->getCamera(), lightOne, lightTwo);
 
-		// Draw
+		// Draw the gameObject
 		gameObject->render();
 	}
 }
@@ -152,16 +52,8 @@ void render(GameObjectLoader* gameObjects, Light* lightOne, Light* lightTwo)
 
 int main(int argc, char* args[])
 {
-	// Initialise both SDL and GL
-	SDL_Window* SDL_window = SDL_Init();
-	SDL_GLContext GL_Context = GL_Init(SDL_window);
-
-	// If either did not initialise then exit
-	if ((SDL_window == nullptr) | (GL_Context == nullptr))
-	{
-		SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, SDL_GetError(), "Initialisation failed", NULL);
-		close(SDL_window, GL_Context);
-	}
+	//// Initialise both SDL and GL
+	GameWindow* gameWindow = new GameWindow();
 
 	// Create a physics simulation using bullet
 	PhysicsEngine* dynamicsWorld = new PhysicsEngine();
@@ -265,13 +157,14 @@ int main(int argc, char* args[])
 				{
 					// Fire off a raycast
 					raycast->update(gameObjects->getPlayer()->getCamera(), dynamicsWorld->getDynamicsWorld());
-					btRigidBody * hitBody = raycast->getHitObject();
+					btRigidBody* hitBody = raycast->getHitObject();
 					if (hitBody)
 					{
-						GameObject *pHitGameObject = (GameObject*)hitBody->getUserPointer();
-						if (pHitGameObject)
+						GameObject* hitGameObject = (GameObject*)hitBody->getUserPointer();
+						if (hitGameObject)
 						{
-
+							//nope...
+							hitGameObject->getPhysics()->setPosition(0.0f, 20.0f, 0.0f);
 						}
 					}
 					break;
@@ -398,7 +291,7 @@ int main(int argc, char* args[])
 		postProcessing->render();
 
 		// Swap the SDL window to display the new image
-		SDL_GL_SwapWindow(SDL_window);
+		SDL_GL_SwapWindow(gameWindow->getSDLWindow());
 	}
 
 	// Delete all Objects in reverse instantiation order
@@ -443,7 +336,7 @@ int main(int argc, char* args[])
 	delete textureLoader;
 	delete dynamicsWorld;
 
-	close(SDL_window, GL_Context);
+	gameWindow->close();
 
 	return 0;
 }

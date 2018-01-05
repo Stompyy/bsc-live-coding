@@ -58,7 +58,10 @@
     <ClCompile Include="GameObject.cpp">
       <Filter>source</Filter>
     </ClCompile>
-    <ClCompile Include="GameObjectLoader.cpp" />
+    <ClCompile Include="GameObjectLoader.cpp">
+      <Filter>source</Filter>
+    </ClCompile>
+    <ClCompile Include="GameWindow.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="main.h">
@@ -121,7 +124,10 @@
     <ClInclude Include="GameObject.h">
       <Filter>headers</Filter>
     </ClInclude>
-    <ClInclude Include="GameObjectLoader.h" />
+    <ClInclude Include="GameObjectLoader.h">
+      <Filter>headers</Filter>
+    </ClInclude>
+    <ClInclude Include="GameWindow.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="textureFrag.glsl">
