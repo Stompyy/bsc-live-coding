@@ -48,10 +48,13 @@ GLuint loadTextureFromFilename(const std::string& filename)
 	return textureID;
 }
 
-TextureLoader::TextureLoader(std::vector<std::string> textureNamesToLoad)
+TextureLoader::TextureLoader()
 {
 	// Ensures empty starting value
 	m_TextureMap.clear();
+}
+void TextureLoader::init(std::vector<std::string> textureNamesToLoad)
+{
 
 	// Builds the map of GLuint textureIDs and their identifying string keys
 	for (std::string textureName : textureNamesToLoad)

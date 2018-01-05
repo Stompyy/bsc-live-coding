@@ -2,8 +2,8 @@
 
 Camera::Camera()
 {
-	worldLocation = new Transform();
-	target = new Transform();
+	m_WorldLocation = new Transform();
+	m_Target = new Transform();
 
 	m_Up = vec3(0.0f, 1.0f, 0.0f);
 
@@ -49,7 +49,13 @@ void Camera::turn(float mouseX, float mouseY)
 		m_TurnY = m_CameraLowerLimitY;
 
 	// Move camera lookatpoint to a trigonometry calculated position
-	target->setPosition(worldLocation->getPosition() + vec3(cos(m_TurnX), m_TurnY, sin(m_TurnX)) * m_CameraTargetDistance);
+	m_Target->setPosition(m_WorldLocation->getPosition() + vec3(cos(m_TurnX), m_TurnY, sin(m_TurnX)) * m_CameraTargetDistance);
+}
+
+void Camera::movePosition(const vec3 & deltaPosition)
+{
+	m_WorldLocation->movePosition(vec3(deltaPosition.x, 0.0f, deltaPosition.z));
+	m_Target->movePosition(vec3(deltaPosition.x, 0.0f, deltaPosition.z));
 }
 
 // If Camera is within the distance to player tolerances, then move
@@ -69,20 +75,20 @@ void Camera::update()
 {
 	// Set the position at which the camera boom pivots around.
 	m_CameraPivotPosition = vec3(
-		worldLocation->getPosition().x,
-		worldLocation->getPosition().y + m_CameraPivotHeight,
-		worldLocation->getPosition().z
+		m_WorldLocation->getPosition().x,
+		m_WorldLocation->getPosition().y + m_CameraPivotHeight,
+		m_WorldLocation->getPosition().z
 	);
 
 	// Update the camera position to be at a third person view
-	m_CameraPosition = m_CameraPivotPosition - m_CameraBoomLength * normalize(target->getPosition() - m_CameraPivotPosition);
+	m_CameraPosition = m_CameraPivotPosition - m_CameraBoomLength * normalize(m_Target->getPosition() - m_CameraPivotPosition);
 
 	// Update view matrix
-	m_ViewMatrix = lookAt(m_CameraPosition, target->getPosition(), m_Up);
+	m_ViewMatrix = lookAt(m_CameraPosition, m_Target->getPosition(), m_Up);
 }
 
 void Camera::destroy()
 {
-	delete target;
-	delete worldLocation;
+	delete m_Target;
+	delete m_WorldLocation;
 }

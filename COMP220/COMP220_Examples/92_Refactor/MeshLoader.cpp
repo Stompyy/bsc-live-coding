@@ -216,14 +216,14 @@ std::vector<Mesh*> MeshLoader::loadMeshFromFilename(const std::string& filename)
 	return meshes;
 }
 
-MeshLoader::MeshLoader(std::vector<std::string> meshFileNames)
+MeshLoader::MeshLoader()
 {
-	//m_Importer = new Importer();
-
 	// Ensures empty starting value
 	m_MeshMap.clear();
 	m_FBXTextures.clear();
-
+}
+void MeshLoader::init(std::vector<std::string> meshFileNames)
+{
 	// Builds the map of meshes and their identifying string keys
 	for (std::string meshName : meshFileNames)
 	{
@@ -231,6 +231,11 @@ MeshLoader::MeshLoader(std::vector<std::string> meshFileNames)
 	}
 }
 
+void MeshLoader::destroy()
+{
+}
+
 MeshLoader::~MeshLoader()
 {
+	destroy();
 }

@@ -4,8 +4,8 @@
 
 Light::Light()
 {
-	transform = new Transform();
-	colour = new Material();
+	m_Transform = new Transform();
+	m_Colour = new Material();
 	
 	m_Direction = vec3(0.0f, 0.0f, -1.0f);
 }
@@ -18,6 +18,6 @@ Light::~Light()
 
 void Light::destroy()
 {
-	delete colour;
-	delete transform;
+	delete m_Colour;
+	delete m_Transform;
 }

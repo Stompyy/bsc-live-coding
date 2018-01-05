@@ -54,12 +54,14 @@ void Raycast::update(Camera* camera, btDynamicsWorld* dynamicsWorld)
 	{
 		// What to do with this information though?
 		printf("mesh: %i \n", (int)RayCallback.m_collisionObject->getUserIndex()); // getUserPointer());
-		const btRigidBody* hitRigidBody = btRigidBody::upcast(RayCallback.m_collisionObject);
-		btRigidBody hitObjectValue = btRigidBody(*hitRigidBody);
-		hitObjectValue.activate(true);
-		hitObjectValue.applyCentralForce(btVector3(0.0f, 1000.0f, 0.0f));
+		m_HitRigidBody = const_cast<btRigidBody *>(btRigidBody::upcast(RayCallback.m_collisionObject));
+
+		//btRigidBody hitObjectValue = btRigidBody(*hitRigidBody);
+		//hitObjectValue.activate(true);
+		//hitObjectValue.applyCentralForce(btVector3(0.0f, 1000.0f, 0.0f));
 	}
 	else {
+		m_HitRigidBody = nullptr;
 		printf("background \n");
 	}
 }

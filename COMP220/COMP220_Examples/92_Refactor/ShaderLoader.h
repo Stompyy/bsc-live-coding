@@ -19,8 +19,10 @@ class ShaderLoader
 {
 public:
 	// Initialise with all needed shaders
-	ShaderLoader(std::vector<ShaderInfo*>& shaderFileNames);
+	ShaderLoader();
 	~ShaderLoader();
+
+	void init(std::vector<ShaderInfo*>& shaderFileNames);
 	void destroy();
 
 	// Retrieves the shaderID from the map - NEEDS ERROR CHECKING!

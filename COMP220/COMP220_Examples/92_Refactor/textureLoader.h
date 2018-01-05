@@ -11,8 +11,10 @@ class TextureLoader
 	// Stores the GLuint in a map, where each key is the texture's filename i.e. string trexColour.png : Gluint trexColour.png
 {
 public:
-	TextureLoader(std::vector<std::string> textureFileNames);
+	TextureLoader();
 	~TextureLoader();
+
+	void init(std::vector<std::string> textureFileNames);
 
 	// Error checking here if nullptr
 	GLuint getTextureID(const std::string& textureName) { return m_TextureMap[textureName]; }

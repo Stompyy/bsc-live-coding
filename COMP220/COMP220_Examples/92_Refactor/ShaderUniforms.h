@@ -17,7 +17,7 @@ public:
 	void init(GLuint shaderProgramID);
 
 	// Send the values to the shader
-	void update(Camera* camera, Light* light, Material* material, glm::mat4* modelMatrix);
+	void update(Camera* camera, Light* lightOne, Light* lightTwo, Material* material, Transform* transform);
 
 private:
 	GLint m_TextureLocation;
@@ -27,16 +27,23 @@ private:
 	GLint m_ProjectionMatrixLocation;
 
 	GLint m_CameraPositionLocation;
-	GLint m_LightDirectionLocation;
 
-	GLint m_AmbientLightColourLocation;
-	GLint m_DiffuseLightColourLocation;
-	GLint m_SpecularLightColourLocation;
+	GLint m_LightOneDirectionLocation;
+	GLint m_AmbientLightOneColourLocation;
+	GLint m_DiffuseLightOneColourLocation;
+	GLint m_SpecularLightOneColourLocation;
+
+	GLint m_LightTwoDirectionLocation;
+	GLint m_AmbientLightTwoColourLocation;
+	GLint m_DiffuseLightTwoColourLocation;
+	GLint m_SpecularLightTwoColourLocation;
 
 	GLint m_AmbientMaterialColourLocation;
 	GLint m_DiffuseMaterialColourLocation;
 	GLint m_SpecularMaterialColourLocation;
 
 	GLint m_SpecularPowerLocation;
+
+//	std::map<string, GLint> m_ShaderLocations;
 };
 

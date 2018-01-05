@@ -14,10 +14,17 @@ uniform mat4 projectionMatrix;
 uniform vec4 cameraPosition;
 
 // Lighting
-uniform vec4 lightDirection;
-uniform vec4 ambientLightColour;
-uniform vec4 diffuseLightColour;
-uniform vec4 specularLightColour;
+
+//multiple lights - http://www.geeks3d.com/20091013/shader-library-phong-shader-with-multiple-lights-glsl/
+uniform vec4 lightOneDirection;
+uniform vec4 ambientLightOneColour;
+uniform vec4 diffuseLightOneColour;
+uniform vec4 specularLightOneColour;
+
+uniform vec4 lightTwoDirection;
+uniform vec4 ambientLightTwoColour;
+uniform vec4 diffuseLightTwoColour;
+uniform vec4 specularLightTwoColour;
 
 // Material
 uniform vec4 ambientMaterialColour;
@@ -47,17 +54,31 @@ void main()
 
 	vec3 viewDirection = normalize(cameraPosition.xyz - worldPosition.xyz);
 
-	ambient = ambientMaterialColour * ambientLightColour;
+	ambient = ambientMaterialColour * ambientLightOneColour * ambientLightTwoColour;
 
+	// Light number one
 	// Calculate diffuse lighting, normals dot product light direction, intensity of diffuse light
-	float nDotl = clamp(dot(worldNormals.xyz, lightDirection.xyz), 0, 1);
-	diffuse = diffuseMaterialColour * diffuseLightColour * nDotl;
+	float nDotlL1 = clamp(dot(worldNormals.xyz, lightOneDirection.xyz), 0, 1);
+	diffuse = diffuseMaterialColour * diffuseLightOneColour * nDotlL1;
 
 	// Calculate specular lighting
-	vec3 halfway = normalize(lightDirection.xyz + viewDirection);
-	float nDoth = clamp(dot(worldNormals.xyz, halfway), 0, 1);
-	float specularIntensity = pow(nDoth, specularPower);
-	specular = specularMaterialColour * specularLightColour * specularIntensity;
+	vec3 halfwayL1 = normalize(lightOneDirection.xyz + viewDirection);
+	float nDothL1 = clamp(dot(worldNormals.xyz, halfwayL1), 0, 1);
+	float specularIntensityL1 = pow(nDothL1, specularPower);
+	specular = specularMaterialColour * specularLightOneColour * specularIntensityL1;
+
+	// Light number two
+	// Calculate diffuse lighting, normals dot product light direction, intensity of diffuse light
+	float nDotlL2 = clamp(dot(worldNormals.xyz, lightTwoDirection.xyz), 0, 1);
+	diffuse += diffuseMaterialColour * diffuseLightTwoColour * nDotlL2;
+	//diffuse = diffuseMaterialColour * diffuseLightOneColour * nDotlL1 * diffuseLightTwoColour * nDotlL2
+
+	// Calculate specular lighting
+	vec3 halfwayL2 = normalize(lightTwoDirection.xyz + viewDirection);
+	float nDothL2 = clamp(dot(worldNormals.xyz, halfwayL2), 0, 1);
+	float specularIntensityL2 = pow(nDothL2, specularPower);
+	specular += specularMaterialColour * specularLightTwoColour * specularIntensityL2;
+	//specular = specularMaterialColour * specularLightOneColour * specularIntensityL1 * specularLightOneColour * specularIntensityL1;
 
 	gl_Position = MVPMatrix * vec4(vertexPosition,1.0f);
 

@@ -19,7 +19,7 @@
 #include "shader.h"
 
 #include "vertex.h"
-#include "gameObject.h"
+#include "GameObject.h"
 #include "Player.h"
 #include "Camera.h"
 #include "Light.h"

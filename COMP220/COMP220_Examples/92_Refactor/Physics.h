@@ -21,12 +21,10 @@ public:
 
 	btTransform& getTransform() { return m_Transform; }
 	btRigidBody* getRigidBody() { return m_RigidBody; }
-	btCollisionShape& getCollisionShape() { return *m_CollisionShape; }
-	btScalar getMass() { return m_Mass; }
 	btVector3& getInertia() { return m_Inertia; }
 	btDefaultMotionState* getMotionState() { return m_MotionState; }
 
-	void updateMotionState();
+	void createRigidBody();
 	void destroy();
 
 private:

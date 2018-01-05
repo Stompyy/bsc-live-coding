@@ -139,7 +139,7 @@ copy ..\..\..\Libraries\assimp\bin\assimp-vc140-mt.dll "$(Outdir)\assimp-vc140-m
   <ItemGroup>
     <ClCompile Include="Animation.cpp" />
     <ClCompile Include="Camera.cpp" />
-    <ClCompile Include="gameObject.cpp" />
+    <ClCompile Include="GameObject.cpp" />
     <ClCompile Include="Joint.cpp" />
     <ClCompile Include="Light.cpp" />
     <ClCompile Include="main.cpp" />
@@ -160,7 +160,7 @@ copy ..\..\..\Libraries\assimp\bin\assimp-vc140-mt.dll "$(Outdir)\assimp-vc140-m
   <ItemGroup>
     <ClInclude Include="Animation.h" />
     <ClInclude Include="Camera.h" />
-    <ClInclude Include="gameObject.h" />
+    <ClInclude Include="GameObject.h" />
     <ClInclude Include="Joint.h" />
     <ClInclude Include="Light.h" />
     <ClInclude Include="main.h" />
@@ -185,6 +185,7 @@ copy ..\..\..\Libraries\assimp\bin\assimp-vc140-mt.dll "$(Outdir)\assimp-vc140-m
     <None Include="lightingFrag.glsl" />
     <None Include="lightingFragTank.glsl" />
     <None Include="lightingVert.glsl" />
+    <None Include="lightingVertOneLight.glsl" />
     <None Include="passThroughVert.glsl" />
     <None Include="postBlackAndWhiteFrag.glsl" />
     <None Include="postCellNotCell.glsl" />

@@ -21,6 +21,18 @@ public:
 	GameObject();
 	~GameObject();
 
+	// Returns the Transform member
+	Transform* getTransform() { return m_Transform; }
+
+	// Returns the Material member
+	Material* getMaterial() { return m_Material; }
+
+	// Returns the Physics member
+	Physics* getPhysics() { return m_Physics; }
+
+	// Returns the Shader Uniform member
+	ShaderUniforms* getShaderUniform() { return m_ShaderUniforms; }
+
 	// Tidier initialisation of class than by setting individually in main.cpp
 	void init(
 		const std::vector<Mesh*> meshes,
@@ -30,27 +42,23 @@ public:
 		const float mass,
 		const btVector3 collisionSize);
 
-	Transform* transform;
-	Material* material;
-	Physics* physics;
-	ShaderUniforms* shaderUniforms;
-
 	void destroy();
 	void update();
 
 	// Update the shaders with the latest values
-	void preRender(Camera* camera, Light* light);
+	void preRender(Camera* camera, Light* lightOne, Light* lightTwo);
 
 	// Draw
 	void render();
 
 private:
-	std::vector<Mesh*> m_Meshes;
+	Transform* m_Transform;
+	Material* m_Material;
+	Physics* m_Physics;
+	ShaderUniforms* m_ShaderUniforms;
 
-	glm::mat4 m_ModelMatrix;
+	std::vector<Mesh*> m_Meshes;
 
 	GLuint m_DiffuseMapID;
 	GLuint m_ShaderProgramID;
-
-	glm::vec3 m_Up;
 };

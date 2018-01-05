@@ -10,13 +10,12 @@
 
 #include <assimp/vector3.h>
 #include <assimp/matrix4x4.h>
-#include <assimp/scene.h> // Output data structure
-#include <assimp/postprocess.h> // Post processing flags
+#include <assimp/scene.h>
+#include <assimp/postprocess.h>
 #include <assimp/DefaultLogger.hpp>
 #include <GL\glew.h>
 #include <SDL_opengl.h>
 #include <SDL_image.h>
-//#include <SOIL.h>
 
 #include "Mesh.h"
 #include "Animation.h"
@@ -28,15 +27,19 @@ using namespace Assimp;
 class MeshLoader
 {
 public:
-	MeshLoader(std::vector<std::string> meshFileNames);
+	MeshLoader(); 
 	~MeshLoader();
+
+	void init(std::vector<std::string> meshFileNames);
+
+	void destroy();
 
 	// Error checking here if nullptr
 	std::vector<Mesh*> getMeshes(const std::string& meshName) { return m_MeshMap[meshName]; }
 	std::vector<Mesh*> loadMeshFromFilename(const std::string& filename);
 	vector<FBXTexture> loadMaterialTextures(aiMaterial* mat, aiTextureType type, string typeName);
 
-private:
+private: 
 	Importer m_Importer;
 	const aiScene* m_Scene;
 

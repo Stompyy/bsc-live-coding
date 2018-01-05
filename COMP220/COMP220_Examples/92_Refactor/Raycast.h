@@ -16,9 +16,12 @@ public:
 
 	void destroy();
 
+	btRigidBody* getHitObject() { return m_HitRigidBody; }
+
 private:
 	// The ray start and end positions, in Normalized Device Coordinates [-1, 1]
 	glm::vec4 rayStart_NDC;
 	glm::vec4 rayEnd_NDC;
+	btRigidBody * m_HitRigidBody;
 };
 

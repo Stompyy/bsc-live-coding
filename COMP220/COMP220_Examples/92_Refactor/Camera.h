@@ -13,9 +13,11 @@ public:
 	Camera();
 	~Camera();
 
-	// The camera has a location and a look at point
-	Transform* worldLocation;
-	Transform* target;
+	// Returns the object's Transform member
+	Transform* getWorldLocation() { return m_WorldLocation; }
+
+	// Returns the target's Transform member
+	Transform* getTarget() { return m_Target; }
 
 	// Essential in any game engine!
 	void setAimSensitivity(const float sensitivity) { m_AimSensitivity = sensitivity; }
@@ -31,6 +33,7 @@ public:
 	void setBoomLength(const float newLength) { m_CameraBoomLength = newLength; }
 
 	void turn(float mouseX, float mouseY);
+	void movePosition(const vec3& deltaPosition); 
 	void moveCloser();
 	void moveAway();
 
@@ -40,6 +43,10 @@ public:
 	void destroy();
 
 private:
+	// The camera has a location and a look at point
+	Transform* m_WorldLocation;
+	Transform* m_Target;
+
 	vec3 m_Up;
 	vec3 m_CameraPosition;
 

@@ -13,9 +13,6 @@
     <ClCompile Include="Camera.cpp">
       <Filter>source</Filter>
     </ClCompile>
-    <ClCompile Include="gameObject.cpp">
-      <Filter>source</Filter>
-    </ClCompile>
     <ClCompile Include="Light.cpp">
       <Filter>source</Filter>
     </ClCompile>
@@ -58,6 +55,9 @@
     <ClCompile Include="ShaderLoader.cpp">
       <Filter>source</Filter>
     </ClCompile>
+    <ClCompile Include="GameObject.cpp">
+      <Filter>source</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="main.h">
@@ -73,9 +73,6 @@
       <Filter>headers</Filter>
     </ClInclude>
     <ClInclude Include="Camera.h">
-      <Filter>headers</Filter>
-    </ClInclude>
-    <ClInclude Include="gameObject.h">
       <Filter>headers</Filter>
     </ClInclude>
     <ClInclude Include="Light.h">
@@ -120,6 +117,9 @@
     <ClInclude Include="ShaderLoader.h">
       <Filter>headers</Filter>
     </ClInclude>
+    <ClInclude Include="GameObject.h">
+      <Filter>headers</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="textureFrag.glsl">
@@ -154,6 +154,9 @@
       <Filter>shaders</Filter>
     </None>
     <None Include="lightingFragTank.glsl">
+      <Filter>shaders</Filter>
+    </None>
+    <None Include="lightingVertOneLight.glsl">
       <Filter>shaders</Filter>
     </None>
   </ItemGroup>

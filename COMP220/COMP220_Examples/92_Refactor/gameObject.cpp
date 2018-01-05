@@ -1,23 +1,21 @@
-#include "gameObject.h"
+#include "GameObject.h"
 
 GameObject::GameObject()
 {
-	transform = new Transform();
-	material = new Material();
-	physics = new Physics();
-	shaderUniforms = new ShaderUniforms();
+	m_Transform = new Transform();
+	m_Material = new Material();
+	m_Physics = new Physics();
+	m_ShaderUniforms = new ShaderUniforms();
 
 	// Ensures initial value
 	m_Meshes.clear();
 	m_DiffuseMapID = 0;
 
-	m_ModelMatrix = glm::mat4(1.0f);
+	m_Material->setAmbientColour(0.4f, 0.4f, 0.4f);
+	m_Material->setDiffuseColour(0.6f, 0.6f, 0.6f);
+	m_Material->setSpecularColour(1.0f, 1.0f, 1.0f);
 
-	material->setAmbientColour(0.4f, 0.4f, 0.4f);
-	material->setDiffuseColour(0.6f, 0.6f, 0.6f);
-	material->setSpecularColour(1.0f, 1.0f, 1.0f);
-
-	GLuint shaderProgramID = 0;
+	m_ShaderProgramID = 0;
 }
 
 
@@ -36,14 +34,15 @@ void GameObject::init(
 	m_Meshes = meshes;
 	m_DiffuseMapID = textureID;
 	m_ShaderProgramID = shaderID;
-	shaderUniforms->init(m_ShaderProgramID);
-	transform->setPosition(initialPosition);
-	physics->setMass(mass);
-	physics->setCollisionShapeSize(collisionSize);
-	physics->getTransform().setIdentity();
+	m_ShaderUniforms->init(m_ShaderProgramID);
+	m_Transform->setPosition(initialPosition);
+	m_Physics->setMass(mass);
+	m_Physics->setCollisionShapeSize(collisionSize);
+	m_Physics->getTransform().setIdentity();
 	// Set the physics position to the gameObject's transform
-	physics->getTransform().setOrigin(btVector3(transform->getPosition().x, transform->getPosition().y, transform->getPosition().z));
-	physics->updateMotionState();
+	m_Physics->getTransform().setOrigin(btVector3(m_Transform->getPosition().x, m_Transform->getPosition().y, m_Transform->getPosition().z));
+	m_Physics->createRigidBody();
+	m_Physics->getRigidBody()->setUserPointer(this);
 }
 
 void GameObject::destroy()
@@ -68,33 +67,27 @@ void GameObject::destroy()
 			}
 		}
 	}
-	delete shaderUniforms;
-	delete physics;
-	delete material;
-	delete transform;
+	delete m_ShaderUniforms;
+	delete m_Physics;
+	delete m_Material;
+	delete m_Transform;
 }
 
 void GameObject::update()
 {
 
-	if (physics->getRigidBody() != nullptr)
+	if (m_Physics->getRigidBody() != nullptr)
 	{
-		transform->setPosition(
-			physics->getTransform().getOrigin().getX(), 
-			physics->getTransform().getOrigin().getY(), 
-			physics->getTransform().getOrigin().getZ());
+		m_Transform->setPosition(
+			m_Physics->getTransform().getOrigin().getX(), 
+			m_Physics->getTransform().getOrigin().getY(), 
+			m_Physics->getTransform().getOrigin().getZ());
+
+		m_Transform->update();
 	}
-
-	// Update the model matrix
-	glm::mat4 translationMatrix = glm::translate(transform->getPosition());
-	glm::mat4 scaleMatrix = glm::scale(transform->getScale());
-	glm::mat4 rotationMatrix = glm::toMat4(transform->getRotation());
-
-	// Remember TRS order
-	m_ModelMatrix = translationMatrix * rotationMatrix * scaleMatrix;
 }
 
-void GameObject::preRender(Camera* camera, Light* light)
+void GameObject::preRender(Camera* camera, Light* lightOne, Light* lightTwo)
 {
 	glUseProgram(m_ShaderProgramID);
 
@@ -105,7 +98,7 @@ void GameObject::preRender(Camera* camera, Light* light)
 	glBindTexture(GL_TEXTURE_2D, m_DiffuseMapID);
 
 	// Send the values to the shaders
-	shaderUniforms->update(camera, light, material, &m_ModelMatrix);
+	m_ShaderUniforms->update(camera, lightOne, lightTwo, m_Material, m_Transform);
 }
 
 void GameObject::render()

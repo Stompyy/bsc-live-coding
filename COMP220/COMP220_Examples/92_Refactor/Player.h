@@ -1,7 +1,7 @@
 #pragma once
 
 #include "Camera.h"
-#include "gameObject.h"
+#include "GameObject.h"
 //#include "EmbeddedTextureFBXLoader.h"
 
 class Player : public GameObject
@@ -10,15 +10,13 @@ public:
 	Player();
 	~Player();
 
-	// The players view of the game
-	Camera* camera;
-	
-	//EmbeddedTextureFBXLoader* FBXTexture;
+	// Returns the Camera member
+	Camera* getCamera() { return m_Camera; }
 
 	// Movement
 	// Would refactor into a player controller class, but the functions need to access all inherited members, physics, transform etc, so more efficient to be here
-	void moveForward();
-	void moveRight();
+	void moveForward(const float direction);
+	void moveRight(const float direction);
 	void jump();
 	void run() { m_MovementSpeed = m_RunningSpeed; m_IsRunning = true; }
 	void walk() { m_MovementSpeed = m_WalkingSpeed; m_IsRunning = false; }
@@ -41,8 +39,10 @@ public:
 	void destroy();
 
 private:
+	// The players view of the game
+	Camera* m_Camera;
+	
 	glm::vec3 m_DeltaPosition;
-	glm::vec3 m_Up;
 
 	float m_MovementSpeed;
 	float m_WalkingSpeed;

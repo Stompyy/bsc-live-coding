@@ -1,10 +1,13 @@
 #include "ShaderLoader.h"
 
-ShaderLoader::ShaderLoader(std::vector<ShaderInfo*>& shaderFileNames)
+ShaderLoader::ShaderLoader()
 {
 	// Ensures empty starting value
 	m_ShaderMap.clear();
+}
 
+void ShaderLoader::init(std::vector<ShaderInfo*>& shaderFileNames)
+{
 	// Builds the map of GLuint shaderIDs and their identifying string keys
 	for (ShaderInfo* shaderInfo : shaderFileNames)
 	{

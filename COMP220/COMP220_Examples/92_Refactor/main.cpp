@@ -117,9 +117,51 @@ void close(SDL_Window* SDL_window, SDL_GLContext GL_Context)
 *
 *	https://github.com/Stompyy/bsc-live-coding
 */
+/*
+void update()
+{
+	// Input, logic with input, physics, graphics.
 
+	// Update the player's physics position to the new position set by the controls
+	player->updateMovement();
 
+	// Bind the frame buffer
+	postProcessing->bindFrameBuffer();
 
+	// Advance the physics simulation
+	dynamicsWorld->getDynamicsWorld()->stepSimulation(1.0f / 60.0f); // , 10);
+
+																	 // Apply physics simulation to every GameObject
+	for (GameObject* gameObject : gameObjectList)
+	{
+		// Update physics transform to the rigidbody transform
+		gameObject->physics->setTransform(gameObject->physics->getRigidBody()->getWorldTransform());
+
+		// Update gameObject position to the physics position
+		btVector3 gameObjectPhysicsOrigin = gameObject->physics->getTransform().getOrigin();
+		gameObject->transform->setPosition(vec3(gameObjectPhysicsOrigin.getX(), gameObjectPhysicsOrigin.getY(), gameObjectPhysicsOrigin.getZ()));
+
+		// Update gameObject rotation to the physics rotation
+		btQuaternion objectRotation = gameObject->physics->getTransform().getRotation();
+		//gameObject->transform->setRotation(objectRotation.getX(), objectRotation.getY(), objectRotation.getZ(), objectRotation.getW());
+
+		// Update the model matrix (TRS!)
+		gameObject->update();
+	}
+}
+
+void render()
+{
+	for (GameObject* gameObject : gameObjectList)
+	{
+
+		gameObject->preRender(player->camera, light);
+
+		// Draw
+		gameObject->render();
+	}
+}
+*/
 int main(int argc, char* args[])
 {
 	// Initialise both SDL and GL
@@ -137,21 +179,25 @@ int main(int argc, char* args[])
 	PhysicsEngine* dynamicsWorld = new PhysicsEngine();
 
 	// Load in all needed textures
-	TextureLoader* textureLoader = new TextureLoader(std::vector<std::string>{ "TrexColour.jpg", "tankColour.png", "grass.png", "archerTex1.png" });
+	TextureLoader* textureLoader = new TextureLoader();
+	textureLoader->init(std::vector<std::string>{ "TrexColour.jpg", "tankColour.png", "grass.png", "archerTex1.png" });
 
 	// Load in all needed meshes
-	MeshLoader* meshLoader = new MeshLoader(std::vector<std::string>{ "Trex.FBX", "tank.FBX", "floor.FBX", "archer.FBX" });
+	MeshLoader* meshLoader = new MeshLoader();
+	meshLoader->init(std::vector<std::string>{ "Trex.FBX", "tank.FBX", "floor.FBX", "archer.FBX" });
 
 	// Load in and label all needed shaders
-	ShaderLoader* shaderLoader = new ShaderLoader(std::vector<ShaderInfo*>{
+	ShaderLoader* shaderLoader = new ShaderLoader();
+	shaderLoader->init(std::vector<ShaderInfo*>{
 			new ShaderInfo("grassShader", "textureVert.glsl", "textureFrag.glsl"),
 			new ShaderInfo("trexShader", "lightingVert.glsl", "lightingFrag.glsl"),
-			new ShaderInfo("tankShader", "lightingVert.glsl", "lightingFragTank.glsl")
+			new ShaderInfo("tankShader", "lightingVert.glsl", "lightingFragTank.glsl"),
+			new ShaderInfo("postProcessingShader", "passThroughVert.glsl", "postCellNotCell.glsl")
 	});
 
 	// Post processing class initialisation
 	PostProcessing* postProcessing = new PostProcessing();
-	postProcessing->setPostProcessingProgramID(LoadShaders("passThroughVert.glsl", "postCellNotCell.glsl"));
+	postProcessing->setPostProcessingProgramID(shaderLoader->getShaderID("postProcessingShader"));
 	postProcessing->setTexture0Location(glGetUniformLocation(postProcessing->getPostProcessingProgramID(), "texture0"));
 
 	// Single raycast instance can be reused
@@ -161,11 +207,16 @@ int main(int argc, char* args[])
 	std::vector<GameObject*> gameObjectList;
 	gameObjectList.clear();
 
-	// Light initialisation
-	Light* light = new Light();
-	light->setDirection(0.2f, -1.0f, 0.2f);
+	// Lights initialisation
+	Light* lightOne = new Light();
+	lightOne->setDirection(0.2f, -1.0f, 0.2f);
 	// Specular green!
-	light->colour->setSpecularColour(0.0f, 1.0f, 0.0f);
+	lightOne->getColour()->setSpecularColour(0.0f, 1.0f, 0.0f);
+
+	Light* lightTwo = new Light();
+	lightTwo->setDirection(-0.6f, -1.0f, -0.1f);
+	// Specular purple!
+	lightTwo->getColour()->setSpecularColour(1.0f, 0.0f, 1.0f);
 
 	// Create all gameObjects and add to the GameObjects vector
 	// Ground
@@ -250,15 +301,15 @@ int main(int argc, char* args[])
 	);
 	//player->FBXTexture->LoadTextureFromFBXFile("archer.FBX");
 	//player->FBXTexture->loadGLTextureCall("archer.FBX");
-	player->transform->setScale(0.015f);
+	player->getTransform()->setScale(0.015f);
 	gameObjectList.push_back(player);
 
 	// Set up camera
-	player->camera->setProjectionMatrix(90.0f, (1000 / 800), 0.1f, 1000.0f);
+	player->getCamera()->setProjectionMatrix(90.0f, (1000 / 800), 0.1f, 1000.0f);
 	
 	// Add all gameObjects to the physics simulation
 	for (GameObject* gameObject : gameObjectList)
-		dynamicsWorld->addRigidBody(gameObject->physics->getRigidBody());
+		dynamicsWorld->addRigidBody(gameObject->getPhysics()->getRigidBody());
 
 
 
@@ -293,7 +344,7 @@ int main(int argc, char* args[])
 
 				// MOUSEMOTION Message, called when the mouse has been moved 
 			case SDL_MOUSEMOTION:
-				player->camera->turn(SDLEvent.motion.xrel, SDLEvent.motion.yrel);
+				player->getCamera()->turn(SDLEvent.motion.xrel, SDLEvent.motion.yrel);
 				break;
 
 				// MOUSEBUTTONDOWN message, called when a mouse button has been pressed down
@@ -304,7 +355,16 @@ int main(int argc, char* args[])
 				case SDL_BUTTON_LEFT:
 				{
 					// Fire off a raycast
-					raycast->update(player->camera, dynamicsWorld->getDynamicsWorld());
+					raycast->update(player->getCamera(), dynamicsWorld->getDynamicsWorld());
+					btRigidBody * hitBody = raycast->getHitObject();
+					if (hitBody)
+					{
+						GameObject *pHitGameObject = (GameObject*)hitBody->getUserPointer();
+						if (pHitGameObject)
+						{
+
+						}
+					}
 					break;
 				}
 				}
@@ -320,11 +380,11 @@ int main(int argc, char* args[])
 					// Zoom in/out on player by changing the length of the third person camera boom
 					// Scroll forwards
 					if (SDLEvent.wheel.y == 1)
-						player->camera->moveCloser();
+						player->getCamera()->moveCloser();
 
 					// Scroll backwards
 					else if (SDLEvent.wheel.y == -1)
-						player->camera->moveAway();
+						player->getCamera()->moveAway();
 					break;
 				}
 				// Mouse wheel can be set up flipped (i.e. MacOS) this detects this
@@ -333,11 +393,11 @@ int main(int argc, char* args[])
 					// Zoom in/out on player by changing the length of the third person camera boom
 					// Scroll forwards
 					if (SDLEvent.wheel.y == 1)
-						player->camera->moveCloser();
+						player->getCamera()->moveCloser();
 
 					// Scroll backwards
 					else if (SDLEvent.wheel.y == -1)
-						player->camera->moveAway();
+						player->getCamera()->moveAway();
 					break;
 				}
 				}
@@ -355,29 +415,28 @@ int main(int argc, char* args[])
 
 				case SDLK_w:
 					// Move Forward
-					player->moveForward();
+					player->moveForward(1);
 					break;
 
 				case SDLK_s:
 					// Move backwards
-					player->moveForward();
+					player->moveForward(-1);
 					break;
 
 				case SDLK_a:
 					// Move left
-					player->moveRight();
+					player->moveRight(-1);
 					break;
 
 				case SDLK_d:
 					// Move right
-					player->moveRight();
+					player->moveRight(1);
 					break;
 
 				case SDLK_SPACE:
 					// Jump
-					//dynamicsWorld->getDynamicsWorld()->clearForces();
 					player->jump();
-					break;
+					break; 
 
 				case SDLK_LSHIFT:
 					// toggle to run
@@ -389,12 +448,12 @@ int main(int argc, char* args[])
 					// Zoom in/out on player by changing the length of the third person camera boom
 					// Using to debug FBX textures! Alternative to other zoom in/out if no mouse wheel available, i.e. trackpad
 					// zoom in on player
-					player->camera->moveCloser();
+					player->getCamera()->moveCloser();
 					break;
 
 				case SDLK_DOWN:
 					// zoom out on player
-					player->camera->moveAway();
+					player->getCamera()->moveAway();
 					break;
 
 				default:
@@ -415,7 +474,7 @@ int main(int argc, char* args[])
 		}
 
 		// Input, logic with input, physics, graphics.
-
+		//http://sdl.beuc.net/sdl.wiki/SDL_GetKeyState
 		// Update the player's physics position to the new position set by the controls
 		player->updateMovement();
 
@@ -429,29 +488,28 @@ int main(int argc, char* args[])
 		for (GameObject* gameObject : gameObjectList)
 		{
 			// Update physics transform to the rigidbody transform
-			gameObject->physics->setTransform(gameObject->physics->getRigidBody()->getWorldTransform());
+			gameObject->getPhysics()->setTransform(gameObject->getPhysics()->getRigidBody()->getWorldTransform());
 
 			// Update gameObject position to the physics position
-			btVector3 gameObjectPhysicsOrigin = gameObject->physics->getTransform().getOrigin();
-			gameObject->transform->setPosition(vec3(gameObjectPhysicsOrigin.getX(), gameObjectPhysicsOrigin.getY(), gameObjectPhysicsOrigin.getZ()));
+			btVector3 gameObjectPhysicsOrigin = gameObject->getPhysics()->getTransform().getOrigin();
+			gameObject->getTransform()->setPosition(vec3(gameObjectPhysicsOrigin.getX(), gameObjectPhysicsOrigin.getY(), gameObjectPhysicsOrigin.getZ()));
 
 			// Update gameObject rotation to the physics rotation
-			btQuaternion objectRotation = gameObject->physics->getTransform().getRotation();
+			btQuaternion objectRotation = gameObject->getPhysics()->getTransform().getRotation();
 			//gameObject->transform->setRotation(objectRotation.getX(), objectRotation.getY(), objectRotation.getZ(), objectRotation.getW());
 
 			// Update the model matrix (TRS!)
 			gameObject->update();
 
 			// Pass all values to the shader
-			gameObject->preRender(player->camera, light);
+			gameObject->preRender(player->getCamera(), lightOne, lightTwo);
 
 			// Draw
 			gameObject->render();
 		}
-		//player->FBXTexture->display();
 
 		// Update the camera MVP
-		player->camera->update();
+		player->getCamera()->update();
 
 		// Post processing frame buffer render
 		postProcessing->render();
@@ -488,7 +546,12 @@ int main(int argc, char* args[])
 	//meshLoader->destroy();
 	textureLoader->destroy();
 	dynamicsWorld->destroy();
-*/	delete light;
+*/	
+	if (lightTwo) {
+		delete lightTwo;
+		lightTwo = nullptr;
+	}
+	delete lightOne;
 	delete raycast;
 	delete postProcessing;
 	delete shaderLoader;

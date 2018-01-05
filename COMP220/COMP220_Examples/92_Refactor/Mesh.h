@@ -24,6 +24,7 @@ public:
 	void CopyBufferData(Vertex* verts, unsigned int numberOfVerts, unsigned int* indices, unsigned int numberOfIndices);
 
 	void init();
+	//This renders a single mesh
 	void render();
 	void destroy();
 
