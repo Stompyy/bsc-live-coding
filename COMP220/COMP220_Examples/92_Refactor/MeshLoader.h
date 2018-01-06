@@ -18,8 +18,6 @@
 #include <SDL_image.h>
 
 #include "Mesh.h"
-#include "Animation.h"
-#include "Joint.h"
 
 using namespace std;
 using namespace Assimp;

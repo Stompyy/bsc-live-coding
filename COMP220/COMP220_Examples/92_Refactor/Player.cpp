@@ -9,6 +9,7 @@ Player::Player()
 	m_RunningSpeed = 0.6f;
 	m_MovementSpeed = 0.2f;
 	m_JumpForce = 200.0f;
+	m_JumpForwardForceMultiplier = 0.1f;
 
 	// Sets the initial player rotation in line with the camera rotation
 	updateRotation();
@@ -51,19 +52,29 @@ void Player::moveRight(const float direction)
 	updateRotation();
 }
 
-void Player::jump()
+void Player::jumpUp()
 {
 	// Activate the rigidbody and apply a central force to it straight up along the y-axis
 	getPhysics()->getRigidBody()->activate(true);
 	getPhysics()->getRigidBody()->applyCentralForce(btVector3(0.0f, m_JumpForce, 0.0f));
+
+}
+
+void Player::jumpForward()
+{
+	// Get jump direction (camera direction in this case)
+	glm::vec3 jumpDirection = normalize(m_Camera->getTarget()->getPivotPosition() - m_Camera->getWorldLocation()->getPivotPosition()) * m_JumpForwardForceMultiplier;
+
+	// Activate the rigidbody and apply a central force to it up (y=1)and in the jumpDirection
+	getPhysics()->getRigidBody()->activate(true);
+	getPhysics()->getRigidBody()->applyCentralForce(btVector3(jumpDirection.x, 1.0f, jumpDirection.z) * m_JumpForce);
+
 }
 
 void Player::updateRotation()
 {
 	// Updates the player transform's rotation to the camera's rotation. Using getFloorPosition() to use y=0 vec3s
 	getTransform()->setRotation(conjugate(toQuat(lookAt(m_Camera->getTarget()->getPivotPosition(), getTransform()->getPivotPosition(), getTransform()->getUp()))));
-
-	//transform->updateOrientation(camera->target->getFloorPosition()); // Could not get this to work?
 }
 
 void Player::destroy()

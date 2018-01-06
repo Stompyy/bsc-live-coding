@@ -34,12 +34,6 @@
     <ClCompile Include="PostProcessing.cpp">
       <Filter>source</Filter>
     </ClCompile>
-    <ClCompile Include="Animation.cpp">
-      <Filter>source</Filter>
-    </ClCompile>
-    <ClCompile Include="Joint.cpp">
-      <Filter>source</Filter>
-    </ClCompile>
     <ClCompile Include="MeshLoader.cpp">
       <Filter>source</Filter>
     </ClCompile>
@@ -61,7 +55,9 @@
     <ClCompile Include="GameObjectLoader.cpp">
       <Filter>source</Filter>
     </ClCompile>
-    <ClCompile Include="GameWindow.cpp" />
+    <ClCompile Include="GameWindow.cpp">
+      <Filter>source</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="main.h">
@@ -103,16 +99,10 @@
     <ClInclude Include="TextureLoader.h">
       <Filter>headers</Filter>
     </ClInclude>
-    <ClInclude Include="Joint.h">
-      <Filter>headers</Filter>
-    </ClInclude>
     <ClInclude Include="MeshLoader.h">
       <Filter>headers</Filter>
     </ClInclude>
     <ClInclude Include="ShaderUniforms.h">
-      <Filter>headers</Filter>
-    </ClInclude>
-    <ClInclude Include="Animation.h">
       <Filter>headers</Filter>
     </ClInclude>
     <ClInclude Include="Raycast.h">
@@ -127,7 +117,9 @@
     <ClInclude Include="GameObjectLoader.h">
       <Filter>headers</Filter>
     </ClInclude>
-    <ClInclude Include="GameWindow.h" />
+    <ClInclude Include="GameWindow.h">
+      <Filter>headers</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="textureFrag.glsl">
@@ -161,10 +153,10 @@
     <None Include="postCellNotCell.glsl">
       <Filter>shaders</Filter>
     </None>
-    <None Include="lightingFragTank.glsl">
+    <None Include="lightingVertOneLight.glsl">
       <Filter>shaders</Filter>
     </None>
-    <None Include="lightingVertOneLight.glsl">
+    <None Include="lightingFragBright.glsl">
       <Filter>shaders</Filter>
     </None>
   </ItemGroup>

@@ -7,52 +7,6 @@ int currentBoneID = 0;
 std::map<std::string, int> BoneMap;
 
 
-bool loadAnimationFromFile(const std::string & filename, AnimationClip ** clip)
-{
-	Assimp::Importer importer;
-
-	const aiScene* scene = importer.ReadFile(filename, aiProcess_JoinIdenticalVertices | aiProcess_Triangulate | aiProcess_FlipUVs | aiProcess_GenSmoothNormals | aiProcess_GenUVCoords | aiProcess_CalcTangentSpace);
-
-	if (!scene)
-	{
-		printf("Model Loading Error - %s\n", importer.GetErrorString());
-		return false;
-	}
-
-	if (!scene->HasAnimations())
-		return false;
-
-	//the file we are using has one animation per file
-	aiAnimation * currentAnimation = scene->mAnimations[0];
-
-	for (unsigned int i = 0; i < currentAnimation->mNumChannels; i++)
-	{
-		aiNodeAnim *currentNode = currentAnimation->mChannels[i];
-		//printf("Animation Node %s\n", currentNode->mNodeName.C_Str());
-
-		aiVector3D position = currentNode->mPositionKeys[0].mValue;
-		aiVector3D scale = currentNode->mScalingKeys[0].mValue;
-		aiQuaternion rotation = currentNode->mRotationKeys[0].mValue;
-	}
-	return true;
-}
-
-void processNode(aiNode * parentNode, Joint *parentJoint)
-{
-	Joint * pJoint = parentJoint;
-	for (unsigned int i = 0; i < parentNode->mNumChildren; i++)
-	{
-		std::string nodeName = std::string(parentNode->mChildren[i]->mName.C_Str());
-		if (BoneMap.find(nodeName) != BoneMap.end())
-		{
-			pJoint = new Joint(BoneMap[nodeName], nodeName, parentJoint->getBindTransform());
-			parentJoint->addChildJoint(pJoint);
-		}
-
-		processNode(parentNode->mChildren[i], pJoint);
-	}
-}
-
 GLint TextureFromFile(const char* path)//, string directory)
 {
 /*	//Generate texture ID and load texture data 

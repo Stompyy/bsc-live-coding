@@ -48,7 +48,7 @@ void render(GameObjectLoader* gameObjects, Light* lightOne, Light* lightTwo)
 *	  \______/	   \_______/	|_|			 \_\  |_|			|________|	|________|	  \______/	
 *
 *	https://github.com/Stompyy/bsc-live-coding
-*/
+*/ 
 
 int main(int argc, char* args[])
 {
@@ -60,18 +60,18 @@ int main(int argc, char* args[])
 
 	// Load in all needed textures
 	TextureLoader* textureLoader = new TextureLoader();
-	textureLoader->init(std::vector<std::string>{ "TrexColour.jpg", "tankColour.png", "grass.png", "archerTex1.png" });
+	textureLoader->init(std::vector<std::string>{"assets/grass.png", "assets/crate.png", "assets/deer.png", "assets/wolf.jpg", "assets/trex.jpg"});//"TrexColour.jpg", "tankColour.png", "grass.png", "archerTex1.png" });
 
 	// Load in all needed meshes
 	MeshLoader* meshLoader = new MeshLoader();
-	meshLoader->init(std::vector<std::string>{ "Trex.FBX", "tank.FBX", "floor.FBX", "archer.FBX" });
-
+	meshLoader->init(std::vector<std::string>{ "assets/floor.FBX", "assets/crate.FBX", "assets/deer.FBX", "assets/wolf.FBX", "assets/trex.FBX"});//; //"Trex.FBX", "tank.FBX", "floor.FBX", "archer.FBX"});
+	//"assets/cabin.FBX", 
 	// Load in and label all needed shaders
 	ShaderLoader* shaderLoader = new ShaderLoader();
 	shaderLoader->init(std::vector<ShaderInfo*>{
 			new ShaderInfo("grassShader", "textureVert.glsl", "textureFrag.glsl"),
-			new ShaderInfo("trexShader", "lightingVert.glsl", "lightingFrag.glsl"),
-			new ShaderInfo("tankShader", "lightingVert.glsl", "lightingFragTank.glsl"),
+			new ShaderInfo("assetShader", "lightingVert.glsl", "lightingFrag.glsl"),
+			new ShaderInfo("brightAssetShader", "lightingVert.glsl", "lightingFragBright.glsl"),
 			new ShaderInfo("postProcessingShader", "passThroughVert.glsl", "postCellNotCell.glsl")
 	});
 
@@ -87,23 +87,31 @@ int main(int argc, char* args[])
 	GameObjectLoader* gameObjects = new GameObjectLoader();
 	gameObjects->init(meshLoader, textureLoader, shaderLoader, dynamicsWorld,
 		std::vector<GameObjectInfo*>{
-			new GameObjectInfo("ground", "floor.FBX", "grass.png", "grassShader", vec3(0.0f, -5.0f, 0.0f), 0.0f, btVector3(50.0f, 1.0f, 50.0f)),
-			new GameObjectInfo("trex", "Trex.FBX", "TrexColour.jpg", "trexShader", vec3(0.0f, 0.0f, 0.0f), 1.0f, btVector3(0.0f, 0.0f, 0.0f)),
-			new GameObjectInfo("tank1", "tank.FBX", "tankColour.png", "tankShader", vec3(15.0f, 0.0f, 15.0f), 1.0f, btVector3(0.0f, 0.0f, 0.0f)),
-			new GameObjectInfo("tank2", "tank.FBX", "tankColour.png", "tankShader", vec3(15.0f, 0.0f, -15.0f), 1.0f, btVector3(0.0f, 0.0f, 0.0f)),
-			new GameObjectInfo("tank3", "tank.FBX", "tankColour.png", "tankShader", vec3(-15.0f, 0.0f, 15.0f), 1.0f, btVector3(0.0f, 0.0f, 0.0f)),
-			new GameObjectInfo("tank4", "tank.FBX", "tankColour.png", "tankShader", vec3(-15.0f, 0.0f, -15.0f), 1.0f, btVector3(0.0f, 0.0f, 0.0f)),
+				new GameObjectInfo("ground", "assets/floor.FBX", "assets/grass.png", "grassShader", vec3(0.0f, -5.0f, 0.0f), 0.0f, btVector3(50.0f, 1.0f, 50.0f)),
+				new GameObjectInfo("crate1", "assets/crate.FBX", "assets/crate.png", "assetShader", vec3(15.0f, 0.0f, 15.0f), 1.0f, btVector3(1.0f, 1.0f, 1.0f)),
+				new GameObjectInfo("crate2", "assets/crate.FBX", "assets/crate.png", "assetShader", vec3(12.0f, 0.0f, 14.0f), 1.0f, btVector3(1.0f, 1.0f, 1.0f)),
+				new GameObjectInfo("crate3", "assets/crate.FBX", "assets/crate.png", "assetShader", vec3(10.0f, 0.0f, 15.0f), 1.0f, btVector3(1.0f, 1.0f, 1.0f)),
+				new GameObjectInfo("crate4", "assets/crate.FBX", "assets/crate.png", "assetShader", vec3(7.0f, 0.0f, 12.0f), 1.0f, btVector3(1.0f, 1.0f, 1.0f)),
+				new GameObjectInfo("deer", "assets/deer.FBX", "assets/deer.png", "assetShader", vec3(5.0f, 0.0f, 5.0f), 1.0f, btVector3(1.0f, 1.0f, 1.0f)),
+				new GameObjectInfo("trex", "assets/trex.FBX", "assets/trex.jpg", "assetShader", vec3(0.0f, 5.0f, 0.0f), 1.0f, btVector3(1.0f, 0.0f, 1.0f))
 	});
 	// Add the player in seperately as it will be a GameObject child Player class instance.
+	// Recommended to set gameObjectName (the first argument) here as "player" for gameObjects->getPlayer() to return the Player* player object without any arguments
+	// Any other name will need the explicit gameObjects->getPlayer("yourPlayerName") to return the Player* player object
 	gameObjects->addPlayer(meshLoader, textureLoader, shaderLoader, dynamicsWorld,
-		new GameObjectInfo("player", "archer.FBX", "archerTex1.png", "tankShader", vec3(10.0f, 0.0f, 0.0f), 0.3f, btVector3(0.0f, 0.0f, 0.0f))
+		new GameObjectInfo("player", "assets/wolf.FBX", "assets/wolf.jpg", "brightAssetShader", vec3(10.0f, 0.0f, 0.0f), 0.3f, btVector3(0.85f, 0.85f, 0.85f))
 	);
 
 	// Set up camera
 	gameObjects->getPlayer()->getCamera()->setProjectionMatrix(90.0f, (1000 / 800), 0.1f, 1000.0f);
 
 	// My player's FBX file is a very large size! Could have added a transform argument into the GameObjectLoader init(), but this will get messy and most models transforms will be  
-	gameObjects->getPlayer()->getTransform()->setScale(0.015f);
+	gameObjects->getGameObject("crate1")->getTransform()->setScale(0.01f);
+	gameObjects->getGameObject("crate2")->getTransform()->setScale(0.01f);
+	gameObjects->getGameObject("crate3")->getTransform()->setScale(0.01f);
+	gameObjects->getGameObject("crate4")->getTransform()->setScale(0.01f);
+	gameObjects->getGameObject("deer")->getTransform()->setScale(0.1f);
+	gameObjects->getGameObject("deer")->getTransform()->setRotation(glm::quat(0.0f, 0.0f, 0.0f, 1.0f));
 
 	// Lights initialisation
 	// Specular green!
@@ -130,7 +138,7 @@ int main(int argc, char* args[])
 	SDL_Event SDLEvent;
 
 	while (running)
-	{
+	{	
 		// Poll for the events which have happened in this frame
 		//https://wiki.libsdl.org/SDL_PollEvent
 		while (SDL_PollEvent(&SDLEvent))
@@ -235,9 +243,14 @@ int main(int argc, char* args[])
 					gameObjects->getPlayer()->moveRight(1);
 					break;
 
+				case SDLK_e:
+					// Jump up
+					gameObjects->getPlayer()->jumpUp();
+					break;
+
 				case SDLK_SPACE:
-					// Jump
-					gameObjects->getPlayer()->jump();
+					// Jump forward
+					gameObjects->getPlayer()->jumpForward();
 					break; 
 
 				case SDLK_LSHIFT:

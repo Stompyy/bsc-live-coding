@@ -8,7 +8,7 @@ Camera::Camera()
 	m_Up = vec3(0.0f, 1.0f, 0.0f);
 
 	m_CameraBoomLength = 4.0f;
-	m_CameraPivotHeight = 2.5f;
+	m_CameraPivotHeight = 1.0f;
 	m_ZoomSpeed = 0.1f;
 	m_MinimumDistanceToPlayer = 0.5f;
 	m_MaximumDistanceToPlayer = 10.f;
@@ -17,7 +17,7 @@ Camera::Camera()
 	m_CameraTargetDistance = 50.0f;
 
 	m_CameraLowerLimitY = -5.0f;
-	m_CameraUpperLimitY = 0.8f;
+	m_CameraUpperLimitY = 0.4f;
 
 	m_ProjectionMatrix = perspective(radians(90.0f), float(1000 / 800), 0.1f, 100.0f);
 

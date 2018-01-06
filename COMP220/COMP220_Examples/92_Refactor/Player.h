@@ -17,7 +17,8 @@ public:
 	// Would refactor into a player controller class, but the functions need to access all inherited members, physics, transform etc, so more efficient to be here
 	void moveForward(const float direction);
 	void moveRight(const float direction);
-	void jump();
+	void jumpUp(); 
+	void jumpForward();
 	void run() { m_MovementSpeed = m_RunningSpeed; m_IsRunning = true; }
 	void walk() { m_MovementSpeed = m_WalkingSpeed; m_IsRunning = false; }
 	bool isRunning() { return m_IsRunning; }
@@ -48,6 +49,7 @@ private:
 	float m_WalkingSpeed;
 	float m_RunningSpeed;
 	float m_JumpForce;
+	float m_JumpForwardForceMultiplier;
 
 	bool m_IsRunning;
 };

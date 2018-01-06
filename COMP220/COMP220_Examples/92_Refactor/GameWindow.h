@@ -13,6 +13,7 @@ public:
 
 	void close();
 
+	// Returns the SDL window
 	SDL_Window* getSDLWindow() { return m_SDL_window; }
 
 private:
