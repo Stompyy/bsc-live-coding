@@ -180,7 +180,6 @@ copy ..\..\..\Libraries\assimp\bin\assimp-vc140-mt.dll "$(Outdir)\assimp-vc140-m
     <ClInclude Include="vertex.h" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="cube.nff" />
     <None Include="defaultFrag.glsl" />
     <None Include="lightingFrag.glsl" />
     <None Include="lightingFragBright.glsl" />

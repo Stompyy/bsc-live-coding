@@ -28,7 +28,7 @@ void GameObjectLoader::init(MeshLoader* meshLoader, TextureLoader* textureLoader
 			meshLoader->getMeshes(constructionInfo->meshFileName),
 			textureLoader->getTextureID(constructionInfo->textureFileName),
 			shaderLoader->getShaderID(constructionInfo->shaderName),
-			constructionInfo->initialPosition,
+			constructionInfo->initialTransform,
 			constructionInfo->mass,
 			constructionInfo->collisionSize
 		);
@@ -49,7 +49,7 @@ void GameObjectLoader::addPlayer(MeshLoader* meshLoader, TextureLoader* textureL
 		meshLoader->getMeshes(constructionInfo->meshFileName),
 		textureLoader->getTextureID(constructionInfo->textureFileName),
 		shaderLoader->getShaderID(constructionInfo->shaderName),
-		constructionInfo->initialPosition,
+		constructionInfo->initialTransform,
 		constructionInfo->mass,
 		constructionInfo->collisionSize
 	);

@@ -38,7 +38,7 @@ public:
 		const std::vector<Mesh*> meshes,
 		const GLuint textureID,
 		const GLuint shaderID,
-		const glm::vec3 initialPosition,
+		Transform* initialTransform,
 		const float mass,
 		const btVector3 collisionSize);
 

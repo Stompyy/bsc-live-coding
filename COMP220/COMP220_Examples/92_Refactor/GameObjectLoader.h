@@ -17,7 +17,7 @@ struct GameObjectInfo
 		std::string meshFileName,
 		std::string textureFileName,
 		std::string shaderName,
-		glm::vec3 initialPosition,
+		Transform* initialTransform,
 		float mass,
 		btVector3 collisionSize)
 		:
@@ -25,12 +25,12 @@ struct GameObjectInfo
 		meshFileName(meshFileName),
 		textureFileName(textureFileName),
 		shaderName(shaderName),
-		initialPosition(initialPosition),
+		initialTransform(initialTransform),
 		mass(mass),
 		collisionSize(collisionSize) {}
 	
 	std::string gameObjectName, meshFileName, textureFileName, shaderName;
-	glm::vec3 initialPosition;
+	Transform* initialTransform;
 	float mass;
 	btVector3 collisionSize;
 };

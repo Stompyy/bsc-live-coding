@@ -27,7 +27,7 @@ void GameObject::init(
 	const std::vector<Mesh*> meshes,
 	const GLuint textureID,
 	const GLuint shaderID,
-	const glm::vec3 initialPosition,
+	Transform* initialTransform,
 	const float mass,
 	const btVector3 collisionSize)
 {
@@ -35,7 +35,7 @@ void GameObject::init(
 	m_DiffuseMapID = textureID;
 	m_ShaderProgramID = shaderID;
 	m_ShaderUniforms->init(m_ShaderProgramID);
-	m_Transform->setPosition(initialPosition);
+	m_Transform = initialTransform;
 	m_Physics->setMass(mass);
 	m_Physics->setCollisionShapeSize(collisionSize);
 	m_Physics->getTransform().setIdentity();

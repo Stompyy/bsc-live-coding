@@ -12,6 +12,13 @@ class Transform
 {
 public:
 	Transform();
+	Transform(Transform& transform);
+	Transform(vec3 position, quat rotation, float scale);
+	Transform(vec3 position, quat rotation, vec3 scale);
+	Transform(vec3 position, vec3 rotation, float scale);
+
+	// init matrices, called from each constructor
+	void initSecondaryVariables();
 	~Transform();
 
 	// Multiple styles of constructors for readability and easier conversions from other vector libraries i.e. btVector3 - able to just construct with floats

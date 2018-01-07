@@ -128,7 +128,6 @@
     <None Include="textureVert.glsl">
       <Filter>shaders</Filter>
     </None>
-    <None Include="cube.nff" />
     <None Include="lightingFrag.glsl">
       <Filter>shaders</Filter>
     </None>

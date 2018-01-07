@@ -87,31 +87,24 @@ int main(int argc, char* args[])
 	GameObjectLoader* gameObjects = new GameObjectLoader();
 	gameObjects->init(meshLoader, textureLoader, shaderLoader, dynamicsWorld,
 		std::vector<GameObjectInfo*>{
-				new GameObjectInfo("ground", "assets/floor.FBX", "assets/grass.png", "grassShader", vec3(0.0f, -5.0f, 0.0f), 0.0f, btVector3(50.0f, 1.0f, 50.0f)),
-				new GameObjectInfo("crate1", "assets/crate.FBX", "assets/crate.png", "assetShader", vec3(15.0f, 0.0f, 15.0f), 1.0f, btVector3(1.0f, 1.0f, 1.0f)),
-				new GameObjectInfo("crate2", "assets/crate.FBX", "assets/crate.png", "assetShader", vec3(12.0f, 0.0f, 14.0f), 1.0f, btVector3(1.0f, 1.0f, 1.0f)),
-				new GameObjectInfo("crate3", "assets/crate.FBX", "assets/crate.png", "assetShader", vec3(10.0f, 0.0f, 15.0f), 1.0f, btVector3(1.0f, 1.0f, 1.0f)),
-				new GameObjectInfo("crate4", "assets/crate.FBX", "assets/crate.png", "assetShader", vec3(7.0f, 0.0f, 12.0f), 1.0f, btVector3(1.0f, 1.0f, 1.0f)),
-				new GameObjectInfo("deer", "assets/deer.FBX", "assets/deer.png", "assetShader", vec3(5.0f, 0.0f, 5.0f), 1.0f, btVector3(1.0f, 1.0f, 1.0f)),
-				new GameObjectInfo("trex", "assets/trex.FBX", "assets/trex.jpg", "assetShader", vec3(0.0f, 5.0f, 0.0f), 1.0f, btVector3(1.0f, 0.0f, 1.0f))
+				//					name		meshMapKey			textureMapKey		shaderMapKey		initialTransform														mass	collisionSize		
+				new GameObjectInfo("ground", "assets/floor.FBX", "assets/grass.png", "grassShader",		new Transform(vec3(0.0f, -5.0f, 0.0f),	vec3(0.0f, 0.0f, 0.0f), 1.0f),		0.0f, btVector3(20.0f, 1.0f, 20.0f)),
+				new GameObjectInfo("crate1", "assets/crate.FBX", "assets/crate.png", "assetShader",		new Transform(vec3(15.0f, 0.0f, 15.0f), vec3(0.0f, 10.0f, 0.0f), 0.01f),	1.0f, btVector3(1.0f, 1.0f, 1.0f)),
+				new GameObjectInfo("crate2", "assets/crate.FBX", "assets/crate.png", "assetShader",		new Transform(vec3(12.0f, 0.0f, 14.0f), vec3(0.0f, -20.0f, 0.0f), 0.01f),	1.0f, btVector3(1.0f, 1.0f, 1.0f)),
+				new GameObjectInfo("crate3", "assets/crate.FBX", "assets/crate.png", "assetShader",		new Transform(vec3(10.0f, 0.0f, 15.0f), vec3(0.0f, 30.0f, 0.0f), 0.01f),	1.0f, btVector3(1.0f, 1.0f, 1.0f)),
+				new GameObjectInfo("crate4", "assets/crate.FBX", "assets/crate.png", "assetShader",		new Transform(vec3(7.0f, 0.0f, 12.0f),	vec3(0.0f, 45.0f, 0.0f), 0.01f),	1.0f, btVector3(1.0f, 1.0f, 1.0f)),
+				new GameObjectInfo("deer",	 "assets/deer.FBX",	 "assets/deer.png",	 "assetShader",		new Transform(vec3(5.0f, 0.0f, 5.0f),	vec3(180.0f, -20.0f, 0.0f), 0.1f),	1.0f, btVector3(1.0f, 1.0f, 1.0f)),
+				new GameObjectInfo("trex",	 "assets/trex.FBX",	 "assets/trex.jpg",	 "assetShader",		new Transform(vec3(0.0f, 5.0f, 0.0f),	vec3(0.0f, 15.0f, 0.0f), 1.0f),		1.0f, btVector3(1.0f, 0.0f, 1.0f))
 	});
 	// Add the player in seperately as it will be a GameObject child Player class instance.
 	// Recommended to set gameObjectName (the first argument) here as "player" for gameObjects->getPlayer() to return the Player* player object without any arguments
 	// Any other name will need the explicit gameObjects->getPlayer("yourPlayerName") to return the Player* player object
 	gameObjects->addPlayer(meshLoader, textureLoader, shaderLoader, dynamicsWorld,
-		new GameObjectInfo("player", "assets/wolf.FBX", "assets/wolf.jpg", "brightAssetShader", vec3(10.0f, 0.0f, 0.0f), 0.3f, btVector3(0.85f, 0.85f, 0.85f))
+		new GameObjectInfo("player", "assets/wolf.FBX", "assets/wolf.jpg", "brightAssetShader", new Transform(vec3(10.0f, 0.0f, 0.0f), vec3(0.0f, 0.0f, 0.0f), 1.0f), 0.3f, btVector3(0.85f, 0.85f, 0.85f))
 	);
 
 	// Set up camera
 	gameObjects->getPlayer()->getCamera()->setProjectionMatrix(90.0f, (1000 / 800), 0.1f, 1000.0f);
-
-	// My player's FBX file is a very large size! Could have added a transform argument into the GameObjectLoader init(), but this will get messy and most models transforms will be  
-	gameObjects->getGameObject("crate1")->getTransform()->setScale(0.01f);
-	gameObjects->getGameObject("crate2")->getTransform()->setScale(0.01f);
-	gameObjects->getGameObject("crate3")->getTransform()->setScale(0.01f);
-	gameObjects->getGameObject("crate4")->getTransform()->setScale(0.01f);
-	gameObjects->getGameObject("deer")->getTransform()->setScale(0.1f);
-	gameObjects->getGameObject("deer")->getTransform()->setRotation(glm::quat(0.0f, 0.0f, 0.0f, 1.0f));
 
 	// Lights initialisation
 	// Specular green!
