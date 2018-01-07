@@ -19,7 +19,7 @@ struct GameObjectInfo
 		std::string shaderName,
 		Transform* initialTransform,
 		float mass,
-		btVector3 collisionSize)
+		btVector3& collisionSize)
 		:
 		gameObjectName(gameObjectName),
 		meshFileName(meshFileName),

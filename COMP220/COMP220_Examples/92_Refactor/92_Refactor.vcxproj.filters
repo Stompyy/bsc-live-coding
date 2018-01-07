@@ -158,6 +158,9 @@
     <None Include="lightingFragBright.glsl">
       <Filter>shaders</Filter>
     </None>
+    <None Include="lightingFragDark.glsl">
+      <Filter>shaders</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="headers">

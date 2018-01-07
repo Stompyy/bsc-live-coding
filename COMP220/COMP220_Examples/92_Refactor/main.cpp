@@ -72,6 +72,7 @@ int main(int argc, char* args[])
 			new ShaderInfo("grassShader", "textureVert.glsl", "textureFrag.glsl"),
 			new ShaderInfo("assetShader", "lightingVert.glsl", "lightingFrag.glsl"),
 			new ShaderInfo("brightAssetShader", "lightingVert.glsl", "lightingFragBright.glsl"),
+			new ShaderInfo("darkAssetShader", "lightingVert.glsl", "lightingFragDark.glsl"),
 			new ShaderInfo("postProcessingShader", "passThroughVert.glsl", "postCellNotCell.glsl")
 	});
 
@@ -79,9 +80,6 @@ int main(int argc, char* args[])
 	PostProcessing* postProcessing = new PostProcessing();
 	postProcessing->setPostProcessingProgramID(shaderLoader->getShaderID("postProcessingShader"));
 	postProcessing->setTexture0Location(glGetUniformLocation(postProcessing->getPostProcessingProgramID(), "texture0"));
-
-	// Single raycast instance to be reused
-	Raycast* raycast = new Raycast();
 
 	// Load in all game objects
 	GameObjectLoader* gameObjects = new GameObjectLoader();
@@ -91,10 +89,11 @@ int main(int argc, char* args[])
 				new GameObjectInfo("ground", "assets/floor.FBX", "assets/grass.png", "grassShader",		new Transform(vec3(0.0f, -5.0f, 0.0f),	vec3(0.0f, 0.0f, 0.0f), 1.0f),		0.0f, btVector3(20.0f, 1.0f, 20.0f)),
 				new GameObjectInfo("crate1", "assets/crate.FBX", "assets/crate.png", "assetShader",		new Transform(vec3(15.0f, 0.0f, 15.0f), vec3(0.0f, 10.0f, 0.0f), 0.01f),	1.0f, btVector3(1.0f, 1.0f, 1.0f)),
 				new GameObjectInfo("crate2", "assets/crate.FBX", "assets/crate.png", "assetShader",		new Transform(vec3(12.0f, 0.0f, 14.0f), vec3(0.0f, -20.0f, 0.0f), 0.01f),	1.0f, btVector3(1.0f, 1.0f, 1.0f)),
-				new GameObjectInfo("crate3", "assets/crate.FBX", "assets/crate.png", "assetShader",		new Transform(vec3(10.0f, 0.0f, 15.0f), vec3(0.0f, 30.0f, 0.0f), 0.01f),	1.0f, btVector3(1.0f, 1.0f, 1.0f)),
+				new GameObjectInfo("crate3", "assets/crate.FBX", "assets/crate.png", "assetShader",		new Transform(vec3(10.0f, 0.0f, 13.4f), vec3(0.0f, 30.0f, 0.0f), 0.01f),	1.0f, btVector3(1.0f, 1.0f, 1.0f)),
 				new GameObjectInfo("crate4", "assets/crate.FBX", "assets/crate.png", "assetShader",		new Transform(vec3(7.0f, 0.0f, 12.0f),	vec3(0.0f, 45.0f, 0.0f), 0.01f),	1.0f, btVector3(1.0f, 1.0f, 1.0f)),
-				new GameObjectInfo("deer",	 "assets/deer.FBX",	 "assets/deer.png",	 "assetShader",		new Transform(vec3(5.0f, 0.0f, 5.0f),	vec3(180.0f, -20.0f, 0.0f), 0.1f),	1.0f, btVector3(1.0f, 1.0f, 1.0f)),
-				new GameObjectInfo("trex",	 "assets/trex.FBX",	 "assets/trex.jpg",	 "assetShader",		new Transform(vec3(0.0f, 5.0f, 0.0f),	vec3(0.0f, 15.0f, 0.0f), 1.0f),		1.0f, btVector3(1.0f, 0.0f, 1.0f))
+				new GameObjectInfo("deer1",	 "assets/deer.FBX",	 "assets/deer.png",	 "assetShader",		new Transform(vec3(5.0f, 0.0f, 5.0f),	vec3(180.0f, -20.0f, 0.0f), 0.1f),	1.0f, btVector3(1.0f, 1.0f, 1.0f)),
+				new GameObjectInfo("deer2",	 "assets/deer.FBX",	 "assets/deer.png",	 "assetShader",		new Transform(vec3(3.0f, 0.0f, 3.0f),	vec3(180.0f, 175.0f, 0.0f), 0.1f),	1.0f, btVector3(1.0f, 1.0f, 1.0f)),
+				new GameObjectInfo("trex",	 "assets/trex.FBX",	 "assets/trex.jpg",	 "darkAssetShader",	new Transform(vec3(0.0f, 5.0f, 0.0f),	vec3(0.0f, 15.0f, 0.0f), 1.0f),		1.0f, btVector3(1.0f, 0.0f, 1.0f))
 	});
 	// Add the player in seperately as it will be a GameObject child Player class instance.
 	// Recommended to set gameObjectName (the first argument) here as "player" for gameObjects->getPlayer() to return the Player* player object without any arguments
@@ -105,6 +104,9 @@ int main(int argc, char* args[])
 
 	// Set up camera
 	gameObjects->getPlayer()->getCamera()->setProjectionMatrix(90.0f, (1000 / 800), 0.1f, 1000.0f);
+
+	// Single raycast instance to be reused
+	Raycast* raycast = new Raycast();
 
 	// Lights initialisation
 	// Specular green!
@@ -204,7 +206,6 @@ int main(int argc, char* args[])
 					break;
 				}
 				}
-				
 			}
 				// KEYDOWN message, called when a key has been pressed down
 			case SDL_KEYDOWN:
@@ -280,9 +281,10 @@ int main(int argc, char* args[])
 			}
 			}
 		}
-
 		// Input, logic with input, physics, graphics.
-		//http://sdl.beuc.net/sdl.wiki/SDL_GetKeyState
+		
+		// Helps to demo the lights and the shaders working together, Does not provide any other real functionality
+		gameObjects->getGameObject("trex")->rotateInPosition();
 
 		// Update the player, each gameObjects physics simulation, and bind the frame buffer
 		update(gameObjects, postProcessing, dynamicsWorld);
@@ -301,23 +303,23 @@ int main(int argc, char* args[])
 	}
 
 	// Delete all Objects in reverse instantiation order
-	/*
+	
 	// Important! remember all this!
-	auto iter = gameObjectList.begin();
-	while (iter != gameObjectList.end())
-	{
-	if ((*iter))
-	{
-	(*iter)->destroy();
-	delete (*iter);
-	iter = gameObjectList.erase(iter);	// iter = ... because it will return back the next iter value to use next
-	}
-	else
-	{
-	iter++;
-	}
-	}
-	*/	
+	//auto iter = gameObjectList.begin();
+	//while (iter != gameObjectList.end())
+	//{
+	//if ((*iter))
+	//{
+	//(*iter)->destroy();
+	//delete (*iter);
+	//iter = gameObjectList.erase(iter);	// iter = ... because it will return back the next iter value to use next
+	//}
+	//else
+	//{
+	//iter++;
+	//}
+	//}
+	
 	
 	// Call destroy() functions instead/as well as delete
 	
@@ -329,18 +331,43 @@ int main(int argc, char* args[])
 	textureLoader->destroy();
 	dynamicsWorld->destroy();
 */	
+
 	if (lightTwo) {
 		delete lightTwo;
 		lightTwo = nullptr;
 	}
-	delete lightOne;
-	delete raycast;
-	delete gameObjects;
-	delete postProcessing;
-	delete shaderLoader;
-	delete meshLoader;
-	delete textureLoader;
-	delete dynamicsWorld;
+	if (lightOne) {
+		delete lightOne;
+		lightOne = nullptr;
+	}
+	if (raycast) {
+		delete raycast;
+		raycast = nullptr;
+	}
+	if (gameObjects) {
+		delete gameObjects;
+		gameObjects = nullptr;
+	}
+	if (postProcessing) {
+		delete postProcessing;
+		postProcessing = nullptr;
+	}
+	if (shaderLoader) {
+		delete shaderLoader;
+		shaderLoader = nullptr;
+	}
+	if (meshLoader) {
+		delete meshLoader;
+		meshLoader = nullptr;
+	}
+	if (textureLoader) {
+		delete textureLoader;
+		textureLoader = nullptr;
+	}
+	if (dynamicsWorld) {
+		delete dynamicsWorld;
+		dynamicsWorld = nullptr;
+	}
 
 	gameWindow->close();
 

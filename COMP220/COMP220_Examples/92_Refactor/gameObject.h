@@ -51,6 +51,8 @@ public:
 	// Draw
 	void render();
 
+	void rotateInPosition();
+
 private:
 	Transform* m_Transform;
 	Material* m_Material;

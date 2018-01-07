@@ -11,11 +11,16 @@ class Transform
 	// Transform class. Used for anything that moves!
 {
 public:
+	// Default constructor
 	Transform();
+	// Copy constructor
 	Transform(Transform& transform);
-	Transform(vec3 position, quat rotation, float scale);
-	Transform(vec3 position, quat rotation, vec3 scale);
-	Transform(vec3 position, vec3 rotation, float scale);
+	// Constructor with quat rotation argument and uniform scale
+	Transform(const vec3& position, const quat& rotation, const float scale);
+	// Constructor with quat rotation argument and explicit non uniform scale
+	Transform(const vec3& position, const quat& rotation, const vec3& scale);
+	// Constructor with readable vec3 rotation argument and uniform scale. Used for gameObject initialisation
+	Transform(const vec3& position, const vec3& rotation, const float scale);
 
 	// init matrices, called from each constructor
 	void initSecondaryVariables();
@@ -34,9 +39,16 @@ public:
 	// All rotation in quaternions to avoid gimble lock
 	void setRotation(const float w, const float x, const float y, const float z) { m_Rotation = quat(w, x, y, z); }
 	void setRotation(const quat& newRotation) { m_Rotation = newRotation; }
+	void setRotation(const vec3& newRotation) { m_Rotation = quat(radians(newRotation)); }
+	void setRotation(const float x, const float y, const float z) { m_Rotation = quat(radians(vec3(x, y, z))); }
 
 	// Used to move the position by deltaPosition
 	void movePosition(const vec3& deltaPosition) { m_Position += deltaPosition; }
+	// Move the position by x,y,z
+	void movePosition(const float x, const float y, const float z) { m_Position += vec3(x, y, z); }
+
+	// add rotation in euler angles
+	void turnRotation(const float x, const float y, const float z) { m_Rotation = quat(radians(vec3(x, y, z))); }
 
 	// Update the model matrix
 	void update();
@@ -57,6 +69,13 @@ public:
 
 	mat4& getModelMatrix() { return m_ModelMatrix; }
 
+	// Model rotation speed in euler angles per frame, default value = 0.02f
+	void setRotationSpeed(const float newRotationSpeed) { m_RotationDemoSpeed = newRotationSpeed; }
+	// update the rotating model demo rotation
+	void updateRotatingModel() { m_RotationDemoY += m_RotationDemoSpeed; setRotation(0.0f, m_RotationDemoY, 0.0f); }
+	// Returns the rotating demo model variable
+	float getRotatingDemoModelY() { return m_RotationDemoY; }
+
 private:
 	vec3 m_Position;
 	vec3 m_Scale;
@@ -69,5 +88,9 @@ private:
 	mat4 m_ModelMatrix;
 
 	vec3 m_Up;
+
+	// Used to rotate in position, demonstrating model rotations
+	float m_RotationDemoY;
+	float m_RotationDemoSpeed;
 };
 

@@ -114,3 +114,14 @@ void GameObject::render()
 		currentMesh->render();
 	}
 }
+
+void GameObject::rotateInPosition()
+{
+	m_Transform->updateRotatingModel();
+	m_Physics->getTransform().setRotation(btQuaternion(
+		m_Transform->getRotation().w,
+		m_Transform->getRotation().x,
+		m_Transform->getRotation().y,
+		m_Transform->getRotation().z
+	));
+}

@@ -183,6 +183,7 @@ copy ..\..\..\Libraries\assimp\bin\assimp-vc140-mt.dll "$(Outdir)\assimp-vc140-m
     <None Include="defaultFrag.glsl" />
     <None Include="lightingFrag.glsl" />
     <None Include="lightingFragBright.glsl" />
+    <None Include="lightingFragDark.glsl" />
     <None Include="lightingVert.glsl" />
     <None Include="lightingVertOneLight.glsl" />
     <None Include="passThroughVert.glsl" />
