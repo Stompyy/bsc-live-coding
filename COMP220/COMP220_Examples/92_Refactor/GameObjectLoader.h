@@ -9,6 +9,7 @@
 #include "ShaderLoader.h"
 #include "PhysicsEngine.h"
 #include "Player.h"
+#include "ErrorMessage.h"
 
 struct GameObjectInfo
 {
@@ -62,13 +63,13 @@ public:
 	);
 
 	// Get gameObject from gameObjectLoader by name
-	GameObject* getGameObject(const std::string& gameObjectName) { return m_GameObjectMap[gameObjectName]; }
+	GameObject* getGameObject(const std::string& gameObjectName);
 
 	// Return Player object with map key "player"
-	Player* getPlayer() { return (Player*)m_GameObjectMap["player"]; }
+	Player* getPlayer();
 
 	// Return Player object with explicit map key name
-	Player* getPlayer(std::string* playerGameObjectName) { return (Player*)m_GameObjectMap[*playerGameObjectName]; }
+	Player* getPlayer(std::string* playerGameObjectName);
 
 	// Return gameObjectMap
 	std::map<std::string, GameObject*> getGameObjectMap() { return m_GameObjectMap; }
@@ -76,5 +77,11 @@ public:
 private:
 	// Map of GameObjects to store all GameObjects within the scene
 	std::map<std::string, GameObject*> m_GameObjectMap;
+
+	// Used to store references to the gameObjects to make it easy to delete them all in destroy()
+	std::vector<GameObject*> m_GameObjectList;
+
+	// Error message if needed
+	ErrorMessage* m_ErrorMessage;
 };
 

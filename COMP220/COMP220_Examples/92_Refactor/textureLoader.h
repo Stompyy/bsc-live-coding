@@ -5,6 +5,7 @@
 #include <map>
 #include <GL\glew.h>
 #include <SDL_image.h>
+#include "ErrorMessage.h"
 
 class TextureLoader
 	// Preload in all textures needed so as to be able to reuse, rather than just reload everytime
@@ -17,12 +18,14 @@ public:
 	void init(std::vector<std::string> textureFileNames);
 
 	// Error checking here if nullptr
-	GLuint getTextureID(const std::string& textureName) { return m_TextureMap[textureName]; }
+	GLuint getTextureID(const std::string& textureName);
 
 	void destroy();
 
 private:
 	// Create an empty texture map. Aim to only load in each texture once, but able to reuse.
 	std::map<std::string, GLuint> m_TextureMap;
+
+	ErrorMessage* m_ErrorMessage;
 };
 

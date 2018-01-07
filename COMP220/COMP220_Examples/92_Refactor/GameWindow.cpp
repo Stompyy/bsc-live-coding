@@ -91,6 +91,8 @@ GameWindow::GameWindow()
 
 GameWindow::~GameWindow()
 {
+	if (m_SDL_window) { delete m_SDL_window; m_SDL_window = nullptr; }
+	if (m_GL_Context) { delete m_GL_Context; m_GL_Context = nullptr; }
 }
 
 

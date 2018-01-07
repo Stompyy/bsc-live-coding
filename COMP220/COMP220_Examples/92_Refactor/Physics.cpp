@@ -28,5 +28,7 @@ void Physics::createRigidBody()
 
 void Physics::destroy()
 {
-	//?
+	if (m_RigidBody)		{ delete m_RigidBody;		m_RigidBody = nullptr; }
+	if (m_MotionState)		{ delete m_MotionState;		m_MotionState = nullptr; }
+	if (m_CollisionShape)	{ delete m_CollisionShape;	m_CollisionShape = nullptr; }
 }

@@ -7,7 +7,7 @@ GLuint loadTextureFromFilename(const std::string& filename)
 	GLenum	textureFormat = GL_RGB;
 	GLenum	internalFormat = GL_RGB8;
 
-	SDL_Surface * surface = IMG_Load(filename.c_str());
+	SDL_Surface* surface = IMG_Load(filename.c_str());
 	if (surface == nullptr)
 	{
 		printf("Could not load file %s", IMG_GetError());
@@ -68,6 +68,16 @@ TextureLoader::~TextureLoader()
 	destroy();
 }
 
-void TextureLoader::destroy()
+GLuint TextureLoader::getTextureID(const std::string & textureName)
 {
+	if (m_TextureMap[textureName] <= 0)
+	{
+		m_ErrorMessage->showErrorMessage("texture not found, check correct map key is being used.");
+	}
+	return m_TextureMap[textureName];
+}
+
+void TextureLoader::destroy()
+{ 
+	if (m_ErrorMessage) { delete m_ErrorMessage; m_ErrorMessage = nullptr; }
 }

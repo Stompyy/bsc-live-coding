@@ -37,9 +37,9 @@ void PhysicsEngine::destroy()
 		delete rigidBody->getMotionState();
 		delete rigidBody;
 	}
-	delete m_DynamicsWorld;
-	delete m_Solver;
-	delete m_OverlappingPairCache;
-	delete m_Dispatcher;
-	delete m_CollisionConfiguration;
+	if (m_DynamicsWorld)			{ delete m_DynamicsWorld;			m_DynamicsWorld = nullptr; }
+	if (m_Solver)					{ delete m_Solver;					m_Solver = nullptr; }
+	if (m_OverlappingPairCache)		{ delete m_OverlappingPairCache;	m_OverlappingPairCache = nullptr; }
+	if (m_Dispatcher)				{ delete m_Dispatcher;				m_Dispatcher = nullptr; }
+	if (m_CollisionConfiguration)	{ delete m_CollisionConfiguration;	m_CollisionConfiguration = nullptr; }
 }

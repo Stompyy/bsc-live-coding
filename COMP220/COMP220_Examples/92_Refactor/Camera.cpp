@@ -89,6 +89,6 @@ void Camera::update()
 
 void Camera::destroy()
 {
-	delete m_Target;
-	delete m_WorldLocation;
+	if (m_Target)			{ delete m_Target;			m_Target = nullptr; }
+	if (m_WorldLocation)	{ delete m_WorldLocation;	m_WorldLocation = nullptr; }
 }

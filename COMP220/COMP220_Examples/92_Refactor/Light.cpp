@@ -18,6 +18,6 @@ Light::~Light()
 
 void Light::destroy()
 {
-	delete m_Colour;
-	delete m_Transform;
+	if (m_Colour)		{ delete m_Colour;		m_Colour = nullptr; }
+	if (m_Transform)	{ delete m_Transform;	m_Transform = nullptr; }
 }

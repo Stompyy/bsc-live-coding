@@ -69,7 +69,7 @@ int main(int argc, char* args[])
 	// Load in and label all needed shaders
 	ShaderLoader* shaderLoader = new ShaderLoader();
 	shaderLoader->init(std::vector<ShaderInfo*>{
-			new ShaderInfo("grassShader", "textureVert.glsl", "textureFrag.glsl"),
+		new ShaderInfo("grassShader", "textureVert.glsl", "textureFrag.glsl"),
 			new ShaderInfo("assetShader", "lightingVert.glsl", "lightingFrag.glsl"),
 			new ShaderInfo("brightAssetShader", "lightingVert.glsl", "lightingFragBright.glsl"),
 			new ShaderInfo("darkAssetShader", "lightingVert.glsl", "lightingFragDark.glsl"),
@@ -85,15 +85,15 @@ int main(int argc, char* args[])
 	GameObjectLoader* gameObjects = new GameObjectLoader();
 	gameObjects->init(meshLoader, textureLoader, shaderLoader, dynamicsWorld,
 		std::vector<GameObjectInfo*>{
-				//					name		meshMapKey			textureMapKey		shaderMapKey		initialTransform														mass	collisionSize		
-				new GameObjectInfo("ground", "assets/floor.FBX", "assets/grass.png", "grassShader",		new Transform(vec3(0.0f, -5.0f, 0.0f),	vec3(0.0f, 0.0f, 0.0f), 1.0f),		0.0f, btVector3(20.0f, 1.0f, 20.0f)),
-				new GameObjectInfo("crate1", "assets/crate.FBX", "assets/crate.png", "assetShader",		new Transform(vec3(15.0f, 0.0f, 15.0f), vec3(0.0f, 10.0f, 0.0f), 0.01f),	1.0f, btVector3(1.0f, 1.0f, 1.0f)),
-				new GameObjectInfo("crate2", "assets/crate.FBX", "assets/crate.png", "assetShader",		new Transform(vec3(12.0f, 0.0f, 14.0f), vec3(0.0f, -20.0f, 0.0f), 0.01f),	1.0f, btVector3(1.0f, 1.0f, 1.0f)),
-				new GameObjectInfo("crate3", "assets/crate.FBX", "assets/crate.png", "assetShader",		new Transform(vec3(10.0f, 0.0f, 13.4f), vec3(0.0f, 30.0f, 0.0f), 0.01f),	1.0f, btVector3(1.0f, 1.0f, 1.0f)),
-				new GameObjectInfo("crate4", "assets/crate.FBX", "assets/crate.png", "assetShader",		new Transform(vec3(7.0f, 0.0f, 12.0f),	vec3(0.0f, 45.0f, 0.0f), 0.01f),	1.0f, btVector3(1.0f, 1.0f, 1.0f)),
-				new GameObjectInfo("deer1",	 "assets/deer.FBX",	 "assets/deer.png",	 "assetShader",		new Transform(vec3(5.0f, 0.0f, 5.0f),	vec3(180.0f, -20.0f, 0.0f), 0.1f),	1.0f, btVector3(1.0f, 1.0f, 1.0f)),
-				new GameObjectInfo("deer2",	 "assets/deer.FBX",	 "assets/deer.png",	 "assetShader",		new Transform(vec3(3.0f, 0.0f, 3.0f),	vec3(180.0f, 175.0f, 0.0f), 0.1f),	1.0f, btVector3(1.0f, 1.0f, 1.0f)),
-				new GameObjectInfo("trex",	 "assets/trex.FBX",	 "assets/trex.jpg",	 "darkAssetShader",	new Transform(vec3(0.0f, 5.0f, 0.0f),	vec3(0.0f, 15.0f, 0.0f), 1.0f),		1.0f, btVector3(1.0f, 0.0f, 1.0f))
+		//					name		meshMapKey			textureMapKey		shaderMapKey		initialTransform														mass	collisionSize		
+		new GameObjectInfo("ground", "assets/floor.FBX", "assets/grass.png", "grassShader", new Transform(vec3(0.0f, -5.0f, 0.0f), vec3(0.0f, 0.0f, 0.0f), 1.0f), 0.0f, btVector3(20.0f, 1.0f, 20.0f)),
+			new GameObjectInfo("crate1", "assets/crate.FBX", "assets/crate.png", "assetShader", new Transform(vec3(15.0f, 0.0f, 15.0f), vec3(0.0f, 10.0f, 0.0f), 0.01f), 1.0f, btVector3(1.0f, 1.0f, 1.0f)),
+			new GameObjectInfo("crate2", "assets/crate.FBX", "assets/crate.png", "assetShader", new Transform(vec3(12.0f, 0.0f, 14.0f), vec3(0.0f, -20.0f, 0.0f), 0.01f), 1.0f, btVector3(1.0f, 1.0f, 1.0f)),
+			new GameObjectInfo("crate3", "assets/crate.FBX", "assets/crate.png", "assetShader", new Transform(vec3(10.0f, 0.0f, 13.4f), vec3(0.0f, 30.0f, 0.0f), 0.01f), 1.0f, btVector3(1.0f, 1.0f, 1.0f)),
+			new GameObjectInfo("crate4", "assets/crate.FBX", "assets/crate.png", "assetShader", new Transform(vec3(7.0f, 0.0f, 12.0f), vec3(0.0f, 45.0f, 0.0f), 0.01f), 1.0f, btVector3(1.0f, 1.0f, 1.0f)),
+			new GameObjectInfo("deer1", "assets/deer.FBX", "assets/deer.png", "assetShader", new Transform(vec3(5.0f, 0.0f, 5.0f), vec3(180.0f, -20.0f, 0.0f), 0.1f), 1.0f, btVector3(1.0f, 1.0f, 1.0f)),
+			new GameObjectInfo("deer2", "assets/deer.FBX", "assets/deer.png", "assetShader", new Transform(vec3(3.0f, 0.0f, 3.0f), vec3(180.0f, 175.0f, 0.0f), 0.1f), 1.0f, btVector3(1.0f, 1.0f, 1.0f)),
+			new GameObjectInfo("trex", "assets/trex.FBX", "assets/trex.jpg", "darkAssetShader", new Transform(vec3(0.0f, 5.0f, 0.0f), vec3(0.0f, 15.0f, 0.0f), 1.0f), 1.0f, btVector3(1.0f, 0.0f, 1.0f))
 	});
 	// Add the player in seperately as it will be a GameObject child Player class instance.
 	// Recommended to set gameObjectName (the first argument) here as "player" for gameObjects->getPlayer() to return the Player* player object without any arguments
@@ -105,7 +105,7 @@ int main(int argc, char* args[])
 	// Set up camera
 	gameObjects->getPlayer()->getCamera()->setProjectionMatrix(90.0f, (1000 / 800), 0.1f, 1000.0f);
 
-	// Single raycast instance to be reused
+	// Single raycast instance to be reused 
 	Raycast* raycast = new Raycast();
 
 	// Lights initialisation
@@ -119,6 +119,10 @@ int main(int argc, char* args[])
 	lightTwo->setDirection(-0.6f, -1.0f, -0.1f);
 	lightTwo->getColour()->setSpecularColour(1.0f, 0.0f, 1.0f);
 
+	// Controls class handles all player input and passes actions to the gameObjects
+	Controls* controls = new Controls();
+	controls->init(gameObjects, raycast, dynamicsWorld);
+
 	// Hides the mouse and takes relative position to avoid an initial snap
 	SDL_ShowCursor(SDL_DISABLE);
 	SDL_SetRelativeMouseMode(SDL_bool(SDL_ENABLE));
@@ -127,171 +131,22 @@ int main(int argc, char* args[])
 	glEnable(GL_DEPTH_TEST);
 
 	// Event loop, we will loop until running is set to false, if escape has been pressed or window is closed
-	bool running = true;
+	while (controls->isRunning())
+	{
+		// Mantra: input, logic with input, physics, graphics.
 
-	// SDL Event structure, this will be checked in the while loop
-	SDL_Event SDLEvent;
+		// Get input from SDL_Event, Controls class processes each control and passes on to gameObjects
+		controls->update();
 
-	while (running)
-	{	
-		// Poll for the events which have happened in this frame
-		//https://wiki.libsdl.org/SDL_PollEvent
-		while (SDL_PollEvent(&SDLEvent))
-		{
-			// Switch case for every message we are interested in
-			switch (SDLEvent.type)
-			{
-				// QUIT Message, usually called when the window has been closed
-			case SDL_QUIT:
-				running = false;
-				break;
-
-				// MOUSEMOTION Message, called when the mouse has been moved 
-			case SDL_MOUSEMOTION:
-				gameObjects->getPlayer()->getCamera()->turn(SDLEvent.motion.xrel, SDLEvent.motion.yrel);
-				break;
-
-				// MOUSEBUTTONDOWN message, called when a mouse button has been pressed down
-			case SDL_MOUSEBUTTONDOWN:
-				// Check button code of the pressed mouse button
-				switch (SDLEvent.button.button)
-				{
-				case SDL_BUTTON_LEFT:
-				{
-					// Fire off a raycast
-					raycast->update(gameObjects->getPlayer()->getCamera(), dynamicsWorld->getDynamicsWorld());
-					btRigidBody* hitBody = raycast->getHitObject();
-					if (hitBody)
-					{
-						GameObject* hitGameObject = (GameObject*)hitBody->getUserPointer();
-						if (hitGameObject)
-						{
-							//nope...
-							hitGameObject->getPhysics()->setPosition(0.0f, 20.0f, 0.0f);
-						}
-					}
-					break;
-				}
-				}
-				// SDL_MOUSEWHEEL message, called when the mouse wheel has been moved
-			case SDL_MOUSEWHEEL:
-			{
-				// Check mouse wheel orientation
-				switch (SDLEvent.wheel.direction)
-				{
-					// Standard mouse wheel orientation
-				case SDL_MOUSEWHEEL_NORMAL:
-				{
-					// Zoom in/out on player by changing the length of the third person camera boom
-					// Scroll forwards
-					if (SDLEvent.wheel.y == 1)
-						gameObjects->getPlayer()->getCamera()->moveCloser();
-
-					// Scroll backwards
-					else if (SDLEvent.wheel.y == -1)
-						gameObjects->getPlayer()->getCamera()->moveAway();
-					break;
-				}
-				// Mouse wheel can be set up flipped (i.e. MacOS) this detects this
-				case SDL_MOUSEWHEEL_FLIPPED:
-				{
-					// Zoom in/out on player by changing the length of the third person camera boom
-					// Scroll forwards
-					if (SDLEvent.wheel.y == 1)
-						gameObjects->getPlayer()->getCamera()->moveCloser();
-
-					// Scroll backwards
-					else if (SDLEvent.wheel.y == -1)
-						gameObjects->getPlayer()->getCamera()->moveAway();
-					break;
-				}
-				}
-			}
-				// KEYDOWN message, called when a key has been pressed down
-			case SDL_KEYDOWN:
-				// Check the actual key code of the key that has been pressed
-				switch (SDLEvent.key.keysym.sym)
-				{
-					// Escape key
-				case SDLK_ESCAPE:
-					running = false;
-					break;
-
-				case SDLK_w:
-					// Move Forward
-					gameObjects->getPlayer()->moveForward(1);
-					break;
-
-				case SDLK_s:
-					// Move backwards
-					gameObjects->getPlayer()->moveForward(-1);
-					break;
-
-				case SDLK_a:
-					// Move left
-					gameObjects->getPlayer()->moveRight(-1);
-					break;
-
-				case SDLK_d:
-					// Move right
-					gameObjects->getPlayer()->moveRight(1);
-					break;
-
-				case SDLK_e:
-					// Jump up
-					gameObjects->getPlayer()->jumpUp();
-					break;
-
-				case SDLK_SPACE:
-					// Jump forward
-					gameObjects->getPlayer()->jumpForward();
-					break; 
-
-				case SDLK_LSHIFT:
-					// toggle to run
-					if (gameObjects->getPlayer()->isRunning()) gameObjects->getPlayer()->walk();
-					else gameObjects->getPlayer()->run();
-					break;
-
-				case SDLK_UP:
-					// Zoom in/out on player by changing the length of the third person camera boom
-					// Using to debug FBX textures! Alternative to other zoom in/out if no mouse wheel available, i.e. trackpad
-					// zoom in on player
-					gameObjects->getPlayer()->getCamera()->moveCloser();
-					break;
-
-				case SDLK_DOWN:
-					// zoom out on player
-					gameObjects->getPlayer()->getCamera()->moveAway();
-					break;
-
-				default:
-					break;
-				}
-			case SDL_KEYUP:
-			{
-				// Check the actual key code of the key that has been released
-				switch (SDLEvent.key.keysym.sym)
-				{
-				case SDLK_LSHIFT:
-					// Toggling now, as holding messes it all up!
-					//player->walk();
-					break;
-				}
-			}
-			}
-		}
-		// Input, logic with input, physics, graphics.
-		
 		// Helps to demo the lights and the shaders working together, Does not provide any other real functionality
 		gameObjects->getGameObject("trex")->rotateInPosition();
 
 		// Update the player, each gameObjects physics simulation, and bind the frame buffer
 		update(gameObjects, postProcessing, dynamicsWorld);
-		
+
 		// Send all gameObjects values to the shader and draw
 		render(gameObjects, lightOne, lightTwo);
-		
+
 		// Update the camera MVP
 		gameObjects->getPlayer()->getCamera()->update();
 
@@ -302,74 +157,21 @@ int main(int argc, char* args[])
 		SDL_GL_SwapWindow(gameWindow->getSDLWindow());
 	}
 
+	//delete(gameObjects->getPlayer());
+
 	// Delete all Objects in reverse instantiation order
-	
-	// Important! remember all this!
-	//auto iter = gameObjectList.begin();
-	//while (iter != gameObjectList.end())
-	//{
-	//if ((*iter))
-	//{
-	//(*iter)->destroy();
-	//delete (*iter);
-	//iter = gameObjectList.erase(iter);	// iter = ... because it will return back the next iter value to use next
-	//}
-	//else
-	//{
-	//iter++;
-	//}
-	//}
-	
-	
-	// Call destroy() functions instead/as well as delete
-	
-/*	light->destroy();
-	raycast->destroy();
-	postProcessing->destroy();
-	shaderLoader->destroy();
-	//meshLoader->destroy();
-	textureLoader->destroy();
-	dynamicsWorld->destroy();
-*/	
-
-	if (lightTwo) {
-		delete lightTwo;
-		lightTwo = nullptr;
-	}
-	if (lightOne) {
-		delete lightOne;
-		lightOne = nullptr;
-	}
-	if (raycast) {
-		delete raycast;
-		raycast = nullptr;
-	}
-	if (gameObjects) {
-		delete gameObjects;
-		gameObjects = nullptr;
-	}
-	if (postProcessing) {
-		delete postProcessing;
-		postProcessing = nullptr;
-	}
-	if (shaderLoader) {
-		delete shaderLoader;
-		shaderLoader = nullptr;
-	}
-	if (meshLoader) {
-		delete meshLoader;
-		meshLoader = nullptr;
-	}
-	if (textureLoader) {
-		delete textureLoader;
-		textureLoader = nullptr;
-	}
-	if (dynamicsWorld) {
-		delete dynamicsWorld;
-		dynamicsWorld = nullptr;
-	}
-
-	gameWindow->close();
+	// Sanity check... if exists, delete, then set to nullptr. Avoids memory leak on the heap I think. https://stackoverflow.com/questions/3559412/how-to-store-different-data-types-in-one-list-c
+	if (controls)		{ delete controls;			controls = nullptr; }
+	if (lightTwo)		{ delete lightTwo;			lightTwo = nullptr; }
+	if (lightOne)		{ delete lightOne;			lightOne = nullptr; }
+	if (raycast)		{ delete raycast;			raycast = nullptr; }
+	if (gameObjects)	{ delete gameObjects;		gameObjects = nullptr; }
+	if (postProcessing) { delete postProcessing;	postProcessing = nullptr; }
+	if (shaderLoader)	{ delete shaderLoader;		shaderLoader = nullptr; }
+	if (meshLoader)		{ delete meshLoader;		meshLoader = nullptr; }
+	if (textureLoader)	{ delete textureLoader;		textureLoader = nullptr; }
+	if (dynamicsWorld)	{ delete dynamicsWorld;		dynamicsWorld = nullptr; }
+	if (gameWindow)		gameWindow->close();
 
 	return 0;
 }

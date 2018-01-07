@@ -18,6 +18,7 @@
 #include <SDL_image.h>
 
 #include "Mesh.h"
+#include "ErrorMessage.h"
 
 using namespace std;
 using namespace Assimp;
@@ -33,18 +34,16 @@ public:
 	void destroy();
 
 	// Error checking here if nullptr
-	std::vector<Mesh*> getMeshes(const std::string& meshName) { return m_MeshMap[meshName]; }
+	std::vector<Mesh*> getMeshes(const std::string& meshName); // {  }
 	std::vector<Mesh*> loadMeshFromFilename(const std::string& filename);
-	vector<FBXTexture> loadMaterialTextures(aiMaterial* mat, aiTextureType type, string typeName);
 
 private: 
 	Importer m_Importer;
+	ErrorMessage* m_ErrorMessage;
 	const aiScene* m_Scene;
 
 	// Create an empty texture map. Aim to only load in each texture once, but able to reuse.
 	std::map<std::string, std::vector<Mesh*>> m_MeshMap;
-
-	std::vector<FBXTexture> m_FBXTextures;
 
 };
 

@@ -79,7 +79,7 @@ void Player::updateRotation()
 
 void Player::destroy()
 {
-	delete m_Camera;
+	if (m_Camera) { delete m_Camera; m_Camera = nullptr; }
 }
 
 void Player::updateMovement()

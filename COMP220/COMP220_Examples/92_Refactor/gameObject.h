@@ -35,6 +35,7 @@ public:
 
 	// Tidier initialisation of class than by setting individually in main.cpp
 	void init(
+		const std::string identifyingName,
 		const std::vector<Mesh*> meshes,
 		const GLuint textureID,
 		const GLuint shaderID,
@@ -51,6 +52,8 @@ public:
 	// Draw
 	void render();
 
+	std::string getName() { return m_IdentifyingName; }
+
 	void rotateInPosition();
 
 private:
@@ -63,4 +66,6 @@ private:
 
 	GLuint m_DiffuseMapID;
 	GLuint m_ShaderProgramID;
+
+	std::string m_IdentifyingName;
 };

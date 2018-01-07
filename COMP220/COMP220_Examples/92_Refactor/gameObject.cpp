@@ -21,9 +21,11 @@ GameObject::GameObject()
 
 GameObject::~GameObject()
 {
+	destroy();
 }
 
 void GameObject::init(
+	const std::string identifyingName,
 	const std::vector<Mesh*> meshes,
 	const GLuint textureID,
 	const GLuint shaderID,
@@ -69,10 +71,10 @@ void GameObject::destroy()
 			}
 		}
 	}
-	delete m_ShaderUniforms;
-	delete m_Physics;
-	delete m_Material;
-	delete m_Transform;
+	if (m_ShaderUniforms)	{ delete m_ShaderUniforms;	m_ShaderUniforms = nullptr; }
+	if (m_Physics)			{ delete m_Physics;			m_Physics = nullptr; }
+	if (m_Material)			{ delete m_Material;		m_Material = nullptr; }
+	if (m_Transform)		{ delete m_Transform;		m_Transform = nullptr; }
 }
 
 void GameObject::update()

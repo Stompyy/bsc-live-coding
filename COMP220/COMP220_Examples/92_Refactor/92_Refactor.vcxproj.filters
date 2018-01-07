@@ -58,6 +58,12 @@
     <ClCompile Include="GameWindow.cpp">
       <Filter>source</Filter>
     </ClCompile>
+    <ClCompile Include="Controls.cpp">
+      <Filter>source</Filter>
+    </ClCompile>
+    <ClCompile Include="ErrorMessage.cpp">
+      <Filter>source</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="main.h">
@@ -118,6 +124,12 @@
       <Filter>headers</Filter>
     </ClInclude>
     <ClInclude Include="GameWindow.h">
+      <Filter>headers</Filter>
+    </ClInclude>
+    <ClInclude Include="Controls.h">
+      <Filter>headers</Filter>
+    </ClInclude>
+    <ClInclude Include="ErrorMessage.h">
       <Filter>headers</Filter>
     </ClInclude>
   </ItemGroup>
