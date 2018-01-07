@@ -53,28 +53,6 @@ void GameObject::destroy()
 {
 	glDeleteTextures(1, &m_DiffuseMapID);
 	glDeleteProgram(m_ShaderProgramID);
-
-	if (m_Meshes.size() > 0)
-	{
-		auto iter = m_Meshes.begin();
-		while (iter != m_Meshes.end())
-		{
-			if ((*iter))
-			{
-				(*iter)->destroy();
-				delete (*iter);
-				iter = m_Meshes.erase(iter);
-			}
-			else
-			{
-				iter++;
-			}
-		}
-	}
-	if (m_ShaderUniforms)	{ delete m_ShaderUniforms;	m_ShaderUniforms = nullptr; }
-	if (m_Physics)			{ delete m_Physics;			m_Physics = nullptr; }
-	if (m_Material)			{ delete m_Material;		m_Material = nullptr; }
-	if (m_Transform)		{ delete m_Transform;		m_Transform = nullptr; }
 }
 
 void GameObject::update()

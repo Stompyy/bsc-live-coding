@@ -11,7 +11,6 @@ GameObjectLoader::GameObjectLoader()
 	m_ErrorMessage = new ErrorMessage();
 }
 
-
 GameObjectLoader::~GameObjectLoader()
 {
 	destroy();
@@ -21,7 +20,7 @@ void GameObjectLoader::destroy()
 {
 	if (m_ErrorMessage) { delete m_ErrorMessage; m_ErrorMessage = nullptr; }
 
-	/*auto iter = m_GameObjectList.begin();
+	auto iter = m_GameObjectList.begin();
 	while (iter != m_GameObjectList.end())
 	{
 		if ((*iter))
@@ -34,12 +33,7 @@ void GameObjectLoader::destroy()
 		{
 			iter++;
 		}
-	}*/
-	/*for (GameObject* gameObject : m_GameObjectList)
-	{
-		delete gameObject;
-		gameObject = nullptr;
-	}*/
+	}
 }
 
 // Uses the GameObject class's own init() function

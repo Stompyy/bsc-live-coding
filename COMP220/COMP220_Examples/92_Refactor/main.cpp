@@ -157,8 +157,6 @@ int main(int argc, char* args[])
 		SDL_GL_SwapWindow(gameWindow->getSDLWindow());
 	}
 
-	//delete(gameObjects->getPlayer());
-
 	// Delete all Objects in reverse instantiation order
 	// Sanity check... if exists, delete, then set to nullptr. Avoids memory leak on the heap I think. https://stackoverflow.com/questions/3559412/how-to-store-different-data-types-in-one-list-c
 	if (controls)		{ delete controls;			controls = nullptr; }

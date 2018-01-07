@@ -74,6 +74,9 @@ public:
 	// Return gameObjectMap
 	std::map<std::string, GameObject*> getGameObjectMap() { return m_GameObjectMap; }
 
+	// Return gameObjectList
+	std::vector<GameObject*> getGameObjectList() { return m_GameObjectList; }
+
 private:
 	// Map of GameObjects to store all GameObjects within the scene
 	std::map<std::string, GameObject*> m_GameObjectMap;
