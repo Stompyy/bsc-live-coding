@@ -54,7 +54,11 @@ public:
 	btVector3& getInertia() { return m_Inertia; }
 	btDefaultMotionState* getMotionState() { return m_MotionState; }
 
+	// Set is physics active
+	void setIsPhysicsActive(const bool isPhysicsActive) { m_IsPhysicsActive = isPhysicsActive; }
+
 	void createRigidBody();
+	void update();
 	void destroy();
 
 private:
@@ -64,6 +68,8 @@ private:
 	btVector3 m_Inertia;
 	btDefaultMotionState* m_MotionState;
 	btRigidBody* m_RigidBody;
+
+	bool m_IsPhysicsActive;
 };
 
 

@@ -93,9 +93,8 @@ void Player::updateMovement()
 		m_Camera->getWorldLocation()->getPosition().y,
 		m_Camera->getWorldLocation()->getPosition().z);
 
-	// Update the physics position
+	// Update the physics position to the camera position, which is set from the player position
 	getPhysics()->getRigidBody()->getWorldTransform().setOrigin(tempPos);
-	getPhysics()->getTransform().setOrigin(tempPos);
 
 	// Temporary bullet quaternion to update the physics rotation
 	btQuaternion tempRot = btQuaternion(

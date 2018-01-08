@@ -50,19 +50,34 @@ void Raycast::update(Camera* camera, btDynamicsWorld* dynamicsWorld)
 		RayCallback
 	);
 
-	if (RayCallback.hasHit()) 
+	if (RayCallback.hasHit())
 	{
 		// What to do with this information though?
-		printf("mesh: %i \n", (int)RayCallback.m_collisionObject->getUserIndex()); // getUserPointer());
-		m_HitRigidBody = const_cast<btRigidBody *>(btRigidBody::upcast(RayCallback.m_collisionObject));
+		printf("mesh: %i \n", (int)RayCallback.m_collisionObject->getUserPointer());
+		m_HitRigidBody = const_cast<btRigidBody*>(btRigidBody::upcast(RayCallback.m_collisionObject));
 
-		//btRigidBody hitObjectValue = btRigidBody(*hitRigidBody);
-		//hitObjectValue.activate(true);
-		//hitObjectValue.applyCentralForce(btVector3(0.0f, 1000.0f, 0.0f));
+		btRigidBody hitObjectRB = btRigidBody(*m_HitRigidBody);
+
+		printf("%s\n", (std::string*)((GameObject*)(m_HitRigidBody->getUserPointer())));
+
+		//GameObject* hitGameObject = (GameObject*)m_HitRigidBody->getUserPointer();//hitObjectValue.getUserPointer();
+		//if (true)//hitGameObject)
+		//{
+		//	hitGameObject->getPhysics()->setPosition(
+		//		hitGameObject->getPhysics()->getTransform().getOrigin().getX(),
+		//		hitGameObject->getPhysics()->getTransform().getOrigin().getY() + 10.,
+		//		hitGameObject->getPhysics()->getTransform().getOrigin().getZ()
+		//	);
+		//	//printf("Hit: %s\n", ((GameObject*)m_HitRigidBody)->getName());
+
+		//	//hitObjectValue.activate(true);
+		//	//hitObjectValue.applyCentralForce(btVector3(0.0f, 100000.0f, 0.0f));
+		//}
 	}
-	else {
-		m_HitRigidBody = nullptr;
-		printf("background \n");
+		else {
+			m_HitRigidBody = nullptr;
+			printf("background \n");
+		
 	}
 }
 

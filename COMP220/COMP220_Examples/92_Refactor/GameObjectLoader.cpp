@@ -18,8 +18,6 @@ GameObjectLoader::~GameObjectLoader()
 
 void GameObjectLoader::destroy()
 {
-	if (m_ErrorMessage) { delete m_ErrorMessage; m_ErrorMessage = nullptr; }
-
 	auto iter = m_GameObjectList.begin();
 	while (iter != m_GameObjectList.end())
 	{
@@ -37,8 +35,10 @@ void GameObjectLoader::destroy()
 }
 
 // Uses the GameObject class's own init() function
-void GameObjectLoader::init(MeshLoader* meshLoader, TextureLoader* textureLoader, ShaderLoader* shaderLoader, PhysicsEngine* dynamicsWorld, const std::vector<GameObjectInfo*>& gameObjectInfoList)
+void GameObjectLoader::init(MeshLoader* meshLoader, TextureLoader* textureLoader, ShaderLoader* shaderLoader, PhysicsEngine* dynamicsWorld, ErrorMessage* errorMessage, const std::vector<GameObjectInfo*>& gameObjectInfoList)
 {
+	m_ErrorMessage = errorMessage;
+
 	for (GameObjectInfo* constructionInfo : gameObjectInfoList)
 	{
 		GameObject* newGameObject = new GameObject();
@@ -49,7 +49,8 @@ void GameObjectLoader::init(MeshLoader* meshLoader, TextureLoader* textureLoader
 			shaderLoader->getShaderID(constructionInfo->shaderName),
 			constructionInfo->initialTransform,
 			constructionInfo->mass,
-			constructionInfo->collisionSize
+			constructionInfo->collisionSize,
+			constructionInfo->forceActivePhysics
 		);
 
 		// Add to the map with the gameObjectName as the map key
@@ -74,7 +75,8 @@ void GameObjectLoader::addPlayer(MeshLoader* meshLoader, TextureLoader* textureL
 		shaderLoader->getShaderID(constructionInfo->shaderName),
 		constructionInfo->initialTransform,
 		constructionInfo->mass,
-		constructionInfo->collisionSize
+		constructionInfo->collisionSize,
+		constructionInfo->forceActivePhysics
 	);
 
 	// Add to the map with the gameObjectName as the map key

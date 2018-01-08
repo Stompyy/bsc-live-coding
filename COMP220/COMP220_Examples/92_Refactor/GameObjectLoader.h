@@ -20,7 +20,8 @@ struct GameObjectInfo
 		std::string shaderName,
 		Transform* initialTransform,
 		float mass,
-		btVector3& collisionSize)
+		btVector3& collisionSize,
+		bool forceActivePhysics)
 		:
 		gameObjectName(gameObjectName),
 		meshFileName(meshFileName),
@@ -28,12 +29,14 @@ struct GameObjectInfo
 		shaderName(shaderName),
 		initialTransform(initialTransform),
 		mass(mass),
-		collisionSize(collisionSize) {}
+		collisionSize(collisionSize),
+		forceActivePhysics(forceActivePhysics) {}
 	
 	std::string gameObjectName, meshFileName, textureFileName, shaderName;
 	Transform* initialTransform;
 	float mass;
 	btVector3 collisionSize;
+	bool forceActivePhysics;
 };
 
 class GameObjectLoader
@@ -50,6 +53,7 @@ public:
 		TextureLoader* textureLoader,
 		ShaderLoader* shaderLoader,
 		PhysicsEngine* dynamicsWorld,
+		ErrorMessage* errorMessage,
 		const std::vector<GameObjectInfo*>& gameObjectInfoList
 	);
 

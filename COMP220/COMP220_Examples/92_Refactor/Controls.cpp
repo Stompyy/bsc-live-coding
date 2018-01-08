@@ -4,8 +4,7 @@
 
 Controls::Controls()
 {
-	m_IsRunning = true;
-
+	m_GameManager = new GameManager();
 	m_GameObjects = new GameObjectLoader();
 	m_Raycast = new Raycast();
 	m_DynamicsWorld = new PhysicsEngine();
@@ -19,13 +18,11 @@ Controls::~Controls()
 
 void Controls::destroy()
 {
-	//if (m_DynamicsWorld)	{ delete m_DynamicsWorld;	m_DynamicsWorld = nullptr; }
-	//if (m_Raycast)			{ delete m_Raycast;			m_Raycast = nullptr; }
-	//if (m_GameObjects)		{ delete m_GameObjects;		m_GameObjects = nullptr; }
 }
 
-void  Controls::init(GameObjectLoader* gameObjects, Raycast* raycast, PhysicsEngine* dynamicsWorld)
+void  Controls::init(GameManager* gameManager, GameObjectLoader* gameObjects, Raycast* raycast, PhysicsEngine* dynamicsWorld)
 {
+	m_GameManager = gameManager;
 	m_GameObjects = gameObjects;
 	m_Raycast = raycast;
 	m_DynamicsWorld = dynamicsWorld;
@@ -42,7 +39,7 @@ void Controls::update()
 		{
 			// QUIT Message, usually called when the window has been closed
 		case SDL_QUIT:
-			m_IsRunning = false;
+			m_GameManager->setIsRunning(false);
 			break;
 
 			// MOUSEMOTION Message, called when the mouse has been moved 
@@ -65,7 +62,12 @@ void Controls::update()
 					GameObject* hitGameObject = (GameObject*)hitBody->getUserPointer();
 					if (hitGameObject)
 					{
-						printf("puta: %s \n", (char*)&hitGameObject->getName());
+						hitGameObject->getPhysics()->setPosition(
+							hitGameObject->getPhysics()->getTransform().getOrigin().getX(),
+							hitGameObject->getPhysics()->getTransform().getOrigin().getY() + 10.,
+							hitGameObject->getPhysics()->getTransform().getOrigin().getZ()
+						);
+						printf("Hit: %s\n", hitBody->getUserPointer());
 					}
 				}
 				break;
@@ -113,7 +115,7 @@ void Controls::update()
 			{
 				// Escape key
 			case SDLK_ESCAPE:
-				m_IsRunning = false;
+				m_GameManager->setIsRunning(false);
 				break;
 
 			case SDLK_w:
@@ -167,17 +169,6 @@ void Controls::update()
 			default:
 				break;
 			}
-		case SDL_KEYUP:
-		{
-			// Check the actual key code of the key that has been released
-			switch (m_SDLEvent.key.keysym.sym)
-			{
-			case SDLK_LSHIFT:
-				// Toggling now, as holding messes it all up!
-				//player->walk();
-				break;
-			}
-		}
 		}
 	}
 }

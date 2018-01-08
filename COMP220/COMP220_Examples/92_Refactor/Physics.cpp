@@ -11,6 +11,8 @@ Physics::Physics()
 	m_MotionState = new btDefaultMotionState(m_Transform);
 	btRigidBody::btRigidBodyConstructionInfo m_RigidBodyInfo(m_Mass, m_MotionState, m_CollisionShape, m_Inertia);
 	m_RigidBody = new btRigidBody(m_RigidBodyInfo);
+
+	m_IsPhysicsActive = false;
 }
 
 
@@ -24,6 +26,15 @@ void Physics::createRigidBody()
 	m_MotionState = new btDefaultMotionState(m_Transform);
 	btRigidBody::btRigidBodyConstructionInfo m_RigidBodyInfo(m_Mass, m_MotionState, m_CollisionShape, m_Inertia);
 	m_RigidBody = new btRigidBody(m_RigidBodyInfo);
+}
+
+void Physics::update()
+{
+	// Check if Physics is active and activate if true
+	m_RigidBody->activate(m_IsPhysicsActive);
+
+	// Update physics transform to the rigidbody transform
+	m_Transform = m_RigidBody->getWorldTransform();
 }
 
 void Physics::destroy()

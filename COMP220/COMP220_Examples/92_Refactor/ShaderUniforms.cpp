@@ -30,21 +30,6 @@ ShaderUniforms::~ShaderUniforms()
 
 void ShaderUniforms::init(GLuint shaderProgramID)
 {
-/*	const GLsizei bufSize = 16; // maximum name length
-	GLchar name[bufSize]; // variable name in GLSL
-	GLsizei length; // name length
-	int uniformCount;
-	GLint size; // size of the variable
-	GLenum type; // type of the variable (float, vec3 or mat4, etc)
-
-	glGetProgramiv(shaderProgramID, GL_ACTIVE_UNIFORMS, &uniformCount);
-	for (int i = 0; i < uniformCount; i++)
-	{
-		glGetActiveAttrib(shaderProgramID, (GLuint)i, bufSize, &length, &size, &type, name);
-
-		//std::string uniformName = std::string(name);
-	}
-*/
 	// Find all the uniform locations. Only needed to do once per shaderProgramID
 	m_TextureLocation = glGetUniformLocation(shaderProgramID, "baseTexture");
 
@@ -76,7 +61,7 @@ void ShaderUniforms::init(GLuint shaderProgramID)
 void ShaderUniforms::update(Camera* camera, Light* lightOne, Light* lightTwo, Material* material, Transform* transform)
 {
 	// Send shader values
-	// Always send vec4s instead of vec3sfor efficiency, vec3s get ammended with a homogeneous w=0 for direction, or w=1 for position.
+	// Always send vec4s instead of vec3s for efficiency, think about the 4x4 matrix multiplication, vec3s get ammended with a homogeneous w=0 for direction, or w=1 for position.
 
 	// Texture
 	glUniform1i(m_TextureLocation, 0);

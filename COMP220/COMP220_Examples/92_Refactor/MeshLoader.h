@@ -29,7 +29,7 @@ public:
 	MeshLoader(); 
 	~MeshLoader();
 
-	void init(const std::vector<std::string> meshFileNames);
+	void init(ErrorMessage* errorMessage, const std::vector<std::string> meshFileNames);
 
 	void destroy();
 

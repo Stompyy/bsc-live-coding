@@ -31,7 +31,8 @@ void GameObject::init(
 	const GLuint shaderID,
 	Transform* initialTransform,
 	const float mass,
-	const btVector3 collisionSize)
+	const btVector3 collisionSize,
+	const bool forceActive)
 {
 	m_Meshes = meshes;
 	m_DiffuseMapID = textureID;
@@ -41,6 +42,7 @@ void GameObject::init(
 	m_Physics->setMass(mass);
 	m_Physics->setCollisionShapeSize(collisionSize);
 	m_Physics->getTransform().setIdentity();
+	m_Physics->setIsPhysicsActive(forceActive);
 
 	// Set the physics transform to the gameObject's transform
 	m_Physics->getTransform().setOrigin(btVector3(m_Transform->getPosition().x, m_Transform->getPosition().y, m_Transform->getPosition().z));
@@ -57,8 +59,8 @@ void GameObject::destroy()
 
 void GameObject::update()
 {
-	// Update physics transform to the rigidbody transform
-	m_Physics->setTransform(m_Physics->getRigidBody()->getWorldTransform());
+	// Update the physics transform to the rigidbody position, and activate if isPhysicsActive is true
+	m_Physics->update();
 
 	// Update gameObject position to the physics position
 	if (m_Physics->getRigidBody() != nullptr)

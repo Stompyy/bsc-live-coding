@@ -15,7 +15,7 @@ public:
 	TextureLoader();
 	~TextureLoader();
 
-	void init(std::vector<std::string> textureFileNames);
+	void init(ErrorMessage* errorMessage, const std::vector<std::string> textureFileNames);
 
 	// Error checking here if nullptr
 	GLuint getTextureID(const std::string& textureName);

@@ -64,6 +64,9 @@
     <ClCompile Include="ErrorMessage.cpp">
       <Filter>source</Filter>
     </ClCompile>
+    <ClCompile Include="GameManager.cpp">
+      <Filter>source</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="main.h">
@@ -130,6 +133,9 @@
       <Filter>headers</Filter>
     </ClInclude>
     <ClInclude Include="ErrorMessage.h">
+      <Filter>headers</Filter>
+    </ClInclude>
+    <ClInclude Include="GameManager.h">
       <Filter>headers</Filter>
     </ClInclude>
   </ItemGroup>

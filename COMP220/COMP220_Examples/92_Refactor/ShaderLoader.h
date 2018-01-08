@@ -23,7 +23,7 @@ public:
 	ShaderLoader();
 	~ShaderLoader();
 
-	void init(const std::vector<ShaderInfo*>& shaderFileNames);
+	void init(ErrorMessage* errorMessage, const std::vector<ShaderInfo*>& shaderFileNames);
 	void destroy();
 
 	// Retrieves the shaderID from the map - NEEDS ERROR CHECKING!

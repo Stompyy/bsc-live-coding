@@ -8,8 +8,10 @@ ShaderLoader::ShaderLoader()
 	m_ErrorMessage = new ErrorMessage();
 }
 
-void ShaderLoader::init(const std::vector<ShaderInfo*>& shaderFileNames)
+void ShaderLoader::init(ErrorMessage* errorMessage, const std::vector<ShaderInfo*>& shaderFileNames)
 {
+	m_ErrorMessage = errorMessage;
+
 	// Builds the map of GLuint shaderIDs and their identifying string keys
 	for (ShaderInfo* shaderInfo : shaderFileNames)
 	{
@@ -24,30 +26,6 @@ ShaderLoader::~ShaderLoader()
 
 void ShaderLoader::destroy()
 {
-	if (m_ErrorMessage) { delete m_ErrorMessage; m_ErrorMessage = nullptr; }
-
-/*	for (std::string iter : m_ShaderMap)
-		glDeleteProgram(m_ShaderMap[iter]);
-*/
-
-/*	if (m_ShaderMap.size() > 0)
-	{
-		auto iter = m_ShaderMap.begin();
-		while (iter != m_ShaderMap.end())
-		{
-			if ((*iter))
-			{
-				(*iter)->destroy();
-				delete (*iter);
-				iter = m_ShaderMap.erase(iter);
-			}
-			else
-			{
-				iter++;
-			}
-		}
-	}
-*/
 }
 
 GLuint ShaderLoader::getShaderID(const std::string & shaderName)

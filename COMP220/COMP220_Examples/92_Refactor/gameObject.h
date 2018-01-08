@@ -41,7 +41,8 @@ public:
 		const GLuint shaderID,
 		Transform* initialTransform,
 		const float mass,
-		const btVector3 collisionSize);
+		const btVector3 collisionSize,
+		const bool forceActive);
 
 	void destroy();
 	void update();

@@ -4,6 +4,7 @@
 #include <string>
 #include "Camera.h"
 #include "btBulletDynamicsCommon.h"
+#include "GameObject.h"
 
 class Raycast
 {
@@ -22,6 +23,6 @@ private:
 	// The ray start and end positions, in Normalized Device Coordinates [-1, 1]
 	glm::vec4 rayStart_NDC;
 	glm::vec4 rayEnd_NDC;
-	btRigidBody * m_HitRigidBody;
+	btRigidBody* m_HitRigidBody;
 };
 

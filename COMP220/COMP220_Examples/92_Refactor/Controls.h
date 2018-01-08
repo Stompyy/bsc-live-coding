@@ -4,6 +4,7 @@
 #include "GameObjectLoader.h"
 #include "Raycast.h"
 #include "PhysicsEngine.h"
+#include "GameManager.h"
 
 class Controls
 {
@@ -12,16 +13,12 @@ public:
 	~Controls();
 	void destroy();
 
-	void init(GameObjectLoader* gameObjects, Raycast* raycast, PhysicsEngine* dynamicsWorld);
+	void init(GameManager* gameManager, GameObjectLoader* gameObjects, Raycast* raycast, PhysicsEngine* dynamicsWorld);
 
 	void update();
 
-	bool isRunning() { return m_IsRunning; }
-
 private:
-	bool m_IsRunning;
-	
-	// SDL Event structure, this will be checked in the while loop
+	GameManager* m_GameManager;
 	SDL_Event m_SDLEvent;
 	GameObjectLoader* m_GameObjects;
 	Raycast* m_Raycast;

@@ -99,8 +99,10 @@ MeshLoader::MeshLoader()
 	// Ensures empty starting value
 	m_MeshMap.clear();
 }
-void MeshLoader::init(const std::vector<std::string> meshFileNames)
+void MeshLoader::init(ErrorMessage* errorMessage, const std::vector<std::string> meshFileNames)
 {
+	m_ErrorMessage = errorMessage;
+
 	// Builds the map of meshes and their identifying string keys
 	for (std::string meshName : meshFileNames)
 	{
