@@ -57,19 +57,23 @@ void Controls::update()
 				// Fire off a raycast
 				m_Raycast->update(m_GameObjects->getPlayer()->getCamera(), m_DynamicsWorld->getDynamicsWorld());
 				btRigidBody* hitBody = m_Raycast->getHitObject();
+
 				if (hitBody)
 				{
-					GameObject* hitGameObject = (GameObject*)hitBody->getUserPointer();
-					if (hitGameObject)
+					std::string* hitGameObjectName = (std::string*)(hitBody->getUserIndex());
+					GameObject* hitGameObject = m_GameObjects->getGameObject(*hitGameObjectName);
+					/*if (hitGameObject)
 					{
 						hitGameObject->getPhysics()->setPosition(
 							hitGameObject->getPhysics()->getTransform().getOrigin().getX(),
 							hitGameObject->getPhysics()->getTransform().getOrigin().getY() + 10.,
 							hitGameObject->getPhysics()->getTransform().getOrigin().getZ()
 						);
-						printf("Hit: %s\n", hitBody->getUserPointer());
-					}
+
+					}*/
+					printf("Hit: %s\n", hitGameObject->getName());
 				}
+				
 				break;
 			}
 			}

@@ -48,7 +48,7 @@ void GameObject::init(
 	m_Physics->getTransform().setOrigin(btVector3(m_Transform->getPosition().x, m_Transform->getPosition().y, m_Transform->getPosition().z));
 	m_Physics->getTransform().setRotation(btQuaternion(m_Transform->getRotation().w, m_Transform->getRotation().x, m_Transform->getRotation().y, m_Transform->getRotation().z));
 	m_Physics->createRigidBody();
-	m_Physics->getRigidBody()->setUserPointer(this);
+	m_Physics->getRigidBody()->setUserIndex((int)&identifyingName);//->setUserPointer((std::string*)&identifyingName); //(this);
 }
 
 void GameObject::destroy()

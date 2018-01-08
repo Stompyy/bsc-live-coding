@@ -72,7 +72,7 @@ int main(int argc, char* args[])
 	// Load in all needed meshes
 	MeshLoader* meshLoader = new MeshLoader();
 	meshLoader->init(errorMessage, std::vector<std::string>{ "assets/floor.FBX", "assets/crate.FBX", "assets/deer.FBX", "assets/wolf.FBX", "assets/trex.FBX" });
-	//"assets/cabin.FBX", 
+	
 	// Load in and label all needed shaders
 	ShaderLoader* shaderLoader = new ShaderLoader();
 	shaderLoader->init(errorMessage, std::vector<ShaderInfo*>{
@@ -92,16 +92,17 @@ int main(int argc, char* args[])
 	GameObjectLoader* gameObjects = new GameObjectLoader();
 	gameObjects->init(meshLoader, textureLoader, shaderLoader, dynamicsWorld, errorMessage,
 		std::vector<GameObjectInfo*>{
-			//					name		meshMapKey			textureMapKey		shaderMapKey		initialTransform														mass	collisionSize				forceActivePhysics
-			new GameObjectInfo("ground", "assets/floor.FBX", "assets/grass.png", "grassShader",		new Transform(vec3(0.0f, -5.0f, 0.0f),	vec3(0.0f, 0.0f, 0.0f),		1.0f),	0.0f, btVector3(20.0f, 1.0f, 20.0f), false),
-			new GameObjectInfo("crate1", "assets/crate.FBX", "assets/crate.png", "assetShader",		new Transform(vec3(15.0f, 0.0f, 15.0f), vec3(0.0f, 10.0f, 0.0f),	0.01f), 1.0f, btVector3(1.0f, 1.0f, 1.0f), true),
-			new GameObjectInfo("crate2", "assets/crate.FBX", "assets/crate.png", "assetShader",		new Transform(vec3(12.0f, 0.0f, 14.0f), vec3(0.0f, -20.0f, 0.0f),	0.01f), 1.0f, btVector3(1.0f, 1.0f, 1.0f), true),
-			new GameObjectInfo("crate3", "assets/crate.FBX", "assets/crate.png", "assetShader",		new Transform(vec3(10.0f, 0.0f, 13.4f), vec3(0.0f, 30.0f, 0.0f),	0.01f), 1.0f, btVector3(1.0f, 1.0f, 1.0f), true),
-			new GameObjectInfo("crate4", "assets/crate.FBX", "assets/crate.png", "assetShader",		new Transform(vec3(7.0f, 0.0f, 12.0f),	vec3(0.0f, 45.0f, 0.0f),	0.01f), 1.0f, btVector3(1.0f, 1.0f, 1.0f), true),
-			new GameObjectInfo("deer1",	 "assets/deer.FBX",	 "assets/deer.png",	 "assetShader",		new Transform(vec3(5.0f, 0.0f, 5.0f),	vec3(180.0f, -20.0f, 0.0f), 0.1f),	1.0f, btVector3(1.0f, 1.0f, 1.0f), true),
-			new GameObjectInfo("deer2",	 "assets/deer.FBX",	 "assets/deer.png",	 "assetShader",		new Transform(vec3(3.0f, 0.0f, 3.0f),	vec3(180.0f, 175.0f, 0.0f), 0.1f),	1.0f, btVector3(1.0f, 1.0f, 1.0f), true),
-			new GameObjectInfo("trex",	 "assets/trex.FBX",	 "assets/trex.jpg",	 "darkAssetShader", new Transform(vec3(0.0f, 5.0f, 0.0f),	vec3(0.0f, 15.0f, 0.0f),	1.0f),	1.0f, btVector3(1.0f, 0.0f, 1.0f), true)
+			//					name		meshMapKey			textureMapKey		shaderMapKey		initialTransform														mass	collisionSize				activePhysics
+			new GameObjectInfo("ground", "assets/floor.FBX", "assets/grass.png", "grassShader",		new Transform(vec3(0.0f, -5.0f, 0.0f),	vec3(0.0f, 0.0f, 0.0f),		1.0f),	0.0f, btVector3(30.0f, 1.0f, 30.0f),false),
+			new GameObjectInfo("crate1", "assets/crate.FBX", "assets/crate.png", "assetShader",		new Transform(vec3(15.0f, 0.0f, 15.0f), vec3(0.0f, 10.0f, 0.0f),	0.01f), 1.0f, btVector3(1.0f, 1.0f, 1.0f),	true),
+			new GameObjectInfo("crate2", "assets/crate.FBX", "assets/crate.png", "assetShader",		new Transform(vec3(12.0f, 0.0f, 14.0f), vec3(0.0f, -20.0f, 0.0f),	0.01f), 1.0f, btVector3(1.0f, 1.0f, 1.0f),	true),
+			new GameObjectInfo("crate3", "assets/crate.FBX", "assets/crate.png", "assetShader",		new Transform(vec3(10.0f, 0.0f, 13.4f), vec3(0.0f, 30.0f, 0.0f),	0.01f), 1.0f, btVector3(1.0f, 1.0f, 1.0f),	true),
+			new GameObjectInfo("crate4", "assets/crate.FBX", "assets/crate.png", "assetShader",		new Transform(vec3(7.0f, 0.0f, 12.0f),	vec3(0.0f, 45.0f, 0.0f),	0.01f), 1.0f, btVector3(1.0f, 1.0f, 1.0f),	true),
+			new GameObjectInfo("deer1",	 "assets/deer.FBX",	 "assets/deer.png",	 "assetShader",		new Transform(vec3(5.0f, 0.0f, 5.0f),	vec3(180.0f, -20.0f, 0.0f), 0.1f),	1.0f, btVector3(1.0f, 1.0f, 1.0f),	true),
+			new GameObjectInfo("deer2",	 "assets/deer.FBX",	 "assets/deer.png",	 "assetShader",		new Transform(vec3(3.0f, 0.0f, 3.0f),	vec3(180.0f, 175.0f, 0.0f), 0.1f),	1.0f, btVector3(1.0f, 1.0f, 1.0f),	true),
+			new GameObjectInfo("trex",	 "assets/trex.FBX",	 "assets/trex.jpg",	 "darkAssetShader", new Transform(vec3(0.0f, 5.0f, 0.0f),	vec3(0.0f, 15.0f, 0.0f),	1.0f),	10.0f,btVector3(1.0f, 0.0f, 1.0f),	true)
 	});
+
 	// Add the player in seperately as it will be a GameObject child Player class instance.
 	// Recommended to set gameObjectName (the first argument) here as "player" for gameObjects->getPlayer() to return the Player* player object without any arguments
 	// Any other name will need the explicit gameObjects->getPlayer("yourPlayerName") to return the Player* player object
